@@ -1,0 +1,151 @@
+How AI agents build games
+A spoken lesson based on the field guide in this repository (checked 17 October 2026).
+Subtitles match the spoken lines, with digits restored for reading.
+
+
+01  ·  The three jobs
+
+[00:00] You already know how to ask a coding agent for a program. A game is a harder request, and this lesson is the map.
+[00:07] By the end, you should be able to brief an agent, spot a bad first draft, and know which parts you still have to play yourself.
+[00:15] A language model writes text. Code, JSON, SVG, a shader, a list of numbers. That is the entire output.
+[00:25] A game is a picture that moves in real time. It also needs sound, and a feeling of control. The simulation can be code. A sprite sheet cannot.
+[00:35] So this is three jobs, not one. The agent types the code. Tools supply pictures and sound. You supply the spec, and you supply taste.
+[00:45] If you remember one sentence, remember this. The agent does most of the typing. Whether the game is fun is still your job.
+[00:53] The facts here come from a field guide checked on 17 October 2026. When a number is a judgment, the screen says so.
+
+02  ·  The loop
+
+[01:02] Here is the mental model that makes the rest click. A game is a server with a 16-millisecond deadline, and one picky client: the player's eyes.
+[01:12] About 60 times a second, it must read input, move the world forward by a tiny slice of time, and draw. Miss the deadline, and the picture stutters.
+[01:23] Frames are not independent, the way web requests are. A one-pixel mistake, repeated every frame, is obvious within a second.
+[01:33] Input, update, draw, and around again. Everything else hangs off that loop. Menus, saving, enemies, cameras.
+[01:42] These three balls are all supposed to move at 180 pixels per second. Only the way they measure time is different.
+[01:50] The orange ball moves a fixed distance every frame. When the frame rate falls, it slows down, because per frame is not per second.
+[01:59] The blue ball multiplies by delta time, the gap since the last frame, so the speed stays honest. Then a hitch arrives, the gap explodes, and it teleports.
+[02:10] The green ball is the pattern to ask for. A fixed step, 1/120 of a second, piled up in an accumulator. Drawing can happen whenever the screen is ready.
+[02:22] Same inputs, same result. That determinism is what later lets an agent test the game, instead of hoping a screenshot looks right.
+[02:31] Agents know this pattern, and a first draft still skips it. Three pixels per frame is fine on one monitor, and twice as fast on a high-refresh laptop.
+[02:41] Put this sentence in the prompt: fixed timestep, 1/120, with an accumulator, and clamp the gap so a long pause cannot spiral.
+[02:51] Input is polled once per update. Is left held right now? Did jump go down this frame? Jump has to be an edge. If it fires every frame the key is held, the hero launches again the instant they land.
+[03:05] The hero also needs an explicit state. Idle, running, jumping, falling, or dead. The whole game needs one too. Title, playing, paused, game over.
+[03:17] Without that, generated code fills up with flags. Flags are how you get a double jump after death, and music that keeps playing on the game-over screen.
+
+03  ·  Feel and collision
+
+[03:27] Two games with the same rules can feel completely different. Game feel is the moment-to-moment sense of control.
+[03:35] Players rarely notice these tricks. They notice immediately when the tricks are missing. Watch the ledge.
+[03:41] Coyote time. After you walk off a ledge, the jump still works for about 0.10 seconds. The name is the cartoon coyote, hanging in the air for one extra beat.
+[03:52] Jump buffering. If you press jump a little before you land, the jump still happens on landing, instead of being eaten.
+[04:00] Variable height. Releasing the button early cuts the upward speed. A tap is a hop. A hold is a full jump.
+[04:08] Useful starting numbers, from shipped platformers and from the guide's own demo: coyote time about 0.10 s, buffer about 0.12 s, cut upward speed to roughly half on release.
+[04:21] Put every one of those numbers in a single config object. Then you tune them by playing. The agent cannot feel the jump for you.
+[04:29] Collision has a famous bug called tunneling. The box moves 30 pixels in one frame. The wall is 10 pixels thick. Most frames, the box is never overlapping the wall. It has already passed through.
+[04:43] The fixes are to split the move into smaller steps, or to sweep along the path and stop at the hit. A physics engine calls the thorough version continuous collision detection.
+[04:55] For a platformer, store the level as a grid and resolve movement on X, then on Y. Cap the fall so it never moves more than one tile per step.
+[05:05] And do not reach for a physics engine on day one. A physics engine is for crates, ragdolls, and suspension. A jumping hero should be kinematic. Hand-written velocity. Stop on a dime. Change direction in the air.
+[05:19] Godot and Unity both ship a kinematic character controller for exactly this reason. The demos in the field guide are hand-written too.
+[05:27] Here is why agents are good at levels, once you choose the format. A level can be a few lines of text. Hash marks are ground. P is where the hero starts.
+[05:39] The agent can write that text, diff it, and run a validator that simulates the real jump and checks that every coin is reachable.
+[05:47] What it cannot do is decide whether the level is interesting. You draw the interesting ones. The agent writes the loader.
+
+04  ·  Pictures and sound
+
+[05:55] Now the question that usually starts this whole search. If the model only writes text, where do the pictures come from?
+[06:02] There are five families, on a line from control to richness. Most real games mix them. Code for the interface and the effects. A free pack for the base look. A generator only for the gaps.
+[06:15] Family one is drawn by code. Shapes, SVG, emoji, a shader, a synthesised blip. The language model does this alone. It costs nothing, it has no licence, and it cannot drift, because it is a function.
+[06:31] It will look like programmer art. That is a feature, while you are still learning whether the game is fun.
+[06:37] Family two is a free pack. Kenney's packs are public domain, CC0. You do not have to credit them. OpenGameArt and Freesound are different: every file has its own licence.
+[06:50] Family three is an image model. As of October 2026, an agent can call GPT Image, Google's image models, FLUX, Recraft, Ideogram, and pixel-art tools such as PixelLab. One picture is often a few cents. Forty matching frames are the real bill.
+[07:09] Family four is a 3D model from a prompt or a photo. You get a textured mesh in about a minute. Usually it is a dense shell, with the lighting baked into the paint, and no skeleton to walk with.
+[07:22] Family five splits in half. Sound effects are easy for an agent, because a jump is an oscillator and an envelope. Music is a different skill. Start with a free track that has a clear licence.
+[07:35] The order matters more than the vendor list. Build the whole game with shapes. When it is fun, swap the drawing function for a CC0 pack. The simulation does not change. Only the pixels change.
+[07:49] Open an image API only when you want a look nobody else has, and you are ready to clean up. Generation is the easy step.
+[07:57] The hard steps are transparency, consistency, the pixel grid, and packing. Watch a character fall apart across four frames. Hair, proportions, and the feet all drift. That is the normal failure, not a bad prompt.
+[08:13] General models also paint fake pixel art. Uneven blocks, and thousands of colours. Use a pixel-native tool, or snap the image to a grid and lock the palette. Scale up with nearest neighbour only, or the snap was wasted.
+[08:28] And if the model has no alpha channel, the words "transparent background" make it paint a checkerboard as real pixels. Ask for a flat key colour that is not in the character, or use a model that truly writes an alpha channel.
+[08:42] The agent reaches these tools through a door that ends as files in the project. A script that calls an API. A vendor command line. An MCP server. Or a skill: a recipe that says generate, cut the background, snap, and pack.
+[08:58] Tell it to price the batch before it runs. Put a spending limit on the key. Autonomous image loops are how a small experiment becomes an invoice.
+[09:08] In 3D, start the same way. A car can be boxes and cylinders. A track can be a curve turned into a ribbon. No files, no licence, and the agent can read every line.
+[09:21] One published study of a tavern scene is a useful warning, not a law of nature. The generated version was faster to assemble, and it contained about 32.8 million triangles, against 294 thousand built by hand.
+[09:36] A web game wants thousands of triangles for a prop, not millions. Set a face limit when the API has one. Expect to clean the mesh, and, if it must walk, to rig it. Humanoids can use Mixamo. Animals and vehicles usually cannot.
+[09:53] Download what you generate. Two services in this space shut down in January 2026 and took user libraries with them. A vendor account is not your asset folder.
+[10:04] And read the licence. Some open weights exclude the EU, the UK, and Korea, including for the pictures they output. The guide flags Hunyuan as one of those. If you are unsure, do not ship it.
+[10:19] For sound effects, ask for data, not a WAV you cannot diff. A small set of numbers: wave shape, start pitch, end pitch, duration. The sfxr family of tools works this way, and so can a few lines of Web Audio.
+[10:35] Browsers will not play anything until the player presses a key. Start the audio context on that first input. Keep music volume and effects volume separate.
+[10:45] For music, a public-domain loop, or a credited track, is the boring correct default. Upgrade to a paid music model later, on a plan that actually allows a commercial game. Several free tiers do not.
+
+05  ·  Which stack
+
+[10:59] An engine is friendly to an agent when four things are true. The project is text, so a diff means something. It builds from the command line. The model knows the current API. And if there is an editor, the agent can see inside it.
+[11:14] For a first game you will share as a link: plain Canvas, or Phaser 4, in 2D. Three.js in 3D. When you want a desktop file and a visual editor, Godot 4.
+[11:27] Phaser 4 has been the stable line since April 2026, and it ships its own agent skill files. Models still like to write Phaser 3. Point them at the version 4 skills.
+[11:39] Three.js is the library agents reach for in 3D. About 116,500 GitHub stars on the day of the guide. Pin one version. The API moves about once a month.
+[11:52] Godot is free, MIT licensed, and a small download, and its scenes are text. The trap is Godot 3 examples leaking into a Godot 4 project. Unity, Unreal, and Roblox can all connect an agent. They are heavier: noisy scene files, binary assets, or a game that has to stay on someone else's platform.
+[12:14] Popularity will not choose for you. In the 2026 GMTK jam, Godot led hobby entries. On Steam, Unity still leads games that actually shipped. In big studios, Unreal leads. For your first game, text files matter more than market share.
+[12:33] Three different products get called "AI makes a game". Only one of them is the path in this lesson.
+[12:40] The first is your agent, writing a repository you own. You can read it, host it, and throw any part away.
+[12:48] The second is a builder platform. Before you spend a week there, check three things. Can it generate the game? Can you download the source? Does a build run outside the platform? A lot of free plans pass only the first test.
+[13:02] The third is a world model. It predicts the next video frame from your input. It can look like a game. Underneath there is no score variable, no inventory, and no rule you can unit-test. Look away, and objects fall out of its memory.
+[13:18] The practical direction, even in the newest demos, is an engine for the rules and a network for the looks. Do not try to ship a world model as the game.
+
+06  ·  Give it eyes
+
+[13:29] A canvas is one opaque rectangle. The accessibility tree a browser agent reads is empty inside it. An agent that cannot see the game will report a bug fixed, while the bug is still on screen.
+[13:43] Give it two functions. One returns the game as text. Mode, position, coins, enemies. The other advances virtual time, stepping that fixed timestep, with no sleeps and no flaky clock.
+[13:57] A test can then hold right, advance two seconds, and assert that the hero moved. Take a screenshot at a phone width and a desktop width. Fail the test if the console logged an error.
+[14:09] Think of a ladder. Unit tests at the bottom. Then a replay. Then a headless run. Then those two hooks. Then screenshots. Then a bot that finishes a level. The top rung is a human, because only a human can say whether it is fun.
+[14:25] Push every check you can down the ladder. You keep the top.
+[14:29] The 2026 benchmarks are why. On GameDevBench, the best agent passed a little over half of realistic Godot tasks. Seeing the picture helped. Graphics tasks scored worse than gameplay tasks.
+[14:43] On a bug-finding set called GBQA, the best model found about half of the real bugs. A judge that only read the code gave full credit for features that had been deleted.
+[14:54] So the plan is ordinary, and it is not optional. The agent owns the lower rungs. You play every build. Newer models may score higher. None of them can feel your game.
+
+07  ·  One prompt
+
+[15:06] You have seen the posts. One prompt, and a game appears. Some of those posts are true. None of the well documented ones produced a game the author called good.
+[15:16] The clearest public case is Simon Willison, on 5 August 2026. Seven lines, plus two reference pictures. The agent picked Three.js, generated textures with his image key, smoke-tested three screen sizes, and made seven commits.
+[15:35] His own description of the result was: it is not a good game. The same prompt, two days later, in another agent, played better, and still needed two follow-up prompts to remove giant black spheres stuck on the characters.
+[15:49] The Codex racing demo, from February 2026, was described as one initial prompt. Under it were two skills, scripted follow-ups such as "fix the bug", and more than 7 million tokens. One human prompt. Not one response.
+[16:05] Above the waterline is the sentence people screenshot. Under it is the harness, the skills, the iterations, the model's defaults, the API keys, and your judgment.
+[16:17] Andrej Karpathy, who coined the phrase "vibe coding", scoped it to throwaway weekend projects. After several agent-built games, Willison wrote that designing something fun remains a human trait.
+[16:30] The model is fluent at the common parts. A loop. WASD. A score. Particles. A title screen. It is weak at feel, difficulty, level design, a consistent style, and the question: is this fun?
+[16:46] A short prompt reliably gives you the easy column, and a costume on the hard column. Your work is the hard column.
+[16:54] So write a spec, not a wish. Name the genre, the controls, how you win, how you lose, the art strategy, and the stack.
+[17:04] Ask for the two test hooks, and tell it to commit often, so you can roll back. Then play, and send a designer's note. The jump feels floaty. The second enemy is too fast. Not: make it better.
+[17:17] Set a token budget before you walk away. An autonomous loop will spend a fortune trying to feel something it cannot feel.
+
+08  ·  Two games
+
+[17:25] Let us build something, in the right order. First, the side-view game people mean when they say "make a Mario game". Do not make Mario.
+[17:34] Mechanics are free. Running, jumping, stomping, coins. Expression is not. The character, the name, the music, the layouts of famous levels. A 2012 Tetris case said the rules are given to the public, and the look is kept.
+[17:51] Do not put a franchise name in the prompt, and do not recreate a famous first level. Invent your own hero. For this lesson, the hero is a square named Puck.
+[18:02] The smallest version worth making. Puck runs and jumps. The ground is solid. One enemy walks. There are coins, a pit, a flag, a camera, and a restart. The guide's own demo of that scope is a few hundred lines of Canvas, and no engine.
+[18:19] Here is the order. Do not skip ahead to art. A skeleton, with the fixed timestep and a title screen. Then movement, and you play for ten minutes and tune the config yourself.
+[18:31] Then tiles and collision, with tests for corners. Then the camera. Then one feature at a time, each with a test. Then levels as data. Then, and only then, the art swap, the sounds, and an upload.
+[18:45] A small 3D racer is the same discipline in the other dimension. The car can be four boxes and four cylinders. The track is a spline. There are still no model files.
+[18:57] Use arcade formulas. Speed, steering, and a grip value that blends the velocity toward the heading. A real tyre model is a different profession. Add it only when the game needs jumps and bumps.
+[19:10] The camera matters more than the car. Sit behind and above, look ahead of the nose, and smooth the motion. A snappy camera makes people sick.
+[19:19] Count a lap only when checkpoints are passed in order. Otherwise the player, and the agent, will cut the corner and call it a win.
+[19:28] The documented Codex racer had several maps and items, and it cost those millions of tokens. Your first racer is one track, and one car that feels good.
+
+09  ·  Credit and ship
+
+[19:38] When other people will see the game, four ideas cover most of the risk. This is orientation from public sources, read in October 2026. It is not legal advice.
+[19:50] Keep a credits file from day one. Every asset and every dependency gets a row: name, author, source, licence, and date. Tell the agent never to add a non-commercial, no-derivatives, or GPL item without asking.
+[20:07] CC0 is the easy licence. Credit is polite, not required. CC BY needs the credit to be visible. A non-commercial sound, inside a game with ads or donations, is a problem.
+[20:21] In the United States, prompts alone do not make you the author of purely generated material. That is the Copyright Office, in January 2025. Your design, your levels, your edits, and your selection can be protected. A raw generated sprite is a weak thing to own.
+[20:39] You can still get into trouble if an output copies someone else's character. Keep the commit history. It is the record that a human made choices. If you might sell the game, generate on a paid plan, and keep the invoice. Some free tiers are non-commercial, or let the vendor train on your prompts.
+[20:57] On disclosure: on Steam, a coding assistant does not need to be disclosed. Art, music, voice, and store images do, and since a January 2026 rewrite, that disclosure is public. On itch.io, the field is required for asset packs, and encouraged for games.
+[21:17] Ship the first public version on itch.io. It is free to upload, you choose the cut, and an HTML5 game can be pay-what-you-want. Steam is $100, and a wait of about a month. A raw Windows executable will trip SmartScreen. A store, or itch, avoids that lecture.
+
+10  ·  Monday
+
+[21:37] Decide in this order, and let each choice narrow the next. The goal is to learn, and to finish one tiny game. The target is a browser link. The stack is Canvas or Phaser for 2D, Three.js for 3D, and Godot when you want the editor.
+[21:55] Assets go code, then a public-domain pack, then a generator. Autonomy stays in pair mode. One feature per prompt. You play after each one. Longer runs only after the test hooks exist.
+[22:08] Hand the agent the boilerplate, the tests, and the loaders. Review collision, cameras, and state machines yourself. You lead the numbers, the levels, and the question of fun.
+[22:20] Eight weeks of a few evenings is a realistic path for an experienced engineer. These ranges are the guide's judgment, not a measurement.
+[22:30] Week one. Dodge falling blocks, in a single HTML file, with the fixed step and the text hook. Week two. A platformer feel lab. Write down every number you change.
+[22:42] Week three. Three levels as data. Week four. One browser test per level. Week five. A Kenney pack, synthesised effects, and the credits file.
+[22:53] Week six. A title screen, touch controls, an itch.io page, and five real people. Week seven. The tiny racer. Week eight. Rebuild it in Godot, through an MCP server, so you have felt both a library and an editor.
+[23:10] Three red flags. You have spent more time generating art than playing. The movement code has been rewritten three times and still feels off. Stop, and turn the numbers yourself. The scope list grows every week. Cut it in half, and ship the half.
+[23:26] That is the inside of it. A game is a loop, a state machine, and a pile of tuning numbers. An agent can type all of that, and it can call out for pictures and sound.
+[23:38] It cannot feel the jump, and it cannot tell you the game is good. You play it. You say what was wrong, in specific words. Then it types again.
