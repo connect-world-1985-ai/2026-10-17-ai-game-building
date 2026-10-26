@@ -7,6 +7,7 @@
   var PAGES = [
     { group: "Start here" },
     { file: "index.html", num: "0", title: "The big picture" },
+    { file: "watch.html", num: "W", title: "Spoken lesson (24 min)" },
     { group: "Where assets come from" },
     { file: "01-assets.html", num: "1", title: "Asset taxonomy & how agents get tools" },
     { file: "02-ai-images.html", num: "2", title: "AI images: sprites, tiles, textures" },
@@ -290,6 +291,70 @@
     });
   }
 
+  function clock(t) {
+    if (!isFinite(t) || t < 0) t = 0;
+    t = Math.floor(t);
+    var m = Math.floor(t / 60);
+    var s = t % 60;
+    return m + ":" + (s < 10 ? "0" : "") + s;
+  }
+
+  /* Controls sit under the picture so burned-in captions stay readable. */
+  function initPlayers() {
+    Array.prototype.forEach.call(document.querySelectorAll("video.lesson-video"), function (video) {
+      if (video.closest(".player")) return;
+      var box = document.createElement("div");
+      box.className = "player";
+      video.parentNode.insertBefore(box, video);
+      box.appendChild(video);
+      video.controls = false;
+      video.setAttribute("controlslist", "nodownload");
+      var bar = document.createElement("div");
+      bar.className = "player-bar";
+      bar.innerHTML =
+        '<button type="button" class="play">Play</button>' +
+        '<input type="range" min="0" max="0" step="0.1" value="0" aria-label="Position in the lesson">' +
+        '<span class="clock">0:00 / 23:50</span>' +
+        '<button type="button" class="full">Full screen</button>';
+      box.appendChild(bar);
+      var play = bar.querySelector(".play");
+      var scrub = bar.querySelector("input");
+      var label = bar.querySelector(".clock");
+      var full = bar.querySelector(".full");
+      var sliding = false;
+      function paint() {
+        var d = video.duration;
+        if (isFinite(d) && Number(scrub.max) !== d) scrub.max = String(d);
+        if (!sliding) scrub.value = String(video.currentTime || 0);
+        label.textContent = clock(video.currentTime) + " / " + (isFinite(d) ? clock(d) : "23:50");
+        play.textContent = video.paused ? "Play" : "Pause";
+      }
+      play.addEventListener("click", function () {
+        if (video.paused) {
+          var p = video.play();
+          if (p && p.catch) p.catch(function () {});
+        } else video.pause();
+      });
+      scrub.addEventListener("pointerdown", function () { sliding = true; });
+      scrub.addEventListener("pointerup", function () { sliding = false; paint(); });
+      scrub.addEventListener("input", function () {
+        video.currentTime = Number(scrub.value) || 0;
+        paint();
+      });
+      full.addEventListener("click", function () {
+        var el = document.fullscreenElement ? null : box;
+        var req = el ? (box.requestFullscreen || box.webkitRequestFullscreen) : (document.exitFullscreen || document.webkitExitFullscreen);
+        if (req) req.call(el || document);
+      });
+      video.addEventListener("play", paint);
+      video.addEventListener("pause", paint);
+      video.addEventListener("timeupdate", paint);
+      video.addEventListener("loadedmetadata", paint);
+      video.addEventListener("durationchange", paint);
+      paint();
+    });
+  }
+
   function init() {
     buildChrome();
     decorateBadges();
@@ -298,6 +363,7 @@
     initTabs();
     initToggleAll();
     initCopy();
+    initPlayers();
     if (typeof window.PAGE_INIT === "function") window.PAGE_INIT();
     decorateBadges();
   }
