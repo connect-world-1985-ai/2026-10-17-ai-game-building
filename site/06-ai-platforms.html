@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI game builders and world models — AI Game Building</title>
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%231f5fbf%22/%3E%3Cpath d=%22M3 9h4M5 7v4M10 8.5h1M12 10h1%22 stroke=%22white%22 stroke-width=%221.6%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
+</head>
+<body>
+<main><div class="content">
+
+<div class="kicker">Page 6 · Engines &amp; platforms</div>
+<h1>AI game-builder platforms and "world models"</h1>
+<p class="lead">Besides using your own coding agent, you can use a platform that promises a game from a prompt, or look at neural "world models" that generate playable-looking video. This page explains what each actually produces, who owns it, and why world models are not game engines (yet).</p>
+
+<h2>Three different things called "AI game making"</h2>
+<figure class="diagram">
+<svg viewBox="0 0 760 220" role="img" aria-label="Three approaches: your agent writes code, a platform writes code inside its walls, a world model generates video frames">
+<rect x="10" y="20" width="235" height="180" rx="8" class="box-ok"/>
+<text x="127" y="46" text-anchor="middle" class="t-title">Your agent + engine</text>
+<text x="127" y="72" text-anchor="middle" class="t-muted">Claude Code / Codex / Cursor</text>
+<text x="127" y="90" text-anchor="middle" class="t-muted">writes code in your repo</text>
+<text x="127" y="120" text-anchor="middle" class="t-muted">Output: source + assets you own</text>
+<text x="127" y="138" text-anchor="middle" class="t-muted">Any engine, any host</text>
+<text x="127" y="170" text-anchor="middle" class="t-a">Focus of this site</text>
+<rect x="262" y="20" width="235" height="180" rx="8" class="box-b"/>
+<text x="380" y="46" text-anchor="middle" class="t-title">Builder platform</text>
+<text x="380" y="72" text-anchor="middle" class="t-muted">Rosebud, Astrocade, GDevelop AI,</text>
+<text x="380" y="90" text-anchor="middle" class="t-muted">Roblox Assistant, AI Studio Build</text>
+<text x="380" y="120" text-anchor="middle" class="t-muted">Output: code inside the platform;</text>
+<text x="380" y="138" text-anchor="middle" class="t-muted">export and rights vary by plan</text>
+<text x="380" y="170" text-anchor="middle" class="t-b">Check the terms</text>
+<rect x="515" y="20" width="235" height="180" rx="8" class="box-warn"/>
+<text x="632" y="46" text-anchor="middle" class="t-title">World model</text>
+<text x="632" y="72" text-anchor="middle" class="t-muted">Genie 3, Mirage, WHAMM,</text>
+<text x="632" y="90" text-anchor="middle" class="t-muted">Matrix-Game, Oasis</text>
+<text x="632" y="120" text-anchor="middle" class="t-muted">Output: a video stream that</text>
+<text x="632" y="138" text-anchor="middle" class="t-muted">reacts to input; no code, no state</text>
+<text x="632" y="170" text-anchor="middle" class="t-d">Research / concept</text>
+</svg>
+<figcaption>Only the first two produce something you can ship. The third generates pixels frame by frame.</figcaption>
+</figure>
+
+<h2>Builder platforms</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Platform</th><th>What it is</th><th>Price (2026-10-17)</th><th>Can you take the code?</th><th>Rights</th></tr></thead>
+<tbody>
+<tr><td><b><a href="https://rosebud.ai">Rosebud AI</a></b></td><td>Browser game maker: JavaScript code, art, audio from prompts</td><td>Free 8,000 credits; paid tiers by credits</td><td>Code view on Indie Dev and up; <b>download and Windows export only on Pro</b>. An independent test found export disabled on the free plan</td><td><b>Conflict:</b> the terms of service say Rosebud owns content generated from prompts, while the pricing page promises full commercial rights on paid tiers. Anonymized data may be sold to AI labs, no opt-out. <span class="ev v">Verified</span> (own pages)</td></tr>
+<tr><td><b><a href="https://gdevelop.io">GDevelop AI</a></b></td><td>Open-source (MIT) no-code engine with an AI chat and agent</td><td>Free 40 AI credits/month; chat 5 credits per message; agent 4–20 per request</td><td>Yes: an independent test got a real 114-file HTML5 ZIP that ran standalone</td><td>Editor and engine MIT. <span class="ev v">Verified</span> (pricing) / <span class="ev p">Practice</span> (test)</td></tr>
+<tr><td><b>Roblox Studio Assistant</b></td><td>In-editor agent with planning mode, playtest subagent, built-in MCP server for outside agents</td><td>Not found</td><td>Stays on Roblox</td><td>Roblox gets a perpetual licence to prompts and outputs, including for training. <span class="ev v">Verified</span></td></tr>
+<tr><td><b><a href="https://unity.com/features/ai">Unity AI tools</a></b></td><td>In-editor assistant and generators; MCP server, plugin and CLI are free</td><td>Personal: 14-day trial, then $10/month for 1,000 credits</td><td>Normal Unity project</td><td>Unity Muse is deprecated. <span class="ev v">Verified</span></td></tr>
+<tr><td><b><a href="https://ai.google.dev/gemini-api/docs/aistudio-build-mode">Google AI Studio Build</a></b></td><td>Prompt to full web app with live preview and code tab</td><td>Not retrieved</td><td>Code visible and editable</td><td>Free use may train Google's models. <span class="ev v">Verified</span> (docs)</td></tr>
+<tr><td><b>Astrocade</b></td><td>Prompt to web game with social feed, remixing, creator payouts</td><td><b>Conflict:</b> official blog says all tools free; an aggregator lists $9.99 and $19.99 tiers</td><td>Not verified</td><td>Payout claims are self-reported. <span class="ev u">Unverified</span></td></tr>
+<tr><td><b>Bezi</b></td><td>AI assistant inside Unity projects</td><td>Pro $20/month (800 credits) up to $200/month team</td><td>Your Unity project</td><td><span class="ev v">Verified</span> (pricing)</td></tr>
+<tr><td><b>Replit, Lovable, Bolt</b></td><td>General AI app builders, not game engines</td><td>Not retrieved</td><td>Code in a repo</td><td>Bolt sponsored both Vibe Jams. <span class="ev p">Practice</span></td></tr>
+</tbody></table></div>
+<p class="small muted">Sources: <a href="https://rosebud.ai/terms-of-service">Rosebud terms</a>, <a href="https://aigamescope.com/news/export-ai-generated-games/">aigamescope export test (2026-10-10)</a>, <a href="https://gdevelop.io/pricing">GDevelop pricing</a>, <a href="https://create.roblox.com/docs/en-us/studio/mcp.md">Roblox Studio MCP</a>, <a href="https://en.help.roblox.com/hc/en-us/articles/115004647846-Roblox-Terms-of-Use">Roblox terms</a>, <a href="https://discussions.unity.com/t/unity-ai-s-open-beta-now-live-for-unity-6/1718560">Unity AI beta</a>, <a href="https://www.astrocade.com/blog/why-should-you-create-games-on-astrocade">Astrocade blog</a>, <a href="https://bezi.com/pricing">Bezi</a>.</p>
+
+<div class="callout think"><span class="title">The "own your code" test</span>
+<p>The aigamescope reviewers suggest checking three separate things before investing time in a platform: can it <b>generate</b> the game, can you <b>see and download the source</b>, and does it produce a <b>playable build that runs outside the platform</b>? Many platforms pass only the first on their free plan. <span class="ev p">Practice</span></p></div>
+
+<p>A trend worth noticing: engine vendors are moving away from closed assistants towards <b>exposing the editor to your own agent over MCP</b>: Unity (free MCP and CLI), Roblox (built-in Studio MCP), Phaser Editor (experimental MCP), plus Ludo.ai and Layer.ai for assets. Roblox itself writes that one-step AI tools "can feel like shooting in the dark and often fail to truly capture a creator's original intent", which is why it added a reviewable planning mode. <a href="https://about.roblox.com/newsroom/2026/04/roblox-studio-going-agentic">Roblox newsroom, 2026-04</a> <span class="ev v">Verified</span></p>
+
+<h2>World models</h2>
+<p>A world model is a neural network that predicts the next video frame from previous frames and the player's input. It looks like a game you can steer, but nothing underneath is a game: there is no list of objects, no score variable, no rules.</p>
+<div class="table-wrap"><table data-sortable>
+<thead><tr><th data-sort>System</th><th data-sort>Date</th><th>Resolution / speed</th><th>Memory</th><th>Access (2026-10-17)</th></tr></thead>
+<tbody>
+<tr><td><b>GameNGen</b> (Google)</td><td>2024-08</td><td>DOOM at 20 fps on one TPU</td><td>About 3 s of context</td><td>Paper only. <a href="https://arxiv.org/abs/2408.14837">arXiv</a> <span class="ev v">Verified</span></td></tr>
+<tr><td><b>WHAMM</b> (Microsoft, Quake II demo)</td><td>2025-04</td><td>640×360, 10+ fps</td><td><b>0.9 s</b>: forgets objects out of view; health numbers unreliable</td><td>Copilot Labs demo (current availability not checked). <a href="https://www.microsoft.com/en-us/research/articles/whamm-real-time-world-modelling-of-interactive-environments/">Microsoft Research</a> <span class="ev v">Verified</span></td></tr>
+<tr><td><b>Genie 3</b> (Google DeepMind)</td><td>2025-08</td><td>720p, 24 fps</td><td>"Largely consistent for several minutes"; visual memory about 1 minute</td><td>Limited research preview. <a href="https://deepmind.google/blog/genie-3-a-new-frontier-for-world-models/">DeepMind</a> <span class="ev v">Verified</span></td></tr>
+<tr><td><b>Project Genie</b> (Google Labs)</td><td>2026-01-29</td><td>720p, 24 fps, <b>60-second sessions</b></td><td>Known issues: control latency, streams darken over time</td><td>Google AI Ultra subscribers ($250/month per Engadget; Google's own later post says $200). <span class="ev v">Verified</span></td></tr>
+<tr><td><b>Mirage 2</b> (Dynamics Lab)</td><td>2025-08</td><td>Browser stream</td><td>Vendor: 10+ minutes; an independent tester saw 3–5 s</td><td>Online demo. Vendor claims 200 ms latency; tester measured 600–700 ms. <span class="ev p">Practice</span></td></tr>
+<tr><td><b>Decart Oasis 2.0</b></td><td>2025-12</td><td>30 fps restyle of Minecraft</td><td>Game state stays in Minecraft</td><td>Mod plus API at $0.01–0.02 per second. <span class="ev v">Verified</span></td></tr>
+<tr><td><b>Matrix-Game 4.0</b> (Skywork)</td><td><b>2026-10-15</b></td><td>480×864; vendor reports up to 67 fps on RTX 5080 excluding video I/O</td><td>Gameplay held by a real engine</td><td>Open source, MIT repo (2,545 stars), about 44 GB of weights. <a href="https://github.com/SkyworkAI/Matrix-Game">GitHub</a> <span class="ev v">Verified</span></td></tr>
+<tr><td><b>World Labs Marble</b></td><td>2025–2026</td><td>Not video: exports persistent 3D worlds (Gaussian splats, meshes)</td><td>Persistent</td><td>Free without export; Standard $20/month; commercial rights on Pro $35/month. <span class="ev v">Verified</span></td></tr>
+</tbody></table></div>
+<p class="small muted">There is no official "Genie 4"; a widely shared post with that title describes Project Genie. <span class="ev u">Unverified</span> rumour.</p>
+
+<h3>Why a world model is not a game engine</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Property</th><th>Game code</th><th>World model</th></tr></thead>
+<tbody>
+<tr><td>State</td><td>Exact variables: position, health, inventory. Can be saved and loaded.</td><td>No authoritative state; only what was visible in the last few seconds or minutes</td></tr>
+<tr><td>Rules</td><td>Written, deterministic, testable</td><td>Learned patterns; numbers such as health drift</td></tr>
+<tr><td>Replay</td><td>Same inputs give the same run</td><td>Every run is different</td></tr>
+<tr><td>Latency</td><td>A few milliseconds per frame</td><td>A neural network pass per frame; measured 600–700 ms in one test</td></tr>
+<tr><td>Duration</td><td>Unlimited</td><td>Seconds to minutes; errors accumulate</td></tr>
+<tr><td>Hardware</td><td>Runs on a laptop or phone</td><td>Server GPUs (H100, TPU, RTX 5090-class)</td></tr>
+<tr><td>What you own</td><td>Source code and assets</td><td>A video stream (Marble: a static 3D asset)</td></tr>
+</tbody></table></div>
+<p>DeepMind explains the core difficulty: "generating an environment auto-regressively is generally a harder technical problem than generating an entire video, since inaccuracies tend to accumulate over time." Microsoft's Quake II team described the experience as "playing the model as opposed to playing the game". <span class="ev v">Verified</span></p>
+
+<div class="callout key"><span class="title">Where the field is going</span>
+<p>The newest open release, Matrix-Game 4.0 (2026-10-15), keeps gameplay, physics and input in an <b>executable game engine</b> and uses the neural network only to <b>re-render low-poly frames</b> into detailed visuals; its model card says the "neural output does not change collision or gameplay." Decart's Oasis 2.0 is likewise a restyle layer over an unchanged Minecraft. The practical direction is "engine for rules, neural network for looks", not "world model replaces game code". <span class="ev v">Verified</span> (both primary sources) / <span class="ev i">Inference</span> (trend)</p></div>
+
+<p>For an engineer making a game today, world models are worth watching and fun to try, but they are not a way to ship a game. Use them for concept visualization. <span class="ev i">Inference</span></p>
+
+<p class="page-meta">Page written 2026-10-17. Matrix-Game star count re-checked by the author that day.</p>
+</div></main>
+<script src="assets/js/site.js"></script>
+</body>
+</html>

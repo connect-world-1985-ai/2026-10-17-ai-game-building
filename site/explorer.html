@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Explorer: engines, tools and asset sources — AI Game Building</title>
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%231f5fbf%22/%3E%3Cpath d=%22M3 9h4M5 7v4M10 8.5h1M12 10h1%22 stroke=%22white%22 stroke-width=%221.6%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
+</head>
+<body>
+<main><div class="content">
+
+<div class="kicker">Explorer · Engines &amp; platforms</div>
+<h1>Explorer: engines, libraries, tools and asset sources</h1>
+<p class="lead">Every engine, library, agent bridge, AI service and asset library mentioned on this site, in one table. Filter by category, search any column, sort by clicking a column header.</p>
+
+<div class="toolbar">
+<input type="search" id="ex-search" placeholder="Search name, licence, cost, use…" aria-label="Search the explorer">
+<label class="small muted">Agent fit at least
+<select id="ex-agent" aria-label="Minimum agent fit">
+<option value="0">any</option><option value="1">●</option><option value="2">●●</option><option value="3">●●●</option>
+</select></label>
+<span class="count" id="ex-count"></span>
+</div>
+<div class="toolbar" id="ex-chips" role="group" aria-label="Category filter"></div>
+
+<div class="table-wrap"><table data-sortable class="compact" id="ex-table">
+<thead><tr><th>Name</th><th>Category</th><th>Licence</th><th>Cost</th><th>GitHub stars</th><th>Agent fit</th><th>Windows / setup</th><th>Best for</th><th>Evidence</th></tr></thead>
+<tbody id="ex-body"><tr><td colspan="9" class="muted">The explorer needs JavaScript.</td></tr></tbody>
+</table></div>
+
+<h2>How to read the columns</h2>
+<dl class="kv">
+<dt>GitHub stars</dt><dd>From the GitHub API on 2026-10-17. "—" means closed source, a hosted service, or a project not hosted on GitHub. Stars measure attention, not quality or usage.</dd>
+<dt>Agent fit</dt><dd>The author's 0–3 rating of how well a coding agent can work with it: text files, command-line use, an API or MCP server, and how well current models know it. It is a judgment, not a measurement. <span class="ev i">Inference</span></dd>
+<dt>Cost and licence</dt><dd>As stated on the vendor or licence page on 2026-10-17. Prices change often; check before paying.</dd>
+<dt>Evidence</dt><dd>Label for the factual columns (licence, cost, stars). The "Best for" text is the author's summary.</dd>
+</dl>
+
+<p class="small muted">Sources: the per-page tables on pages 1–6 and the research notes listed on the <a href="sources.html">sources page</a>. Data lives in <code>assets/js/data-explorer.js</code> as a plain JavaScript array, so you can edit or extend it without a build step.</p>
+
+<p class="page-meta">Data snapshot 2026-10-17.</p>
+</div></main>
+<script src="assets/js/site.js"></script>
+<script src="assets/js/data-explorer.js"></script>
+<script>
+window.PAGE_INIT = function () {
+  renderExplorer({ tbody: "ex-body", search: "ex-search", chips: "ex-chips", count: "ex-count", agent: "ex-agent" });
+};
+</script>
+</body>
+</html>

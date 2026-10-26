@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The truth behind "one short prompt" games — AI Game Building</title>
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%231f5fbf%22/%3E%3Cpath d=%22M3 9h4M5 7v4M10 8.5h1M12 10h1%22 stroke=%22white%22 stroke-width=%221.6%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
+</head>
+<body>
+<main><div class="content">
+
+<div class="kicker">Page 11 · Agents in practice</div>
+<h1>The truth behind "one short prompt" games</h1>
+<p class="lead">Social media is full of games "made with one prompt". Some of these claims are real and well documented; most leave out the harness, the follow-up turns, the expertise of the person driving, or the fact that the game is not fun. This page classifies the public examples and shows what a short prompt really hides.</p>
+
+<div class="callout key"><span class="title">Short answer</span>
+<p>Yes: a current coding agent can turn one short prompt into a playable small web game, and the best-documented example proves it. No: none of the documented cases produced a game that the author or an independent reviewer called good to play. The prompt gets you a first playable; design, feel and polish still come from people. <span class="ev v">Verified</span> (examples below) / <span class="ev i">Inference</span> (generalisation)</p></div>
+
+<h2>The examples, classified</h2>
+<p>Labels: <b>Verified</b> means prompt, code and result are public and I checked them; <b>Practice</b> means plausible and partly reproducible, usually a vendor demo with public artifacts; <b>Promotional</b> means a vendor or host claim without independent evidence; <b>Unverified</b> means a single secondary source.</p>
+<div class="toolbar"><input type="search" data-filter-for="claims" placeholder="Filter examples…" aria-label="Filter examples"></div>
+<div class="table-wrap"><table id="claims" data-sortable class="compact">
+<thead><tr><th>Example</th><th>Date</th><th>What was claimed</th><th>What the evidence shows</th><th>Label</th></tr></thead>
+<tbody>
+<tr><td><a href="https://simonwillison.net/2026/Aug/5/raccoon-heist/">Raccoon Heist</a> (Simon Willison; Claude Fable 5 in Claude Code for web)</td><td data-v="2026-08-05">2026-08-05</td><td>One prompt → 3D browser game</td><td>Verbatim 7-line prompt, two reference images, public repo and transcript. The agent picked Three.js, generated textures with <code>gpt-image-2</code> using the author's API key, smoke-tested on three viewports with Playwright, made 7 commits. Author: "it's not a good game".</td><td><span class="ev v">Verified</span></td></tr>
+<tr><td><a href="https://simonwillison.net/2026/Aug/7/moonlight-mayhem/">Moonlight &amp; Mayhem</a> (same prompt; Codex Desktop, GPT-5.6 Sol Ultra)</td><td data-v="2026-08-07">2026-08-07</td><td>Same prompt, better game</td><td>"A much better game", but it needed two follow-up prompts to fix giant black spheres on the characters.</td><td><span class="ev v">Verified</span></td></tr>
+<tr><td><a href="https://openai.com/index/introducing-the-codex-app/">Codex app racing game</a> (OpenAI)</td><td data-v="2026-02-02">2026-02-02</td><td>Kart racer with 8 maps and items from "one initial user prompt"</td><td>Two skills (image generation and <code>develop-web-game</code>), scripted generic follow-ups such as "fix the bug" or "improve the game", more than 7 million tokens. Prompt, skills and iterations published. No independent quality review found.</td><td><span class="ev p">Practice</span></td></tr>
+<tr><td><a href="https://blog.google/products-and-platforms/products/gemini/gemini-3/">Gemini 3 spaceship game</a> (Google)</td><td data-v="2025-11">Gemini 3 launch</td><td>Retro 3D shooter "with a single prompt"</td><td>The prompt, published in the <a href="https://www.youtube.com/watch?v=qOL49DYWr7s">video description</a>, is a design spec of more than 500 words: stack, style, controls, effects.</td><td><span class="ev p">Practice</span></td></tr>
+<tr><td><a href="https://levels.io/fly-pieter-com-vibecoded-flight-simulator">fly.pieter.com</a> (Pieter Levels; Cursor, Three.js)</td><td data-v="2025-02-22">2025-02-22</td><td>Flight sim in about 3 hours; "$1M ARR in just 17 days"</td><td>First version in about 3 hours, then days of follow-ups (multiplayer, server, payments). The author has 10+ years of production development. The $1M is a 17-day run-rate of one-off sales; he later filed the project under "not sustainable".</td><td><span class="ev p">Practice</span> (build) / <span class="ev u" title="Promotional: a vendor or host claim without independent evidence">Promotional</span> (revenue)</td></tr>
+<tr><td><a href="https://levels.io/vibe-jam-2026-winners-quality">Vibe Jam 2026</a> (Cursor Vibe Jam)</td><td data-v="2026-04-01">2026-04 to 05</td><td>At least 90% AI-written code; "close to production quality"</td><td>Rules and winners verified ($25k first prize to a capybara delivery game). Judge Tim Soret: not the top 20% of game developers, "but a 3rd year student yes". No audit of the 90% rule found; the 945-entry count comes from one third-party blog.</td><td><span class="ev v">Verified</span> (rules) / <span class="ev u" title="Promotional: a vendor or host claim without independent evidence">Promotional</span> (quality)</td></tr>
+<tr><td>Vibe Jam 2025</td><td data-v="2025-04-23">2025-03 to 04</td><td>At least 80% AI-written code</td><td>1,170 entries; winners announced 2025-04-23. The host noted most entrants "never made a game before" and that "vibe coding still has its limitations".</td><td><span class="ev v">Verified</span></td></tr>
+<tr><td>Claude Fable 5 launch demos (Anthropic)</td><td data-v="2026-06-09">2026-06-09</td><td>Playable games from single prompts</td><td>A <a href="https://techcrunch.com/2026/06/09/anthropics-fable-5-can-make-weirdly-fun-video-games-with-the-click-of-a-button/">TechCrunch hands-on</a> found them "weirdly fun", with graphics that "aren't great" and little gameplay. Prompts not published.</td><td><span class="ev u" title="Promotional: a vendor or host claim without independent evidence">Promotional</span></td></tr>
+<tr><td>RF-Zero live build (GPT-5.6 Sol)</td><td data-v="2026-07-10">2026-07-10</td><td>Multiplayer racer in about 30 minutes</td><td>Third-party summary of a livestream; the prompt named a backend framework; many live feedback rounds; crashes and low frame rate reported.</td><td><span class="ev u">Unverified</span></td></tr>
+<tr><td>xAI game studio</td><td data-v="2025-10-06">2025-10-06</td><td>"A great AI-generated game before the end of next year"</td><td>Nothing playable at that scope as of 2026-10-17; the target later moved to 2027.</td><td><span class="ev u" title="Promotional: a vendor or host claim without independent evidence">Promotional</span></td></tr>
+<tr><td>Roblox Assistant adoption</td><td data-v="2026-04">2026-04</td><td>44% of top creators use Assistant or MCP</td><td>Self-reported by Roblox with a footnoted method.</td><td><span class="ev u" title="Promotional: a vendor or host claim without independent evidence">Promotional</span></td></tr>
+</tbody></table></div>
+<p class="small muted">Sources and full quotes in research note R4; Willison's posts, the Steam and OpenAI pages and key repositories were re-checked by the main agent on 2026-10-17. "Promotional" uses the Unverified badge colour.</p>
+
+<h2>What a "short prompt" hides</h2>
+<figure class="diagram">
+<svg viewBox="0 0 760 320" role="img" aria-label="Iceberg: the visible short prompt above the waterline; below it the harness, skills, iterations, model defaults, human expertise and distribution">
+<path d="M330 30 L430 30 L470 90 L290 90 Z" class="box-accent"/>
+<text x="380" y="68" text-anchor="middle" class="t-title">"Make a 3D game"</text>
+<path d="M20 100 H740" class="line-accent" stroke-dasharray="6 5"/>
+<text x="736" y="94" text-anchor="end" class="t-muted">what you see on social media</text>
+<path d="M290 104 L470 104 L640 300 L120 300 Z" class="box"/>
+<text x="380" y="132" text-anchor="middle" class="t-a">Harness: agent with file, shell, browser and test tools</text>
+<text x="380" y="158" text-anchor="middle" class="t-b">Skills and templates: stack, structure, test contract</text>
+<text x="380" y="184" text-anchor="middle" class="t-c">Iterations: autonomous loops, scripted "improve it" turns, fix prompts</text>
+<text x="380" y="210" text-anchor="middle" class="t-d">Model defaults: Three.js, single file, genre clichés</text>
+<text x="380" y="236" text-anchor="middle" class="t-a">API keys and paid services: images, audio, hosting</text>
+<text x="380" y="262" text-anchor="middle" class="t-b">Human expertise: choosing, judging, steering</text>
+<text x="380" y="288" text-anchor="middle" class="t-c">Distribution and audience</text>
+</svg>
+<figcaption>The visible prompt is the smallest part. Everything under the waterline is either supplied by the tool, by the person, or by a lot of tokens.</figcaption>
+</figure>
+
+<div class="table-wrap"><table>
+<thead><tr><th>Case</th><th>Human prompts</th><th>Scaffolding</th><th>Iterations</th><th>Quality evidence</th></tr></thead>
+<tbody>
+<tr><td>Raccoon Heist</td><td>1 (7 lines + 2 images)</td><td>Claude Code web, GitHub Pages preview, the user's image API key, Playwright pre-installed</td><td>7 commits, autonomous</td><td>Author: "not a good game"</td></tr>
+<tr><td>Moonlight &amp; Mayhem</td><td>1 + 2 fixes</td><td>Codex Desktop, sub-agents, <code>gpt-image-2</code></td><td>Autonomous</td><td>Author: "a much better game"</td></tr>
+<tr><td>Codex racer</td><td>1 (long)</td><td>Two skills; scripted generic re-prompts</td><td>7M+ tokens</td><td>None independent</td></tr>
+<tr><td>Gemini 3 spaceship</td><td>1 (500+ word spec)</td><td>AI Studio app, Three.js from a CDN</td><td>1</td><td>Vendor claim</td></tr>
+<tr><td>fly.pieter.com</td><td>Many, over days</td><td>Cursor; experienced developer; a second model for the server</td><td>Dozens or more</td><td>Live and popular; not sustainable by the author's account</td></tr>
+</tbody></table></div>
+<p class="small muted"><span class="ev v">Verified</span> / <span class="ev p">Practice</span> per row, as in the table above.</p>
+
+<h2>What the creators themselves say</h2>
+<ul>
+<li>Andrej Karpathy, who coined "vibe coding" on 2025-02-02, scoped it to "throwaway weekend projects". <span class="ev v">Verified</span></li>
+<li>Simon Willison, after several agent-built games: "They've all been deeply disappointing from a gameplay perspective — it turns out designing games that are fun remains a uniquely human trait." <span class="ev v">Verified</span></li>
+<li>Benchmarks agree from a different angle: agents solve about half of realistic game-dev tasks and find about half of real bugs (<a href="10-testing.html#what-benchmarks-say-agents-still-miss">page 10</a>). <span class="ev v">Verified</span></li>
+</ul>
+
+<h2>Why the first playable is easy and the good game is hard</h2>
+<div class="cards">
+<div class="card a"><h4>Easy for a model</h4><p>Common patterns with millions of examples: a game loop, Three.js scene setup, WASD movement, a score counter, a title screen, procedural shapes and particle effects.</p></div>
+<div class="card b"><h4>Hard for a model</h4><p>Feel and tuning (needs playing), difficulty curves, level design, readable visual style across assets, "is this fun?", bugs that only appear on real phones.</p></div>
+<div class="card c"><h4>So the short prompt…</h4><p>…reliably produces the easy column and a plausible-looking default for the hard column. Your work is the hard column.</p></div>
+</div>
+<p class="small muted"><span class="ev i">Inference</span> from the examples above and the GameDevBench split (gameplay tasks 51.4% vs 2D-graphics tasks 33.0%).</p>
+
+<h2>Getting the most out of a short prompt</h2>
+<ol class="stepper">
+<li><b>Write a spec, not a wish.</b> The vendor demos that look best (Gemini 3, the Codex racer) used long prompts or skills. Name the genre, controls, win and lose rules, art strategy, target devices and stack.</li>
+<li><b>Give the agent eyes.</b> Ask for the two test hooks and Playwright screenshots on desktop and phone sizes (page 10).</li>
+<li><b>Tell it to work independently and commit often</b>, as Willison did, so you can roll back.</li>
+<li><b>Play the result, then send specific notes:</b> "jump feels floaty; enemies too fast in level 2", not "make it better".</li>
+<li><b>Set a budget.</b> Autonomous loops can burn millions of tokens; check your plan's limits before leaving an agent running.</li>
+</ol>
+<p class="small muted"><span class="ev p">Practice</span>, drawn from the documented cases. Ready-to-copy starter prompts are on <a href="14-hands-on.html">page 14</a>.</p>
+
+<p class="page-meta">Page written 2026-10-17.</p>
+</div></main>
+<script src="assets/js/site.js"></script>
+</body>
+</html>

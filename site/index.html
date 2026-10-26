@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How AI agents build games — AI Game Building</title>
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%231f5fbf%22/%3E%3Cpath d=%22M3 9h4M5 7v4M10 8.5h1M12 10h1%22 stroke=%22white%22 stroke-width=%221.6%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
+</head>
+<body>
+<main><div class="content">
+
+<div class="kicker">Page 0 · Start here</div>
+<h1>How AI agents build 2D and 3D games</h1>
+<p class="lead">An evidence-based guide for an experienced Windows engineer who has never made a game. It covers where game assets come from, which engines agents work well with, the fundamentals every game needs, two worked examples, how agents test games, what "one prompt" games really involve, and how to publish legally.</p>
+
+<div class="callout key"><span class="title">The answer in seven points</span>
+<ol>
+<li><b>A coding agent can build a playable small game from one short prompt today.</b> The best-documented case is a 7-line prompt that produced a 3D browser game with tests and seven commits. Its author called the result "not a good game". <span class="ev v">Verified</span> (<a href="11-one-prompt-truth.html">page 11</a>)</li>
+<li><b>A language model alone writes code and text, nothing else.</b> It can also "draw" with code (Canvas, SVG, procedural meshes, synthesised sound). Raster images, 3D models from images, music and voices need external tools, reached through an API script, a CLI or an MCP server. <span class="ev v">Verified</span> (<a href="01-assets.html">page 1</a>)</li>
+<li><b>The cheapest good path is code-drawn art first, then free CC0 packs, then AI art only for a unique look.</b> AI art's real cost is consistency and cleanup, not the price per image. <span class="ev i">Inference</span> (<a href="02-ai-images.html">pages 2–4</a>)</li>
+<li><b>For agents, text-based stacks win:</b> plain Canvas or Phaser 4 for 2D on the web, Three.js for 3D on the web, Godot 4 for desktop. Unity, Unreal and Roblox now offer official MCP access, with more friction. <span class="ev i">Inference</span> (<a href="05-engines.html">page 5</a>)</li>
+<li><b>Agents must be given eyes.</b> Expose game state as text, control time, take screenshots. Even then, benchmarks show agents solve about half of realistic game-dev tasks and find about half of real bugs. <span class="ev v">Verified</span> (<a href="10-testing.html">page 10</a>)</li>
+<li><b>Fun is still your job.</b> Movement feel, level design and "is this fun?" need a human playing the game. <span class="ev p">Practice</span> (<a href="07-fundamentals.html">page 7</a>)</li>
+<li><b>Legal basics are manageable:</b> use original characters (mechanics are free, Nintendo's expression is not), keep a CREDITS.md, disclose AI content where stores ask, and expect raw AI output to have weak copyright protection. <span class="ev v">Verified</span> (<a href="12-publishing-legal.html">page 12</a>)</li>
+</ol></div>
+
+<h2>How an agent builds a game</h2>
+<figure class="diagram">
+<svg viewBox="0 0 760 300" role="img" aria-label="Pipeline: you write a spec, the agent writes code and calls tools for assets, tests the game, you play and give feedback, then publish">
+<defs><marker id="ah0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker></defs>
+<rect x="10" y="110" width="120" height="80" rx="8" class="box-accent"/><text x="70" y="145" text-anchor="middle" class="t-title">You</text><text x="70" y="165" text-anchor="middle" class="t-muted">spec + taste</text>
+<rect x="170" y="110" width="140" height="80" rx="8" class="box-b"/><text x="240" y="140" text-anchor="middle" class="t-title">Coding agent</text><text x="240" y="160" text-anchor="middle" class="t-muted">LLM + files,</text><text x="240" y="176" text-anchor="middle" class="t-muted">shell, tools</text>
+<rect x="350" y="20" width="180" height="70" rx="8" class="box-a"/><text x="440" y="48" text-anchor="middle" class="t-title">Game code</text><text x="440" y="68" text-anchor="middle" class="t-muted">engine or library</text>
+<rect x="350" y="115" width="180" height="70" rx="8" class="box-c"/><text x="440" y="143" text-anchor="middle" class="t-title">Assets</text><text x="440" y="163" text-anchor="middle" class="t-muted">code-drawn · CC0 · AI tools</text>
+<rect x="350" y="210" width="180" height="70" rx="8" class="box-d"/><text x="440" y="238" text-anchor="middle" class="t-title">Tests</text><text x="440" y="258" text-anchor="middle" class="t-muted">hooks · Playwright · headless</text>
+<rect x="570" y="70" width="180" height="70" rx="8" class="box-ok"/><text x="660" y="98" text-anchor="middle" class="t-title">Playable build</text><text x="660" y="118" text-anchor="middle" class="t-muted">browser or desktop</text>
+<rect x="570" y="180" width="180" height="70" rx="8" class="box-ok"/><text x="660" y="208" text-anchor="middle" class="t-title">Publish</text><text x="660" y="228" text-anchor="middle" class="t-muted">itch.io · Steam · stores</text>
+<path d="M130 150H168" class="line" marker-end="url(#ah0)"/>
+<path d="M310 135L348 60" class="line" marker-end="url(#ah0)"/><path d="M310 150H348" class="line" marker-end="url(#ah0)"/><path d="M310 165L348 240" class="line" marker-end="url(#ah0)"/>
+<path d="M530 55L568 95" class="line" marker-end="url(#ah0)"/><path d="M530 150L568 115" class="line" marker-end="url(#ah0)"/>
+<path d="M530 245L568 125" class="line-loop" marker-end="url(#ah0)"/>
+<path d="M660 140V178" class="line" marker-end="url(#ah0)"/>
+<path d="M600 70 C 560 0, 120 0, 70 108" class="line-accent" fill="none" marker-end="url(#ah0)"/>
+<text x="330" y="14" text-anchor="middle" class="t-muted">you play it, write specific notes, repeat</text>
+</svg>
+<figcaption>The agent does most of the typing. You set the spec, choose assets, play every build and decide what "better" means.</figcaption>
+</figure>
+
+<h2>Reading routes</h2>
+<div class="cards">
+<div class="card a"><h4>15 minutes</h4><p>This page, <a href="11-one-prompt-truth.html">the one-prompt truth</a>, and <a href="13-decision.html">the decision framework</a>.</p></div>
+<div class="card b"><h4>Build something this weekend</h4><p><a href="07-fundamentals.html">Fundamentals</a> (try the toys), then <a href="14-hands-on.html">starter projects</a> 1 and 2.</p></div>
+<div class="card c"><h4>Planning a real project</h4><p>Pages <a href="01-assets.html">1–6</a> for tools, the <a href="explorer.html">explorer</a>, a worked example (<a href="08-platformer.html">platformer</a> or <a href="09-racing.html">racer</a>), then <a href="12-publishing-legal.html">publishing and legal</a>.</p></div>
+</div>
+
+<h2>What's on the site</h2>
+<div class="table-wrap"><table class="compact">
+<thead><tr><th>Section</th><th>Pages</th><th>Playable demos</th></tr></thead>
+<tbody>
+<tr><td>Where assets come from</td><td><a href="01-assets.html">1 Asset taxonomy and tool access</a> · <a href="02-ai-images.html">2 AI images</a> · <a href="03-ai-3d.html">3 AI 3D</a> · <a href="04-audio.html">4 Audio</a></td><td>Art-strategy switcher (page 1), sound-effect synthesiser (page 4)</td></tr>
+<tr><td>Engines and platforms</td><td><a href="05-engines.html">5 Engines and libraries</a> · <a href="06-ai-platforms.html">6 AI builders and world models</a> · <a href="explorer.html">Explorer</a></td><td>Sortable, filterable explorer of about 75 tools</td></tr>
+<tr><td>How games work</td><td><a href="07-fundamentals.html">7 Fundamentals</a></td><td>Game-loop toy, collision toy, game-feel platformer</td></tr>
+<tr><td>Worked examples</td><td><a href="08-platformer.html">8 Platformer</a> · <a href="09-racing.html">9 3D racer</a></td><td>Tiny platformer, mini 3D racer (needs internet for Three.js)</td></tr>
+<tr><td>Agents in practice</td><td><a href="10-testing.html">10 Testing</a> · <a href="11-one-prompt-truth.html">11 One-prompt truth</a> · <a href="12-publishing-legal.html">12 Publishing and legal</a></td><td></td></tr>
+<tr><td>Your path</td><td><a href="13-decision.html">13 Decisions and learning path</a> · <a href="14-hands-on.html">14 Starter projects</a> · <a href="15-next.html">15 Next discussion</a></td><td>Stack chooser (page 13)</td></tr>
+<tr><td>Reference</td><td><a href="glossary.html">Glossary</a> · <a href="sources.html">Sources and method</a></td><td></td></tr>
+</tbody></table></div>
+
+<h2>How to read the evidence labels</h2>
+<div class="table-wrap"><table class="compact">
+<thead><tr><th>Label</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><span class="ev v">Verified</span></td><td>Checked against a primary source: official docs, a repository, a paper, a court document, or the author's own post.</td></tr>
+<tr><td><span class="ev p">Practice</span></td><td>Widely documented practitioner practice, or a vendor demo with public artifacts that is plausible but not independently reproduced.</td></tr>
+<tr><td><span class="ev i">Inference</span></td><td>The author's reasoning from the evidence. Time estimates and recommendations carry this label.</td></tr>
+<tr><td><span class="ev u">Unverified</span></td><td>Reported or marketed but not confirmed; includes vendor and host claims marked "Promotional".</td></tr>
+<tr><td><span class="ev x">Experimental</span></td><td>Works in demos or research but is not yet dependable for shipping.</td></tr>
+</tbody></table></div>
+<p class="small muted">All numbers are dated; GitHub stars come from the GitHub API on 2026-10-17. Method and sources are on the <a href="sources.html">sources page</a>. The site works offline from <code>file://</code>; only the 3D racer needs an internet connection to load Three.js.</p>
+
+<p class="page-meta">Research and writing completed 2026-10-17.</p>
+</div></main>
+<script src="assets/js/site.js"></script>
+</body>
+</html>

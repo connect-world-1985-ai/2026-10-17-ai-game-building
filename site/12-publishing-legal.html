@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Publishing and legal — AI Game Building</title>
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%231f5fbf%22/%3E%3Cpath d=%22M3 9h4M5 7v4M10 8.5h1M12 10h1%22 stroke=%22white%22 stroke-width=%221.6%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
+</head>
+<body>
+<main><div class="content">
+
+<div class="kicker">Page 12 · Agents in practice</div>
+<h1>Publishing and legal</h1>
+<p class="lead">Where to put a finished game, what it costs, what Windows does to unsigned programs, how to handle asset licences, what the law says about AI-generated content, and how to make a "Mario-like" game without a letter from Nintendo's lawyers.</p>
+
+<div class="callout warn"><span class="title">Not legal advice</span>
+<p>This page summarises public sources as of 2026-10-17 for orientation. Law and store rules change quickly and differ by country. For anything you sell, check the current terms and, if money is involved, ask a lawyer or tax adviser.</p></div>
+
+<h2>Where to publish</h2>
+<div data-tabs>
+<div class="tabs" role="tablist"><button data-tab="web" aria-selected="true">Web hosts and itch.io</button><button data-tab="portals">Web game portals</button><button data-tab="stores">Steam and app stores</button></div>
+
+<div class="tab-panel" data-panel="web">
+<div class="table-wrap"><table class="compact">
+<thead><tr><th>Option</th><th>Cost and split</th><th>Limits and rules</th></tr></thead>
+<tbody>
+<tr><td><a href="https://itch.io/docs/creators/html5">itch.io</a> (recommended first home)</td><td>Free; you choose the revenue share, default 10%; payment fees on top. HTML5 games can only take donations or "pay what you want", not a required price</td><td>Upload a ZIP with <code>index.html</code>; at most 1,000 files, 500 MB extracted, 200 MB per file. SharedArrayBuffer (needed for Godot threads) is an opt-in checkbox. Non-US sellers face 30% US withholding until they complete the tax interview.</td></tr>
+<tr><td><a href="https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits">GitHub Pages</a></td><td>Free</td><td>1 GB site; not intended for commercial use</td></tr>
+<tr><td><a href="https://developers.cloudflare.com/pages/platform/limits/">Cloudflare Pages</a></td><td>Free tier</td><td>25 MiB per file</td></tr>
+<tr><td><a href="https://netlify.com/pricing">Netlify</a></td><td>Free tier of 300 credits per month</td><td>Credit-based plan since 2025-2026; watch bandwidth</td></tr>
+<tr><td><a href="https://vercel.com/docs/plans/hobby">Vercel Hobby</a></td><td>Free</td><td>Non-commercial use only</td></tr>
+</tbody></table></div>
+<p class="small muted">Vendor docs, 2026-10-17. <span class="ev v">Verified</span></p>
+</div>
+
+<div class="tab-panel" data-panel="portals" hidden>
+<div class="table-wrap"><table class="compact">
+<thead><tr><th>Portal</th><th>Money</th><th>Rules worth knowing</th></tr></thead>
+<tbody>
+<tr><td><a href="https://developers.poki.com/guide/sdk-overview">Poki</a></td><td>Ad revenue: 50/50 on traffic Poki brings, 100% to you on traffic you bring</td><td>Poki SDK required; no in-app purchases; quality review</td></tr>
+<tr><td><a href="https://docs.crazygames.com/requirements/intro/">CrazyGames</a></td><td>Ad revenue share after Full Launch; +50% for exclusivity</td><td>Basic Launch first (7–21 day test, no monetisation), then Full Launch with SDK. Base share percentage not found in the docs.</td></tr>
+<tr><td><a href="https://www.newgrounds.com/wiki/help-information/terms-of-use/art-guidelines">Newgrounds</a></td><td>Ad revenue programme</td><td>Explicitly bans Mario sprites and similar ripped assets; AI-generated art banned from the Art Portal</td></tr>
+</tbody></table></div>
+<p class="small muted">Portal developer docs, 2026-10-17. <span class="ev v">Verified</span>; CrazyGames base share <span class="ev u">Unverified</span>.</p>
+</div>
+
+<div class="tab-panel" data-panel="stores" hidden>
+<div class="table-wrap"><table class="compact">
+<thead><tr><th>Store</th><th>Fee</th><th>Store's cut</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td><a href="https://partner.steamgames.com/steamdirect">Steam</a></td><td>$100 per game, returned once it earns $1,000</td><td>30%, then 25% above $10M, 20% above $50M</td><td>Wait between paying and release: 30 days on the Steam Direct page, 21 days in the onboarding doc (a conflict; plan for 30). Store page "coming soon" for at least 2 weeks. No ad-funded games.</td></tr>
+<tr><td><a href="https://learn.microsoft.com/en-us/windows/apps/publish/whats-new-individual-developer">Microsoft Store</a></td><td>Free for individual developers</td><td>12% for games</td><td>Store-signed apps show no SmartScreen warning. Individual accounts are for non-business activity.</td></tr>
+<tr><td>Google Play</td><td>$25 once</td><td>15–30%</td><td>AI-generated content apps need in-app reporting</td></tr>
+<tr><td><a href="https://developer.apple.com/app-store/small-business-program/">Apple App Store</a></td><td>$99 per year</td><td>15% (small business) or 30%</td><td>Guideline 4.7 covers HTML5 mini-games since a 2025-11 update</td></tr>
+</tbody></table></div>
+<p class="small muted">Store docs, 2026-10-17. <span class="ev v">Verified</span>; Steam tiers from press coverage of Valve's 2018 announcement (the agreement is behind a login) <span class="ev p">Practice</span>.</p>
+</div>
+</div>
+
+<h2>Shipping a Windows program</h2>
+<ul>
+<li><b>SmartScreen will warn your players.</b> A new or unsigned <code>.exe</code> shows a "Windows protected your PC" warning until it builds reputation. Since 2024, EV certificates no longer skip this. Windows 11 Smart App Control can block unsigned programs outright. <span class="ev v">Verified</span> (<a href="https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/smartscreen-reputation">Microsoft Learn</a>)</li>
+<li><b>Signing options:</b> Azure Artifact Signing (formerly Trusted Signing) costs about $9.99 per month, but individuals qualify only in the USA and Canada; organisations in the EU and UK qualify with 3+ years of tax history. For an EU individual the fallback is an OV certificate at roughly $150–500 per year. <span class="ev v">Verified</span></li>
+<li><b>Practical route for a hobbyist in the EU:</b> ship through itch.io, Steam or the Microsoft Store and avoid buying a certificate; or ship unsigned and tell players to click "More info → Run anyway". <span class="ev p">Practice</span></li>
+<li><b>Wrapping a web game:</b> Electron is the common choice for Steam (large but proven); Tauri produces much smaller apps. Godot and Unity export Windows builds directly. <span class="ev p">Practice</span></li>
+<li><b>Engine notices:</b> Godot is MIT-licensed, so you must include its licence text; Unity Personal is free up to $200,000 revenue plus funding in 12 months, and the Runtime Fee was cancelled in 2024. <span class="ev v">Verified</span></li>
+</ul>
+
+<h2>Asset and code licences</h2>
+<div class="table-wrap"><table class="compact">
+<thead><tr><th>Licence</th><th>Free game</th><th>Paid closed-source game</th><th>What you must do</th></tr></thead>
+<tbody>
+<tr><td><b>CC0</b> (Kenney, Poly Haven, many OpenGameArt items)</td><td>Yes</td><td>Yes</td><td>Nothing; credit is polite</td></tr>
+<tr><td><b>CC BY</b></td><td>Yes</td><td>Yes</td><td>Credit in the game and store page (title, author, source, licence)</td></tr>
+<tr><td><b>CC BY-SA</b></td><td>Yes</td><td>Avoid</td><td>Adaptations must use the same licence, which is hard to square with a closed game</td></tr>
+<tr><td><b>CC BY-NC</b></td><td>Yes, if truly non-commercial</td><td>No</td><td>Ads or donations can count as commercial: avoid</td></tr>
+<tr><td><b>CC BY-ND</b></td><td>Rarely</td><td>No</td><td>No modifications; cropping or recolouring a sprite is already a modification</td></tr>
+<tr><td><b>OFL</b> fonts</td><td>Yes</td><td>Yes</td><td>Bundle with the licence; do not sell the font alone</td></tr>
+<tr><td><b>MIT / Apache</b> code</td><td>Yes</td><td>Yes</td><td>Keep the notice</td></tr>
+<tr><td><b>GPL / AGPL</b> code</td><td>Yes</td><td>Usually no</td><td>Linking can oblige you to publish your source under GPL. Example: the Strudel music library used by one game-agent kit is AGPL-3.0.</td></tr>
+</tbody></table></div>
+<p class="small muted"><a href="https://creativecommons.org/share-your-work/cclicenses/">Creative Commons licence pages</a>, <a href="https://openfontlicense.org/open-font-license-official-text/">OFL</a>; attribution format from <a href="https://wiki.creativecommons.org/wiki/Best_practices_for_attribution">CC best practices</a> ("TASL"). <span class="ev v">Verified</span> (licence terms) / <span class="ev p">Practice</span> (fit for games)</p>
+
+<div class="callout key"><span class="title">Tell the agent to keep a CREDITS.md from day one</span>
+<p>Put this in the agent's project rules: "Record the licence of every dependency and asset you add in CREDITS.md. Do not add GPL, AGPL, NC or ND items without asking me."</p>
+<pre><code># CREDITS.md
+| Asset | Author | Source | Licence | Changes |
+|---|---|---|---|---|
+| Pixel Platformer tiles | Kenney | https://kenney.nl/assets/pixel-platformer | CC0 1.0 | none |
+| hero.png | me, from PixelLab (paid plan, 2026-10-20) | prompt in docs/prompts.md | AI output, see note | recoloured, cleaned |
+| jump.wav | generated with jsfxr | in-game code | - | - |
+| Godot Engine | Godot contributors | https://godotengine.org | MIT | - |</code></pre></div>
+
+<h2>Who owns AI-generated content?</h2>
+<div class="table-wrap"><table class="compact">
+<thead><tr><th>Where</th><th>Position as of 2026-10-17</th><th>Evidence</th></tr></thead>
+<tbody>
+<tr><td>USA</td><td>The <a href="https://copyright.gov/ai/Copyright-and-Artificial-Intelligence-Part-2-Copyrightability-Report.pdf">Copyright Office report of 2025-01-29</a>: purely AI-generated material is not protected, and "prompts do not alone provide sufficient control". Human selection, arrangement and edits can be protected. <i>Thaler v. Perlmutter</i>: Supreme Court declined the case on 2026-03-02, so human authorship stays required. <i>Zarya of the Dawn</i>: the text and arrangement kept protection, the Midjourney images did not.</td><td><span class="ev v">Verified</span></td></tr>
+<tr><td>Germany / EU</td><td>Protection needs a human "own intellectual creation". AG München (reported February 2026) refused protection for AI-generated logos regardless of prompt effort. Training: OLG Hamburg (<i>Kneschke v. LAION</i>, 2025-12-10) applied the text-and-data-mining exception to building a dataset; LG München I (<i>GEMA v. OpenAI</i>, 2025-11-11) held memorised lyrics in a model infringe, under appeal. The first EU Court of Justice case (<i>Like Company v. Google</i>) has an Advocate General opinion reported for 2026-11-03.</td><td><span class="ev v">Verified</span> (court releases) / AG date <span class="ev p">Practice</span> (one paywalled report)</td></tr>
+<tr><td>UK</td><td>The law (s.9(3)) still gives computer-generated works a 50-year right, but the government proposed removing it in its 2026-03-18 report. <i>Getty v. Stability</i> (2025-11-04): the model weights are not an infringing copy; appeal permitted.</td><td><span class="ev v">Verified</span></td></tr>
+<tr><td>China</td><td><i>Li v. Liu</i> (Beijing Internet Court, 2023) protected an AI image because of documented human choices; later courts refused protection for simple prompts without process records.</td><td><span class="ev v">Verified</span> / <span class="ev p">Practice</span></td></tr>
+</tbody></table></div>
+<div class="callout think"><span class="title">What this means for an agent-built game</span>
+<p>Your game as a whole has protectable human parts: design, levels you author, text you write, selection and arrangement, your edits. Raw AI sprites, music and models are probably not yours to enforce, so others can copy them. You can still be liable if an output reproduces someone else's protected work. Keep a record of your human contribution (commit history, design notes, edits). <span class="ev i">Inference</span> from the sources above.</p></div>
+
+<h3>Provider terms that change your rights</h3>
+<div class="table-wrap"><table class="compact">
+<thead><tr><th>Provider</th><th>What the terms say</th></tr></thead>
+<tbody>
+<tr><td><a href="https://openai.com/policies/row-terms-of-use/">OpenAI</a></td><td>You own output as far as the law allows; you may not claim output was human-made when it was not</td></tr>
+<tr><td><a href="https://ai.google.dev/gemini-api/terms">Google Gemini API</a></td><td>No ownership claim; on <b>unpaid</b> use (AI Studio, free quota) Google may use prompts and outputs to improve its products</td></tr>
+<tr><td><a href="https://docs.midjourney.com/hc/en-us/articles/32083055291277-Terms-of-Service">Midjourney</a></td><td>You own assets, but companies with more than $1M yearly revenue need Pro or Mega; Midjourney gets a perpetual licence</td></tr>
+<tr><td><a href="https://stability.ai/license">Stability AI</a></td><td>Free commercial use under $1M revenue, with registration</td></tr>
+<tr><td><a href="https://help.meshy.ai/en/articles/16102098-can-i-use-meshy-assets-commercially">Meshy</a></td><td>Free plan: output under CC BY 4.0, so you must credit Meshy; paid plans: private ownership</td></tr>
+<tr><td>Tripo</td><td>Free plan: commercial use not granted (its pages conflict); treat as non-commercial</td></tr>
+<tr><td><a href="https://en.help.roblox.com/hc/en-us/articles/115004647846-Roblox-Terms-of-Use">Roblox</a></td><td>Perpetual licence to your prompts and outputs, including for model training</td></tr>
+</tbody></table></div>
+<p class="small muted">Terms as read on 2026-10-17. <span class="ev v">Verified</span>. <b>Free-tier trap:</b> if you might sell the game, generate on a paid plan and keep the invoice with the asset. <span class="ev p">Practice</span></p>
+
+<h2>AI disclosure rules</h2>
+<div class="table-wrap"><table class="compact">
+<thead><tr><th>Where</th><th>Rule</th></tr></thead>
+<tbody>
+<tr><td><a href="https://partner.steamgames.com/doc/gettingstarted/contentsurvey">Steam</a></td><td>Content survey distinguishes <b>pre-generated</b> AI content (made during development, judged like other content) from <b>live-generated</b> (made while the game runs; you must describe guardrails). Since a January 2026 rewrite, AI tools used for efficiency such as coding assistants need no disclosure; AI content that ships, including store art, does, and the disclosure is shown publicly on the store page.</td></tr>
+<tr><td><a href="https://itch.io/t/4309690/generative-ai-disclosure-tagging">itch.io</a></td><td>AI disclosure field: mandatory for asset packs, optional but encouraged for games; undisclosed AI asset packs are removed from browse pages</td></tr>
+<tr><td>Epic Games Store</td><td>No disclosure requirement for games; the Fab asset marketplace requires a "CreatedWithAI" tag</td></tr>
+<tr><td>Google Play, Apple, Roblox</td><td>Apps that generate AI content at runtime need moderation and user reporting; Roblox requires a visible notice when players talk to AI</td></tr>
+<tr><td><a href="https://artificialintelligenceact.eu/article/50/">EU AI Act, Article 50</a></td><td>Applies from 2026-08-02 (Regulation 2026/1744 gives systems already on the market until 2026-12-02 for machine-readable marking). People must be told when they interact with an AI unless it is obvious; deepfakes must be disclosed, in a light-touch way for creative works. The Commission's 2026-07-20 guidelines treat NPCs in single-player games as an obvious case and say game environments are not deepfakes. Purely personal, non-professional use is outside "deployer".</td></tr>
+</tbody></table></div>
+<p class="small muted"><span class="ev v">Verified</span> (Steam survey, itch, AI Act text and regulation); Steam January 2026 rewrite and the guideline details from secondary reports and the guideline PDF <span class="ev p">Practice</span>.</p>
+<p><b>In practice:</b> AI-written code needs no disclosure on Steam; AI sprites, music, voices, text or store art do; an LLM-driven NPC is live-generated and needs guardrails and, in the EU, usually a notice. <span class="ev p">Practice</span></p>
+<p><b>Germany:</b> a website offering your game that is not purely private needs an Impressum (§5 DDG, §18 MStV), even without profit intent. <span class="ev v">Verified</span> (state media authorities)</p>
+
+<h2>Clone, trademark and fan-game risk</h2>
+<div class="cards">
+<div class="card a"><h4>Free to use</h4><p>Mechanics and rules: running, jumping, stomping, coins, falling blocks, match-3. <i>Tetris v. Xio</i> (2012): "Tetris Holding has given the rules of its game to the public domain, but has kept the rights to its expression."</p></div>
+<div class="card d"><h4>Protected</h4><p>Expression: characters, art, names, music, sound effects, specific level layouts, distinctive look and feel. <i>Spry Fox v. LOLApps</i> (2012): copying a game's object hierarchy, theme and overall expression was enough for the claim to proceed; it settled with the clone's IP handed over.</p></div>
+<div class="card c"><h4>Also possible</h4><p>Patents on specific mechanics. Nintendo and The Pokémon Company sued Pocketpair over Palworld in 2024 on patents, not copyright; the case is pending.</p></div>
+</div>
+<p><b>Nintendo's track record:</b> DMCA takedowns of fan games that used its characters (AM2R and Pokémon Uranium in 2016, more than 500 fan games on Game Jolt in 2016), takedowns of the Super Mario 64 PC port binaries in 2020, and a $2.4M settlement with the Yuzu emulator makers in 2024. <span class="ev v">Verified</span> (court documents and press)</p>
+
+<h3>Clone-safe checklist</h3>
+<ol class="stepper">
+<li>Original hero, enemies, world, names, UI, music and levels. No ripped sprites, sounds, fonts or level layouts.</li>
+<li>Never prompt an AI model with franchise names ("Mario-style plumber") or living artists' names; reject outputs that look familiar; reverse-image-search key art. The <i>Disney/Universal v. Midjourney</i> case is about outputs that depict studio characters.</li>
+<li>Coin a distinctive title and search it in <a href="https://www.euipn.org/en/tools/TMview">TMview</a> and the USPTO database before you buy a domain or make a store page.</li>
+<li>Do not market your game as "X-like" using someone else's trademark.</li>
+<li>Fan games: assume a takedown, never monetise, never publish files containing the original's assets.</li>
+</ol>
+<p class="small muted">Court and agency sources listed in research note R5. <span class="ev v">Verified</span> (cases) / <span class="ev p">Practice</span> (checklist)</p>
+
+<h2>Release checklist</h2>
+<ul>
+<li>CREDITS.md complete; credits visible in the game and on the store page; MIT and OFL notices included.</li>
+<li>AI-asset log: tool, plan, date, prompt, licence terms for each generated asset.</li>
+<li>Store AI disclosure filled in honestly (Steam survey, itch.io field).</li>
+<li>Title cleared in trademark databases; no franchise names or look-alike logos.</li>
+<li>Runtime AI (if any): moderation, report button, visible AI notice.</li>
+<li>Money: itch.io tax interview; Steam fee and wait; Impressum on your own site; ask a tax adviser before real income.</li>
+</ul>
+<p class="small muted">Not covered here: GDPR and privacy for analytics, age ratings, EU consumer and VAT rules, and China's game licensing regime.</p>
+
+<p class="page-meta">Page written 2026-10-17. Sources: research note R5, with key pages re-checked by the main agent.</p>
+</div></main>
+<script src="assets/js/site.js"></script>
+</body>
+</html>

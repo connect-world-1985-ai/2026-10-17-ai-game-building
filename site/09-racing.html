@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Worked example: a 3D car racer — AI Game Building</title>
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%231f5fbf%22/%3E%3Cpath d=%22M3 9h4M5 7v4M10 8.5h1M12 10h1%22 stroke=%22white%22 stroke-width=%221.6%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
+</head>
+<body>
+<main><div class="content">
+
+<div class="kicker">Page 9 · Worked examples</div>
+<h1>Worked example: a 3D car racer</h1>
+<p class="lead">A 3D racer is a step up from a platformer: a third dimension, a camera that can make players sick, vehicle physics, and 3D models instead of sprites. This page shows how to keep it small enough to finish, and includes a tiny racer built entirely from code.</p>
+
+<h2>Play the mini racer</h2>
+<p>About 170 lines of JavaScript on top of Three.js. The track is a closed spline turned into a road mesh; the car is four boxes and four cylinders; there are no model or texture files. Physics is "arcade": speed, steering and grip are simple formulas, not a simulation. <span class="ev v">Verified</span> (our demo)</p>
+<div id="demo-race"><p class="muted">The 3D demo needs JavaScript and an internet connection for Three.js.</p></div>
+<p class="small muted">Three.js r149 is loaded from the jsDelivr CDN with a pinned version and an integrity hash. If it cannot load, the box above explains why; the rest of the page works offline.</p>
+
+<h2>Scope: the smallest version worth making</h2>
+<div class="cards">
+<div class="card a"><h4>Must have</h4><p>One car with good arcade handling; one closed track; a chase camera; checkpoints and lap timing; a "best lap" display; off-road slowdown; restart.</p></div>
+<div class="card b"><h4>Next</h4><p>Two or three AI opponents following a racing line; a start countdown; position display; engine sound that follows speed; a minimap.</p></div>
+<div class="card c"><h4>Later</h4><p>More tracks, car choice, drifting and boost, ghost replay of your best lap, gamepad support, collisions between cars.</p></div>
+</div>
+
+<h2>Architecture</h2>
+<figure class="diagram">
+<svg viewBox="0 0 760 270" role="img" aria-label="Racer architecture: track data, car controller, AI drivers, race manager, camera rig and renderer">
+<defs><marker id="ah9" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker></defs>
+<rect x="10" y="20" width="170" height="100" rx="8" class="box-a"/><text x="95" y="48" text-anchor="middle" class="t-title">Track data</text><text x="95" y="70" text-anchor="middle" class="t-muted">spline control points</text><text x="95" y="88" text-anchor="middle" class="t-muted">checkpoints, racing line</text><text x="95" y="106" text-anchor="middle" class="t-muted">width, props</text>
+<rect x="10" y="150" width="170" height="100" rx="8" class="box-a"/><text x="95" y="178" text-anchor="middle" class="t-title">Input</text><text x="95" y="200" text-anchor="middle" class="t-muted">throttle, brake, steer</text><text x="95" y="218" text-anchor="middle" class="t-muted">keys, pad, touch</text><text x="95" y="236" text-anchor="middle" class="t-muted">(AI uses same interface)</text>
+<rect x="230" y="20" width="290" height="230" rx="8" class="box-b"/>
+<text x="375" y="46" text-anchor="middle" class="t-title">Simulation (fixed step)</text>
+<rect x="250" y="60" width="120" height="80" rx="6" class="box"/><text x="310" y="88" text-anchor="middle" class="t-title">Car controller</text><text x="310" y="108" text-anchor="middle" class="t-muted">arcade or</text><text x="310" y="124" text-anchor="middle" class="t-muted">raycast vehicle</text>
+<rect x="380" y="60" width="120" height="80" rx="6" class="box"/><text x="440" y="88" text-anchor="middle" class="t-title">AI drivers</text><text x="440" y="108" text-anchor="middle" class="t-muted">steer toward a</text><text x="440" y="124" text-anchor="middle" class="t-muted">look-ahead point</text>
+<rect x="250" y="150" width="250" height="80" rx="6" class="box"/><text x="375" y="176" text-anchor="middle" class="t-title">Race manager</text><text x="375" y="196" text-anchor="middle" class="t-muted">checkpoints in order → laps → positions</text><text x="375" y="214" text-anchor="middle" class="t-muted">countdown, finish, best lap</text>
+<rect x="570" y="20" width="180" height="100" rx="8" class="box-ok"/><text x="660" y="50" text-anchor="middle" class="t-title">Camera rig</text><text x="660" y="72" text-anchor="middle" class="t-muted">smoothed chase</text><text x="660" y="90" text-anchor="middle" class="t-muted">speed-based FOV</text>
+<rect x="570" y="150" width="180" height="100" rx="8" class="box-ok"/><text x="660" y="180" text-anchor="middle" class="t-title">Renderer, audio, HUD</text><text x="660" y="202" text-anchor="middle" class="t-muted">Three.js scene</text><text x="660" y="220" text-anchor="middle" class="t-muted">engine pitch, lap times</text>
+<path d="M180 70H228" class="line" marker-end="url(#ah9)"/><path d="M180 200H228" class="line" marker-end="url(#ah9)"/>
+<path d="M520 70H568" class="line" marker-end="url(#ah9)"/><path d="M520 200H568" class="line" marker-end="url(#ah9)"/>
+</svg>
+<figcaption>Give AI drivers the same input interface as the player. Then you can test the car with an AI driver, and replay a recorded lap for regression tests (page 10).</figcaption>
+</figure>
+
+<h2>Arcade or simulation physics?</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Approach</th><th>How it works</th><th>Good for</th><th>Cost</th></tr></thead>
+<tbody>
+<tr><td><b>Arcade formulas</b> (the demo)</td><td>Position along a heading; speed changes with throttle and drag; steering turns the heading; "grip" blends velocity toward the heading</td><td>Kart and casual racers; the first version of anything</td><td>No physics library; easy to tune and test; fully deterministic</td></tr>
+<tr><td><b>Raycast vehicle</b></td><td>One rigid body for the chassis; each wheel is a ray to the ground with spring, damper and friction</td><td>Bumps, jumps, ramps, car-to-car collisions</td><td>Many parameters to tune; flipping and jitter; needs a physics engine</td></tr>
+<tr><td><b>Full simulation</b></td><td>Tyre models (for example Pacejka curves), drivetrain, weight transfer</td><td>Sim racers</td><td>Expert work; out of scope for a first game</td></tr>
+</tbody></table></div>
+<p>Raycast vehicles exist in the common engines: <code>RaycastVehicle</code> in <a href="https://github.com/pmndrs/cannon-es">cannon-es</a> (no commits since 2024-01), a ray-cast vehicle controller in <a href="https://rapier.rs">Rapier</a> (the JS bindings repo was archived in 2026 and merged into the main Rapier repo), and <a href="https://docs.godotengine.org/en/stable/classes/class_vehiclebody3d.html"><code>VehicleBody3D</code></a> in Godot. Unity uses <code>WheelCollider</code>. <span class="ev v">Verified</span> (2026-10-17)</p>
+<p><b>Recommendation:</b> start with arcade formulas. Add a raycast vehicle only when the game needs jumps or bumps; arcade handling is what most players of casual racers expect anyway. <span class="ev i">Inference</span></p>
+
+<h2>Engine choice</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>For</th><th>Against</th></tr></thead>
+<tbody>
+<tr><td><b>Three.js</b> + optional Rapier (recommended for web)</td><td>116,535 stars; the default 3D library for agents; runs in any browser; a single HTML page can hold the whole game</td><td>It is a renderer, not an engine: you add physics, audio, input, loading yourself. Its API changes between monthly releases, so pin a version.</td></tr>
+<tr><td><b>Babylon.js</b></td><td>Full engine in one package (physics, audio, GUI); official MCP servers for its editors</td><td>Less training data in models than Three.js</td></tr>
+<tr><td><b>Godot 4</b> (recommended for desktop)</td><td>Editor, <code>VehicleBody3D</code>, import pipeline for glTF, Windows and web export; plain-text scenes</td><td>Agent needs an MCP or careful file edits; web export is heavier than Three.js</td></tr>
+<tr><td><b>Unity</b></td><td>Most racing tutorials and asset-store car kits; official MCP through the Unity CLI</td><td>Large install; binary assets and GUIDs make agent edits fragile; Personal tier limit $200K</td></tr>
+</tbody></table></div>
+<p class="small muted">Stars from the GitHub API 2026-10-17; details on <a href="05-engines.html">page 5</a>. <span class="ev v">Verified</span> (facts) / <span class="ev i">Inference</span> (recommendation)</p>
+
+<h2>Where the 3D assets come from</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Asset</th><th>Simplest</th><th>Free library</th><th>AI-generated</th></tr></thead>
+<tbody>
+<tr><td>Track</td><td>Spline → road mesh in code (the demo)</td><td><a href="https://kenney.nl/assets/racing-kit">Kenney Racing Kit</a>: 110 CC0 track pieces and props</td><td>Not recommended: AI 3D models are poor at clean, tileable road geometry</td></tr>
+<tr><td>Cars</td><td>Boxes and cylinders (the demo)</td><td><a href="https://kenney.nl/assets/car-kit">Kenney Car Kit</a>: 45 CC0 vehicles; Quaternius packs</td><td>Text- or image-to-3D (Meshy, Tripo, Hunyuan3D): usable as props, but expect messy topology, merged wheels, and no rig. You must split wheels from the body yourself.</td></tr>
+<tr><td>Scenery</td><td>Instanced cones and boxes</td><td>Kenney, Quaternius, Poly Haven (textures, HDRIs)</td><td>Fine for background props seen from far away</td></tr>
+<tr><td>Sky and lighting</td><td>Colour background, fog, hemisphere light</td><td>Poly Haven HDRIs (CC0)</td><td>Image model for a skybox; check the seams</td></tr>
+</tbody></table></div>
+<p class="small muted">Kenney counts and CC0 licence from the kit pages (2026-10-17). AI 3D quality limits and the lack of auto-rigging for vehicles are on <a href="03-ai-3d.html">page 3</a>. <span class="ev v">Verified</span> / <span class="ev p">Practice</span></p>
+
+<h2>Build order with an agent</h2>
+<ol class="stepper">
+<li><b>Scene.</b> "Single page, Three.js pinned to one version, a ground plane, lights, fog, a resize handler, a fixed-step loop and a debug overlay."</li>
+<li><b>Car on flat ground.</b> Arcade controller with every number in a config object. Drive it, tune it yourself.</li>
+<li><b>Chase camera.</b> Smoothed follow behind and above, look slightly ahead. Test on a big screen and a phone; fast camera rotation causes motion sickness.</li>
+<li><b>Track.</b> Closed spline → road ribbon, edge markers, off-road slowdown measured by distance to the spline.</li>
+<li><b>Race logic.</b> Checkpoints that must be passed in order (otherwise players cut corners), lap counter, lap timer, best lap.</li>
+<li><b>AI opponents.</b> Steer toward a point a few metres ahead on the racing line; vary speed per opponent. Unit-test that an AI car finishes a lap.</li>
+<li><b>Assets and audio.</b> Swap in Kenney cars and track pieces; engine sound whose pitch follows speed.</li>
+<li><b>Polish and ship.</b> Countdown, results screen, touch controls, performance check on a low-end laptop, itch.io build.</li>
+</ol>
+<p class="small muted"><span class="ev i">Inference</span>, following the practice on pages 7 and 10.</p>
+
+<h2>The hard parts</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Problem</th><th>Typical symptom</th><th>Fix</th></tr></thead>
+<tbody>
+<tr><td>Handling feel</td><td>Car feels like ice, or turns like a tank</td><td>Speed-dependent steering, grip that blends velocity toward heading, play and tune by hand</td></tr>
+<tr><td>Camera</td><td>Jitter, clipping into walls, nausea</td><td>Smooth with exponential damping in the fixed step; limit rotation speed; raise the camera at speed</td></tr>
+<tr><td>Corner cutting</td><td>Laps counted without driving the track</td><td>Ordered checkpoints; reset to the last checkpoint if off-track too long</td></tr>
+<tr><td>Physics instability (raycast vehicle)</td><td>Car flips, bounces or vibrates at rest</td><td>Lower the centre of mass, tune suspension, smaller physics step; or stay arcade</td></tr>
+<tr><td>Agent can't see the game</td><td>"Fixed" bugs that are not fixed</td><td>Text state hook, screenshots, scripted laps (page 10); headless WebGL may render black, so test headed</td></tr>
+<tr><td>Performance</td><td>Stutter on laptops and phones</td><td>Instancing for repeated props, few lights, shadows off at first, cap pixel ratio at 2</td></tr>
+</tbody></table></div>
+<p class="small muted"><span class="ev p">Practice</span>. The headless-WebGL caveat comes from Playwright testing reports (page 10).</p>
+
+<h2>What one well-documented agent run produced</h2>
+<p>At the Codex app launch on 2026-02-02, OpenAI said Codex built a Three.js voxel kart racer with "different racers, eight maps, and items" from "one initial user prompt", using an image-generation skill and a web-game skill, and "more than 7 million tokens". It published the prompt, the skills and earlier iterations. The follow-up turns were automatic, scripted continuations, so this is "one human prompt", not "one model response". <span class="ev v">Verified</span> (that OpenAI says this) / <span class="ev p">Practice</span> (reproducibility). See <a href="11-one-prompt-truth.html">page 11</a>.</p>
+
+<h2>Time and cost, honestly</h2>
+<p>No study measures this. These are the author's estimates for an experienced engineer new to games, working with a current coding agent. <span class="ev i">Inference</span></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Milestone</th><th>Estimate</th><th>What eats the time</th></tr></thead>
+<tbody>
+<tr><td>Car driving on a procedural track (like the demo)</td><td>2–4 hours</td><td>Handling and camera tuning</td></tr>
+<tr><td>"Must have" scope with laps and good feel</td><td>2–4 days</td><td>Feel, checkpoints, edge cases</td></tr>
+<tr><td>AI opponents, CC0 models, sound, shipped</td><td>2–3 weeks of evenings</td><td>AI driving, asset import and scale, performance</td></tr>
+<tr><td>AI-generated cars instead of a kit</td><td>Add several days</td><td>Cleanup in Blender: split wheels, fix pivots, reduce triangles</td></tr>
+</tbody></table></div>
+<p>Money: $0 beyond your coding-agent plan if you use code-drawn or CC0 assets. AI 3D generation costs are listed on <a href="03-ai-3d.html">page 3</a>; the OpenAI example shows that long autonomous runs can burn millions of tokens, so set a budget before you let an agent run unattended. <span class="ev i">Inference</span></p>
+
+<p class="page-meta">Page written 2026-10-17.</p>
+</div></main>
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js" integrity="sha384-RRHfJ6w1mTlKUBMYT/hvnRiOzEB/vyRV3DrQOseb6oYfvaZSfdd0byS4bHps0k2R" crossorigin="anonymous"></script>
+<script src="assets/js/site.js"></script>
+<script src="assets/js/demos.js"></script>
+<script>
+GameDemos.racing(document.getElementById("demo-race"), { id: "race", title: "Mini 3D racer (Three.js, everything procedural)", note: "Click the scene, then drive: arrow keys or WASD. Drive off the road and you slow down. Lap time is in the top left." });
+</script>
+</body>
+</html>

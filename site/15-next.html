@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Directions for our next discussion — AI Game Building</title>
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%231f5fbf%22/%3E%3Cpath d=%22M3 9h4M5 7v4M10 8.5h1M12 10h1%22 stroke=%22white%22 stroke-width=%221.6%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
+</head>
+<body>
+<main><div class="content">
+
+<div class="kicker">Page 15 · Your path</div>
+<h1>Five directions for our next discussion</h1>
+<p class="lead">This research answers "how do AI agents build games today?". Each direction below is a follow-up worth a session of its own: what we would decide, what we would build or measure, and what is still unknown.</p>
+
+<div class="cards">
+<div class="card a"><h4>1 · Build starter project 2 or 4 together</h4>
+<p><b>Why:</b> the fastest way to calibrate everything on this site is to watch an agent build a game and measure it.</p>
+<p><b>We would:</b> run one prompt from page 14 in Cursor, log time, tokens, follow-up count and bugs found by tests versus by playing.</p>
+<p><b>Unknown today:</b> no published study measures agent-assisted game time for beginners; our own numbers would replace the estimates on pages 8 and 9.</p></div>
+
+<div class="card b"><h4>2 · A reusable "game agent kit" for our machines</h4>
+<p><b>Why:</b> the strongest one-prompt results used skills and templates (page 11).</p>
+<p><b>We would:</b> assemble a Cursor rules and skills folder: stack choice, the two test hooks, Playwright smoke tests, CREDITS.md rules, a licence guard; compare against awesome-gamedev-agent-skills and game-creator.</p>
+<p><b>Unknown today:</b> how much a kit improves results versus a bare prompt; nobody has published a controlled comparison.</p></div>
+
+<div class="card c"><h4>3 · A consistent AI art pipeline, tested</h4>
+<p><b>Why:</b> art consistency is the biggest gap between "playable" and "looks like a game" (pages 2 and 3).</p>
+<p><b>We would:</b> generate one character with idle, run and jump animations using two routes (a pixel-native tool and a general image model plus cleanup script), and score frame drift, palette, grid alignment, cost and time.</p>
+<p><b>Unknown today:</b> current tools change monthly; vendor demos are not independent evidence.</p></div>
+
+<div class="card d"><h4>4 · Agent playtesting beyond smoke tests</h4>
+<p><b>Why:</b> benchmarks show agents find about half of real bugs (page 10).</p>
+<p><b>We would:</b> seed ten known bugs into a small game and compare a state-hook bot, a vision-based Playwright agent and a human tester.</p>
+<p><b>Unknown today:</b> whether newer models close the GBQA and GameDevBench gaps; those papers used early-2026 models.</p></div>
+
+<div class="card a"><h4>5 · Runtime AI in games, and the rules around it</h4>
+<p><b>Why:</b> everything here is AI at build time. LLM-driven characters and world models (page 6) are a different product with different obligations.</p>
+<p><b>We would:</b> prototype one LLM-driven NPC with guardrails; review Steam's live-generated rules, EU AI Act Article 50 and per-player cost.</p>
+<p><b>Unknown today:</b> the EU Court of Justice opinion in <i>Like Company v. Google</i> (reported for 2026-11-03), and how regulators treat monetised hobby projects.</p></div>
+</div>
+
+<h2>Open questions this research could not settle</h2>
+<ul>
+<li>Whether OpenAI's <code>develop-web-game</code> skill will return to the <code>main</code> branch, or has been moved or retired.</li>
+<li>Independent quality reviews of the vendor-run one-prompt games (Codex racer, Fable 5 demos).</li>
+<li>The real entry count and enforcement method of Vibe Jam 2026.</li>
+<li>CrazyGames' base revenue share; Steam's 21- versus 30-day wait (conflicting official pages).</li>
+<li>Whether AI-written source code (as opposed to images or text) is treated differently for copyright; no source addressed it directly.</li>
+<li>How fast world models (Genie, Matrix-Game and similar) become usable for shipped games rather than demos.</li>
+</ul>
+<p class="small muted">Full list of gaps and conflicts on the <a href="sources.html#known-gaps-and-conflicts">sources page</a>.</p>
+
+<p class="page-meta">Page written 2026-10-17.</p>
+</div></main>
+<script src="assets/js/site.js"></script>
+</body>
+</html>

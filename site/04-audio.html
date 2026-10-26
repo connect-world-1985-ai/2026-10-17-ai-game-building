@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Game audio: code, AI and free libraries — AI Game Building</title>
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%231f5fbf%22/%3E%3Cpath d=%22M3 9h4M5 7v4M10 8.5h1M12 10h1%22 stroke=%22white%22 stroke-width=%221.6%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
+</head>
+<body>
+<main><div class="content">
+
+<div class="kicker">Page 4 · Where assets come from</div>
+<h1>Audio: sound effects from code, music from somewhere else</h1>
+<p class="lead">Sound is the asset type where a coding agent is strongest on its own: retro sound effects are just a few oscillators and an envelope, which is ordinary code. Music is the opposite. This page shows the code route with a playable toy, then the AI services and free libraries, with the licence traps.</p>
+
+<h2>Sound effects from code</h2>
+<p>The classic tool is <b>sfxr</b> (DrPetter, 2007): a random generator for "jump", "coin", "laser" and "explosion" sounds built from a single oscillator, a pitch slide, noise and a volume envelope. Its descendants run in the browser and are small enough to paste into a game. An agent can either write a WebAudio synth directly or use one of these libraries. <span class="ev v">Verified</span></p>
+<div class="table-wrap"><table data-sortable>
+<thead><tr><th data-sort>Tool</th><th data-sort>What</th><th data-sort>Licence</th><th data-sort>Stars</th></tr></thead>
+<tbody>
+<tr><td><a href="https://github.com/KilledByAPixel/ZzFX">ZzFX</a></td><td>Under 1 KB sound synth; a sound is an array of about 20 numbers</td><td>MIT</td><td class="n">803</td></tr>
+<tr><td><a href="https://github.com/grumdrig/jsfxr">jsfxr</a> / <a href="https://jsfxr.me">jsfxr.me</a></td><td>Browser port of sfxr with a web UI</td><td>Unlicense</td><td class="n">283</td></tr>
+<tr><td><a href="https://sfbgames.itch.io/chiptone">ChipTone</a></td><td>sfxr-style tool with more controls</td><td>Sounds you make are <b>CC0</b></td><td>—</td></tr>
+<tr><td><a href="https://github.com/Tonejs/Tone.js">Tone.js</a></td><td>Synths, sequencing and effects for interactive music</td><td>MIT</td><td class="n">14,778</td></tr>
+<tr><td><a href="https://github.com/goldfire/howler.js">Howler.js</a></td><td>Playback of audio files: sprites, spatial sound, fallbacks</td><td>MIT</td><td class="n">25,393</td></tr>
+</tbody></table></div>
+<p class="small muted">Stars from the GitHub API on 2026-10-17 (ZzFX re-checked by the author). The licences cover the tools' code; only ChipTone explicitly states the licence of the <i>sounds</i> you create. <span class="ev v">Verified</span></p>
+
+<h3>Try it: a procedural sound-effect generator</h3>
+<p>This toy is about 80 lines of WebAudio inside this site. Each sound is a small parameter object (wave type, start and end pitch, duration, noise, filter), exactly the kind of data an agent can write, tweak and store as JSON. Press a preset, then "Mutate" to get variations.</p>
+<div id="demo-sfx"><p class="muted">Interactive demo needs JavaScript.</p></div>
+<p>Why this matters for agents: a sound defined as data can be reviewed in a diff, regenerated deterministically and tuned with words ("make the jump shorter and higher"). A WAV file cannot. The limit is style: these sounds are retro by nature, and realistic footsteps or a rich orchestral hit need samples or an AI model. <span class="ev i">Inference</span></p>
+<div class="callout"><span class="title">Browser rule</span>
+<p>Browsers block audio until the user interacts with the page, so create or resume the <code>AudioContext</code> on the first click or key press. <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Best_practices">MDN: Web Audio best practices</a> <span class="ev v">Verified</span></p></div>
+
+<h2>Music</h2>
+<p>A language model can write a simple chiptune loop with Tone.js or a tracker-style pattern, which is fine for jam games. Memorable music is a different skill. The realistic options are free libraries, AI music services, or a composer. <span class="ev i">Inference</span></p>
+
+<h2>AI sound and music services</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Service</th><th>Price (2026-10-17)</th><th>Commercial use</th><th>Agent access</th></tr></thead>
+<tbody>
+<tr><td><b>ElevenLabs Sound Effects</b> (text to sound, 0.1–30 s, loopable)</td><td>API about $0.12 per minute; or 200 credits per generation on a subscription (Starter $6)</td><td>Paid plans: royalty-free commercial. Free plan: non-commercial</td><td>REST API. The local MCP server was <b>archived in August 2026</b>; the hosted MCP manages voice agents, not sound effects. <span class="ev v">Verified</span></td></tr>
+<tr><td><b>ElevenLabs Eleven Music</b></td><td>API $0.15 per minute</td><td>Paid plans; film, TV and "large studio" games need Enterprise</td><td>REST <span class="ev v">Verified</span></td></tr>
+<tr><td><b>Stable Audio 3</b></td><td>API 8 credits ($0.08); small and medium models have open weights</td><td>Stability Community licence: free under $1M revenue, registration required</td><td>REST, fal, Replicate, local <span class="ev v">Verified</span></td></tr>
+<tr><td><b>Google Lyria 3</b></td><td>Clip (30 s) $0.04; Pro (full song) $0.08</td><td>Ownership terms not read; outputs carry a SynthID watermark</td><td>Gemini API <span class="ev v">Verified</span> (price) / <span class="ev u">Unverified</span> (ownership)</td></tr>
+<tr><td><b>Suno</b></td><td>Subscription</td><td>Paid-plan downloads usable commercially (terms from 2026-09-03)</td><td><b>No public API</b>; only "exploring" one. Not a pipeline option. <span class="ev v">Verified</span></td></tr>
+<tr><td><b>Udio</b></td><td>—</td><td><b>Downloads disabled</b> since the October 2025 Universal Music deal</td><td>None <span class="ev v">Verified</span></td></tr>
+<tr><td><b>Meta MusicGen / AudioGen</b></td><td>Free, self-hosted</td><td><b>Weights are CC-BY-NC</b>: not for a commercial game</td><td>Local <span class="ev v">Verified</span></td></tr>
+</tbody></table></div>
+<p class="small muted">Sources: <a href="https://elevenlabs.io/pricing/api">ElevenLabs API pricing</a>, <a href="https://github.com/elevenlabs/elevenlabs-mcp">archived ElevenLabs MCP</a>, <a href="https://platform.stability.ai/pricing">Stability pricing</a>, <a href="https://ai.google.dev/gemini-api/docs/pricing">Gemini pricing</a>, <a href="https://about.suno.com/blog/suno-updates-tos">Suno ToS update</a>, <a href="https://help.udio.com/en/articles/12683565-changes-associated-with-the-universal-music-group-umg-partnership">Udio help centre</a>, <a href="https://github.com/facebookresearch/audiocraft/blob/main/model_cards/MUSICGEN_MODEL_CARD.md">MusicGen model card</a>. ElevenLabs' sound-effects billing is described inconsistently on its own pages (per minute versus per generation).</p>
+<p>The working agent recipe: the agent writes a script that calls a REST API with a key from an environment variable, saves WAV or MP3 files into <code>assets/audio/</code>, and records provider, prompt and licence in <code>CREDITS.md</code>. <span class="ev p">Practice</span></p>
+
+<h2>Free audio libraries</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Source</th><th>Licence</th><th>Watch out for</th></tr></thead>
+<tbody>
+<tr><td><a href="https://kenney.nl">Kenney</a> audio packs</td><td>CC0</td><td>Nothing; safe default</td></tr>
+<tr><td><a href="https://freesound.org">Freesound</a></td><td>Per sound: CC0, CC-BY, CC-BY-NC</td><td><b>CC-BY-NC sounds cannot go into a game you earn money from</b>; record the licence per sound</td></tr>
+<tr><td><a href="https://opengameart.org">OpenGameArt</a></td><td>Mixed, including CC-BY-SA and GPL</td><td>Share-alike obligations</td></tr>
+<tr><td><a href="https://sonniss.com/gameaudiogdc/">Sonniss GDC bundles</a></td><td>Royalty-free, no credit needed</td><td>No resale as sound effects; <b>AI training prohibited</b>; very large downloads</td></tr>
+<tr><td><a href="https://incompetech.com/music/royalty-free/faq.html">incompetech</a> (Kevin MacLeod)</td><td>Music, CC BY 4.0</td><td>Credit text must appear in a findable place, for example the credits screen</td></tr>
+<tr><td><a href="https://pixabay.com/service/license-summary/">Pixabay</a> audio</td><td>Pixabay Content Licence</td><td>Do not redistribute unchanged files on their own</td></tr>
+</tbody></table></div>
+<p class="small muted">All checked 2026-10-17 on the sources' own licence or FAQ pages. <span class="ev v">Verified</span></p>
+
+<div class="callout warn"><span class="title">Copyright of AI-generated audio</span>
+<p>The US Copyright Office concluded on 2025-01-29 that "prompts do not alone provide sufficient control" for authorship. A sound or song generated purely from a prompt may have weak or no US copyright, so others may be able to copy it. Your own arrangement and editing can be protected. Details on <a href="12-publishing-legal.html">page 12</a>. <span class="ev v">Verified</span></p></div>
+
+<h2>Recommended default</h2>
+<ol class="stepper">
+<li><b>Sound effects:</b> code-synthesized (ZzFX or a small WebAudio synth like the toy above). Zero files, zero licence questions.</li>
+<li><b>Music:</b> one CC0 or CC-BY track (Kenney, incompetech) with a proper credit, or a Tone.js loop the agent writes.</li>
+<li><b>Upgrade later:</b> ElevenLabs or Stable Audio for specific realistic effects, on a paid plan, with the prompt and date recorded.</li>
+<li><b>Implementation:</b> separate music and effects volume, limit how many copies of one effect play at once, and start audio on the first input.</li>
+</ol>
+<p class="small muted">Author's recommendation. <span class="ev i">Inference</span></p>
+
+<p class="page-meta">Page written 2026-10-17.</p>
+</div></main>
+<script src="assets/js/site.js"></script>
+<script src="assets/js/demos.js"></script>
+<script>
+GameDemos.sfxToy(document.getElementById("demo-sfx"), { id: "sfx", note: "Turn your volume down a little first. Everything is synthesized live; there are no audio files." });
+</script>
+</body>
+</html>

@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sources and method — AI Game Building</title>
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%231f5fbf%22/%3E%3Cpath d=%22M3 9h4M5 7v4M10 8.5h1M12 10h1%22 stroke=%22white%22 stroke-width=%221.6%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
+</head>
+<body>
+<main><div class="content">
+
+<div class="kicker">Reference</div>
+<h1>Sources and method</h1>
+<p class="lead">How this research was done, what the evidence labels mean, which assets the site bundles, what could not be settled, and every external source linked from the pages.</p>
+
+<h2>Method</h2>
+<ol class="stepper">
+<li><b>Scope and plan.</b> The research questions came from the brief: assets, engines, fundamentals, two worked examples, testing, one-prompt claims, publishing and legal, a decision framework and hands-on projects.</li>
+<li><b>Fact gathering.</b> Five research subagents each covered one area (AI images; AI 3D and audio; engines and libraries; examples, platforms and testing; publishing and legal) and wrote fact sheets with a source and a label for every claim. They were told to prefer primary sources and to record conflicts rather than resolve them silently.</li>
+<li><b>Verification by the main agent.</b> The main agent re-checked the claims that matter most: GitHub star counts for 16 key repositories through the GitHub API (all within ±5 of the fact sheets), Simon Willison's Raccoon Heist post and repository, the Steam content survey, Gemini and OpenAI image pricing and features, Meshy's free-plan licence, itch.io HTML5 limits, YouTube video IDs, Kenney kit licences, and vehicle-physics APIs. This found one error that changed the pages: OpenAI's <code>develop-web-game</code> skill is not on the <code>main</code> branch.</li>
+<li><b>Judgment and writing.</b> The main agent wrote every page, chose the recommendations and labelled them as Inference. Subagents wrote no page text.</li>
+<li><b>QA.</b> Every page was loaded in a browser and checked for JavaScript errors, broken internal links and anchors, playable demos (driven by script through each demo's test hook), a 375 px mobile layout and <code>file://</code> safety (no module imports, no fetching of local files).</li>
+</ol>
+<p>All dates are 2026-10-17 unless stated. Prices, stars and terms change; re-check before relying on them.</p>
+
+<h2>Evidence labels</h2>
+<div class="table-wrap"><table class="compact">
+<thead><tr><th>Label</th><th>Used when</th></tr></thead>
+<tbody>
+<tr><td><span class="ev v">Verified</span></td><td>A primary source confirms it: official docs, a repository or API, a paper, a court or agency document, or the person's own post. For "X says Y" claims it means X verifiably said it, not that Y is true.</td></tr>
+<tr><td><span class="ev p">Practice</span></td><td>Widely documented practitioner practice, a reputable secondary report, or a vendor demo with public artifacts that has not been independently reproduced.</td></tr>
+<tr><td><span class="ev i">Inference</span></td><td>The author's analysis, recommendations and estimates.</td></tr>
+<tr><td><span class="ev u">Unverified</span></td><td>A single weak source, a self-reported statistic, or a vendor or host claim ("Promotional").</td></tr>
+<tr><td><span class="ev x">Experimental</span></td><td>Works in research or demos, not yet dependable for shipping.</td></tr>
+</tbody></table></div>
+
+<h2>Bundled assets and libraries</h2>
+<ul>
+<li><b>Kenney Pixel Platformer</b> by Kenney (<a href="https://kenney.nl/assets/pixel-platformer">kenney.nl</a>), CC0 1.0. Used in the art-strategy demos; the licence file is in <code>assets/img/kenney-pixel-platformer/License.txt</code>. Thank you, Kenney.</li>
+<li><b>Three.js r149</b> (MIT), loaded from the <a href="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js">jsDelivr CDN</a> with a subresource-integrity hash on the racing page only. Not bundled.</li>
+<li>All other graphics, diagrams, demos and sounds on this site are drawn or synthesised in code written for this site.</li>
+</ul>
+
+<h2>Known gaps and conflicts</h2>
+<div class="table-wrap"><table class="compact">
+<thead><tr><th>Topic</th><th>Gap or conflict</th></tr></thead>
+<tbody>
+<tr><td>Time and cost of agent-built games</td><td>No study measures this; the estimates on pages 8, 9 and 14 are the author's.</td></tr>
+<tr><td>OpenAI <code>develop-web-game</code> skill</td><td>Published at commit 82d2c5b4 and used for the Codex racer; returns 404 on <code>main</code> as of 2026-10-17.</td></tr>
+<tr><td>Vendor one-prompt demos</td><td>No independent quality review found for the Codex racer; Fable 5 launch demo prompts not published.</td></tr>
+<tr><td>Vibe Jam 2026</td><td>945-entry count from one third-party blog; prize total $40,000 (press page) versus "$50,000+" (site header); no audit method for the 90% AI rule.</td></tr>
+<tr><td>Vibe Jam 2025 winners date</td><td>2025-03-26 in one source versus 2025-04-23 in Indie Hackers and the host's own list; the site uses 2025-04-23.</td></tr>
+<tr><td>Steam</td><td>Pre-release wait: 30 days on the Steam Direct page versus 21 days in the onboarding doc. Revenue tiers come from press coverage; the distribution agreement is behind a login.</td></tr>
+<tr><td>CrazyGames</td><td>Base revenue share not found in the developer docs.</td></tr>
+<tr><td>Meshy and Tripo free plans</td><td>Each vendor's pages disagree internally on ownership wording; the site follows the stricter reading.</td></tr>
+<tr><td>Copyright in AI-written code</td><td>No source addressed source code specifically; image and text rulings are the closest guide.</td></tr>
+<tr><td>EU Court of Justice, <i>Like Company v. Google</i></td><td>Advocate General opinion date (2026-11-03) from one paywalled report.</td></tr>
+<tr><td>Benchmarks</td><td>GameDevBench and GBQA used early-2026 models; WorldBench numbers come from a secondary report of the paper.</td></tr>
+<tr><td>Headless WebGPU</td><td>"No adapter in headless Chromium" comes from one project's notes; not generalised.</td></tr>
+<tr><td>Not researched</td><td>GDPR and privacy, age ratings, EU consumer and VAT rules, China's game licensing, German tax treatment of hobby income.</td></tr>
+</tbody></table></div>
+
+<h2>Research notes</h2>
+<p>The full fact sheets, with every claim, quote, URL and label, are kept next to the project's memory file in <code>docs/memory/memory-20261017-ai-game-building-research/research-notes/</code>: R1 AI images, R2 AI 3D and audio, R3 engines and libraries, R4 examples, platforms and testing, R5 publishing and legal. They contain more sources than the pages link to.</p>
+
+<h2>Sources linked from each page</h2>
+<p class="small muted">Generated from the pages' external links by <code>tools/build_sources.py</code>. <span class="count" id="src-count"></span></p>
+<div class="toolbar"><input type="search" id="src-filter" placeholder="Filter sources…" aria-label="Filter sources"><button type="button" data-toggle-all="src-list">Expand / collapse all</button></div>
+<div id="src-list">
+<!--SOURCES-->
+<details><summary>1 · Asset taxonomy &amp; how agents get tools (19)</summary><div class="body"><ul class="small">
+<li><a href="https://huggingface.co/docs/openenv/environments/pelican_svg">HF OpenEnv</a> <span class="muted">huggingface.co</span></li>
+<li><a href="https://simonwillison.net/2026/Aug/5/raccoon-heist/">Post, 2026-08-05</a> <span class="muted">simonwillison.net</span></li>
+<li><a href="https://ludo.ai/developers">ludo.ai/developers</a> <span class="muted">ludo.ai</span></li>
+<li><a href="https://fal.ai/docs/documentation/setting-up/mcp">fal docs</a> <span class="muted">fal.ai</span></li>
+<li><a href="https://kenney.nl">Kenney</a> <span class="muted">kenney.nl</span></li>
+<li><a href="https://kenney.nl/support">kenney.nl/support</a> <span class="muted">kenney.nl</span></li>
+<li><a href="https://polyhaven.com">Poly Haven</a> <span class="muted">polyhaven.com</span></li>
+<li><a href="https://polyhaven.com/license">licence page</a> <span class="muted">polyhaven.com</span></li>
+<li><a href="https://ambientcg.com">ambientCG</a> <span class="muted">ambientcg.com</span></li>
+<li><a href="https://docs.ambientcg.com/license/">licence page</a> <span class="muted">docs.ambientcg.com</span></li>
+<li><a href="https://quaternius.com">Quaternius</a> <span class="muted">quaternius.com</span></li>
+<li><a href="https://opengameart.org">OpenGameArt</a> <span class="muted">opengameart.org</span></li>
+<li><a href="https://opengameart.org/content/faq">FAQ</a> <span class="muted">opengameart.org</span></li>
+<li><a href="https://itch.io/game-assets">itch.io assets</a> <span class="muted">itch.io</span></li>
+<li><a href="https://poly.pizza">Poly Pizza</a> <span class="muted">poly.pizza</span></li>
+<li><a href="https://www.mixamo.com">Mixamo</a> <span class="muted">mixamo.com</span></li>
+<li><a href="https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html">Adobe FAQ</a> <span class="muted">helpx.adobe.com</span></li>
+<li><a href="https://freesound.org">Freesound</a> <span class="muted">freesound.org</span></li>
+<li><a href="https://freesound.org/help/faq/">FAQ</a> <span class="muted">freesound.org</span></li>
+</ul></div></details>
+<details><summary>2 · AI images: sprites, tiles, textures (25)</summary><div class="body"><ul class="small">
+<li><a href="https://developers.openai.com/api/docs/guides/image-generation">OpenAI image guide</a> <span class="muted">developers.openai.com</span></li>
+<li><a href="https://ai.google.dev/gemini-api/docs/pricing">Gemini pricing</a> <span class="muted">ai.google.dev</span></li>
+<li><a href="https://docs.bfl.ml/release-notes">BFL release notes</a> <span class="muted">docs.bfl.ml</span></li>
+<li><a href="https://www.recraft.ai/docs/api-reference/pricing">Recraft pricing</a> <span class="muted">recraft.ai</span></li>
+<li><a href="https://ideogram.ai/api-pricing">Ideogram pricing</a> <span class="muted">ideogram.ai</span></li>
+<li><a href="https://www.pixellab.ai/pixellab-api">PixelLab API</a> <span class="muted">pixellab.ai</span></li>
+<li><a href="https://github.com/Retro-Diffusion/api-examples">Retro Diffusion examples</a> <span class="muted">github.com</span></li>
+<li><a href="https://www.scenario.com/pricing">Scenario</a> <span class="muted">scenario.com</span></li>
+<li><a href="https://ludo.ai/pricing">Ludo</a> <span class="muted">ludo.ai</span></li>
+<li><a href="https://www.midjourney.com/updates/enterprise-api-survey">Midjourney API note</a> <span class="muted">midjourney.com</span></li>
+<li><a href="https://roboticape.com/2026/03/07/generating-game-sprites-with-gemini-image-generation-nano-banana-pro-lessons-learned/">Robotic Ape, 2026-03-07</a> <span class="muted">roboticape.com</span></li>
+<li><a href="https://varund.com/blog/a-game-starring-my-dog/">varund.com</a> <span class="muted">varund.com</span></li>
+<li><a href="https://github.com/danielgatis/rembg">rembg</a> <span class="muted">github.com</span></li>
+<li><a href="https://github.com/ZhengPeng7/BiRefNet">BiRefNet</a> <span class="muted">github.com</span></li>
+<li><a href="https://changeinmotion.tech/blog/2026/animating-pixel-art-game-character-ai-when-generation-isnt-answer/">changeinmotion.tech</a> <span class="muted">changeinmotion.tech</span></li>
+<li><a href="https://www.layrkits.com/guides/sprite-sheet">Layr Kits</a> <span class="muted">layrkits.com</span></li>
+<li><a href="https://dev.to/junhee916/what-i-learned-trying-to-make-a-game-with-ai-only-half-the-truth-about-claude-for-game-dev-3j2p">dev.to</a> <span class="muted">dev.to</span></li>
+<li><a href="https://github.com/aldegad/sprite-gen">sprite-gen</a> <span class="muted">github.com</span></li>
+<li><a href="https://github.com/0x0funky/agent-sprite-forge">agent-sprite-forge</a> <span class="muted">github.com</span></li>
+<li><a href="https://github.com/Hugo-Dz/spritefusion-pixel-snapper">spritefusion-pixel-snapper</a> <span class="muted">github.com</span></li>
+<li><a href="https://github.com/jenissimo/unfake.js">unfake.js</a> <span class="muted">github.com</span></li>
+<li><a href="https://github.com/KennethJAllen/proper-pixel-art">proper-pixel-art</a> <span class="muted">github.com</span></li>
+<li><a href="https://simonwillison.net/tags/pelican-riding-a-bicycle/">Willison&#x27;s tag page</a> <span class="muted">simonwillison.net</span></li>
+<li><a href="https://huggingface.co/docs/openenv/environments/pelican_svg">HF OpenEnv</a> <span class="muted">huggingface.co</span></li>
+<li><a href="https://arxiv.org/abs/2506.03139">SVGenius</a> <span class="muted">arxiv.org</span></li>
+</ul></div></details>
+<details><summary>3 · AI 3D: meshes, rigging, animation (25)</summary><div class="body"><ul class="small">
+<li><a href="https://threejs.org">three.js</a> <span class="muted">threejs.org</span></li>
+<li><a href="https://github.com/gkjohnson/three-bvh-csg">three-bvh-csg</a> <span class="muted">github.com</span></li>
+<li><a href="https://github.com/elalish/manifold">Manifold</a> <span class="muted">github.com</span></li>
+<li><a href="https://iquilezles.org/articles/distfunctions/">Inigo Quilez&#x27;s SDF reference</a> <span class="muted">iquilezles.org</span></li>
+<li><a href="https://www.meshy.ai/pricing">Meshy pricing</a> <span class="muted">meshy.ai</span></li>
+<li><a href="https://help.meshy.ai/en/articles/16102098-can-i-use-meshy-assets-commercially">Meshy commercial-use article</a> <span class="muted">help.meshy.ai</span></li>
+<li><a href="https://docs.tripo3d.ai/get-started/pricing.html">Tripo pricing</a> <span class="muted">docs.tripo3d.ai</span></li>
+<li><a href="https://www.tripo3d.ai/help/privacy-policy/how-to-use-tripo-models-commercially">Tripo commercial use</a> <span class="muted">tripo3d.ai</span></li>
+<li><a href="https://docs.hyper3d.ai/en/api-specification/rodin-gen2">Rodin docs</a> <span class="muted">docs.hyper3d.ai</span></li>
+<li><a href="https://www.tencentcloud.com/document/product/1281/74121">Tencent HY 3D</a> <span class="muted">tencentcloud.com</span></li>
+<li><a href="https://platform.stability.ai/pricing">Stability pricing</a> <span class="muted">platform.stability.ai</span></li>
+<li><a href="https://blogs.autodesk.com/media-and-entertainment/2026/09/28/autodesk-flow-studio-pricing-and-subscription-guide/">Autodesk</a> <span class="muted">blogs.autodesk.com</span></li>
+<li><a href="https://github.com/microsoft/TRELLIS.2">Microsoft TRELLIS.2</a> <span class="muted">github.com</span></li>
+<li><a href="https://github.com/VAST-AI-Research/TripoSR">TripoSR</a> <span class="muted">github.com</span></li>
+<li><a href="https://github.com/Tencent-Hunyuan/Hunyuan3D-2.1">Tencent Hunyuan3D 2.x</a> <span class="muted">github.com</span></li>
+<li><a href="https://github.com/Stability-AI/stable-fast-3d">Stable Fast 3D</a> <span class="muted">github.com</span></li>
+<li><a href="https://www.mixamo.com">Mixamo</a> <span class="muted">mixamo.com</span></li>
+<li><a href="https://doi.org/10.55677/ijhrsss/15-2026-vol03i06">IJHRSSS 2026</a> <span class="muted">doi.org</span></li>
+<li><a href="https://www.aigamedevs.org/wiki/text-to-3d-pipeline/">AIGAMEDEV wiki</a> <span class="muted">aigamedevs.org</span></li>
+<li><a href="https://wavect.io/blog/ai-3d-model-generators-game-development-2026/">Wavect</a> <span class="muted">wavect.io</span></li>
+<li><a href="https://arxiv.org/html/2604.23629v1">arXiv 2604.23629 survey</a> <span class="muted">arxiv.org</span></li>
+<li><a href="https://github.com/ahujasid/mcp-for-blender">MCP for Blender</a> <span class="muted">github.com</span></li>
+<li><a href="https://github.com/CoplayDev/unity-mcp">MCP for Unity</a> <span class="muted">github.com</span></li>
+<li><a href="https://github.com/Coding-Solo/godot-mcp">Godot MCP</a> <span class="muted">github.com</span></li>
+<li><a href="https://github.com/meshy-dev/meshy-mcp-server">Meshy MCP server</a> <span class="muted">github.com</span></li>
+</ul></div></details>
+<details><summary>4 · Audio: procedural, AI, free libraries (20)</summary><div class="body"><ul class="small">
+<li><a href="https://github.com/KilledByAPixel/ZzFX">ZzFX</a> <span class="muted">github.com</span></li>
+<li><a href="https://github.com/grumdrig/jsfxr">jsfxr</a> <span class="muted">github.com</span></li>
+<li><a href="https://jsfxr.me">jsfxr.me</a> <span class="muted">jsfxr.me</span></li>
+<li><a href="https://sfbgames.itch.io/chiptone">ChipTone</a> <span class="muted">sfbgames.itch.io</span></li>
+<li><a href="https://github.com/Tonejs/Tone.js">Tone.js</a> <span class="muted">github.com</span></li>
+<li><a href="https://github.com/goldfire/howler.js">Howler.js</a> <span class="muted">github.com</span></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Best_practices">MDN: Web Audio best practices</a> <span class="muted">developer.mozilla.org</span></li>
+<li><a href="https://elevenlabs.io/pricing/api">ElevenLabs API pricing</a> <span class="muted">elevenlabs.io</span></li>
+<li><a href="https://github.com/elevenlabs/elevenlabs-mcp">archived ElevenLabs MCP</a> <span class="muted">github.com</span></li>
+<li><a href="https://platform.stability.ai/pricing">Stability pricing</a> <span class="muted">platform.stability.ai</span></li>
+<li><a href="https://ai.google.dev/gemini-api/docs/pricing">Gemini pricing</a> <span class="muted">ai.google.dev</span></li>
+<li><a href="https://about.suno.com/blog/suno-updates-tos">Suno ToS update</a> <span class="muted">about.suno.com</span></li>
+<li><a href="https://help.udio.com/en/articles/12683565-changes-associated-with-the-universal-music-group-umg-partnership">Udio help centre</a> <span class="muted">help.udio.com</span></li>
+<li><a href="https://github.com/facebookresearch/audiocraft/blob/main/model_cards/MUSICGEN_MODEL_CARD.md">MusicGen model card</a> <span class="muted">github.com</span></li>
+<li><a href="https://kenney.nl">Kenney</a> <span class="muted">kenney.nl</span></li>
+<li><a href="https://freesound.org">Freesound</a> <span class="muted">freesound.org</span></li>
+<li><a href="https://opengameart.org">OpenGameArt</a> <span class="muted">opengameart.org</span></li>
+<li><a href="https://sonniss.com/gameaudiogdc/">Sonniss GDC bundles</a> <span class="muted">sonniss.com</span></li>
+<li><a href="https://incompetech.com/music/royalty-free/faq.html">incompetech</a> <span class="muted">incompetech.com</span></li>
+<li><a href="https://pixabay.com/service/license-summary/">Pixabay</a> <span class="muted">pixabay.com</span></li>
+</ul></div></details>
+<details><summary>5 · Engines &amp; libraries (30)</summary><div class="body"><ul class="small">
+<li><a href="https://phaser.io">Phaser</a> <span class="muted">phaser.io</span></li>
+<li><a href="https://pixijs.com">PixiJS</a> <span class="muted">pixijs.com</span></li>
+<li><a href="https://kaplayjs.com">KAPLAY</a> <span class="muted">kaplayjs.com</span></li>
+<li><a href="https://excaliburjs.com">Excalibur</a> <span class="muted">excaliburjs.com</span></li>
+<li><a href="https://github.com/KilledByAPixel/LittleJS">LittleJS</a> <span class="muted">github.com</span></li>
+<li><a href="https://threejs.org">three.js</a> <span class="muted">threejs.org</span></li>
+<li><a href="https://r3f.docs.pmnd.rs">React Three Fiber</a> <span class="muted">r3f.docs.pmnd.rs</span></li>
+<li><a href="https://www.babylonjs.com">Babylon.js</a> <span class="muted">babylonjs.com</span></li>
+<li><a href="https://playcanvas.com">PlayCanvas</a> <span class="muted">playcanvas.com</span></li>
+<li><a href="https://rapier.rs">Rapier</a> <span class="muted">rapier.rs</span></li>
+<li><a href="https://brm.io/matter-js">Matter.js</a> <span class="muted">brm.io</span></li>
+<li><a href="https://piqnt.com/planck.js">Planck.js</a> <span class="muted">piqnt.com</span></li>
+<li><a href="https://github.com/pmndrs/cannon-es">cannon-es</a> <span class="muted">github.com</span></li>
+<li><a href="https://github.com/jrouwe/JoltPhysics">Jolt</a> <span class="muted">github.com</span></li>
+<li><a href="https://godotengine.org">Godot</a> <span class="muted">godotengine.org</span></li>
+<li><a href="https://unity.com">Unity</a> <span class="muted">unity.com</span></li>
+<li><a href="https://www.unrealengine.com">Unreal 5.8</a> <span class="muted">unrealengine.com</span></li>
+<li><a href="https://bevy.org">Bevy</a> <span class="muted">bevy.org</span></li>
+<li><a href="https://love2d.org">LÖVE</a> <span class="muted">love2d.org</span></li>
+<li><a href="https://pyga.me">pygame-ce</a> <span class="muted">pyga.me</span></li>
+<li><a href="https://monogame.net">MonoGame</a> <span class="muted">monogame.net</span></li>
+<li><a href="https://www.raylib.com">raylib</a> <span class="muted">raylib.com</span></li>
+<li><a href="https://defold.com">Defold</a> <span class="muted">defold.com</span></li>
+<li><a href="https://gamemaker.io">GameMaker</a> <span class="muted">gamemaker.io</span></li>
+<li><a href="https://gdevelop.io">GDevelop</a> <span class="muted">gdevelop.io</span></li>
+<li><a href="https://www.mapeditor.org">Tiled</a> <span class="muted">mapeditor.org</span></li>
+<li><a href="https://ldtk.io">LDtk</a> <span class="muted">ldtk.io</span></li>
+<li><a href="https://gameworldobserver.com/2026/07/29/unity-is-no-longer-the-leader-godot-has-become-the-most-popular-engine-at-gmtk-game-jam-2026">Game World Observer</a> <span class="muted">gameworldobserver.com</span></li>
+<li><a href="https://bsky.app/profile/gamemakerstoolkit.com/post/3mrmx5mi3mk24">organiser&#x27;s Bluesky post</a> <span class="muted">bsky.app</span></li>
+<li><a href="https://newsletter.gamediscover.co/p/hows-pc-game-engine-usage-changing">GameDiscoverCo&#x27;s newsletter</a> <span class="muted">newsletter.gamediscover.co</span></li>
+</ul></div></details>
+<details><summary>6 · AI builder platforms &amp; world models (17)</summary><div class="body"><ul class="small">
+<li><a href="https://rosebud.ai">Rosebud AI</a> <span class="muted">rosebud.ai</span></li>
+<li><a href="https://gdevelop.io">GDevelop AI</a> <span class="muted">gdevelop.io</span></li>
+<li><a href="https://unity.com/features/ai">Unity AI tools</a> <span class="muted">unity.com</span></li>
+<li><a href="https://ai.google.dev/gemini-api/docs/aistudio-build-mode">Google AI Studio Build</a> <span class="muted">ai.google.dev</span></li>
+<li><a href="https://rosebud.ai/terms-of-service">Rosebud terms</a> <span class="muted">rosebud.ai</span></li>
+<li><a href="https://aigamescope.com/news/export-ai-generated-games/">aigamescope export test (2026-10-10)</a> <span class="muted">aigamescope.com</span></li>
+<li><a href="https://gdevelop.io/pricing">GDevelop pricing</a> <span class="muted">gdevelop.io</span></li>
+<li><a href="https://create.roblox.com/docs/en-us/studio/mcp.md">Roblox Studio MCP</a> <span class="muted">create.roblox.com</span></li>
+<li><a href="https://en.help.roblox.com/hc/en-us/articles/115004647846-Roblox-Terms-of-Use">Roblox terms</a> <span class="muted">en.help.roblox.com</span></li>
+<li><a href="https://discussions.unity.com/t/unity-ai-s-open-beta-now-live-for-unity-6/1718560">Unity AI beta</a> <span class="muted">discussions.unity.com</span></li>
+<li><a href="https://www.astrocade.com/blog/why-should-you-create-games-on-astrocade">Astrocade blog</a> <span class="muted">astrocade.com</span></li>
+<li><a href="https://bezi.com/pricing">Bezi</a> <span class="muted">bezi.com</span></li>
+<li><a href="https://about.roblox.com/newsroom/2026/04/roblox-studio-going-agentic">Roblox newsroom, 2026-04</a> <span class="muted">about.roblox.com</span></li>
+<li><a href="https://arxiv.org/abs/2408.14837">arXiv</a> <span class="muted">arxiv.org</span></li>
+<li><a href="https://www.microsoft.com/en-us/research/articles/whamm-real-time-world-modelling-of-interactive-environments/">Microsoft Research</a> <span class="muted">microsoft.com</span></li>
+<li><a href="https://deepmind.google/blog/genie-3-a-new-frontier-for-world-models/">DeepMind</a> <span class="muted">deepmind.google</span></li>
+<li><a href="https://github.com/SkyworkAI/Matrix-Game">GitHub</a> <span class="muted">github.com</span></li>
+</ul></div></details>
+<details><summary>7 · Game fundamentals (with toys) (18)</summary><div class="body"><ul class="small">
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame">MDN: requestAnimationFrame</a> <span class="muted">developer.mozilla.org</span></li>
+<li><a href="https://gafferongames.com/post/fix_your_timestep/">&quot;Fix Your Timestep!&quot;</a> <span class="muted">gafferongames.com</span></li>
+<li><a href="https://gameprogrammingpatterns.com/game-loop.html">Game Programming Patterns: Game Loop</a> <span class="muted">gameprogrammingpatterns.com</span></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API">Gamepad API</a> <span class="muted">developer.mozilla.org</span></li>
+<li><a href="https://gameprogrammingpatterns.com/component.html">Component pattern</a> <span class="muted">gameprogrammingpatterns.com</span></li>
+<li><a href="https://bevy.org/learn/quick-start/getting-started/ecs/">Bevy&#x27;s ECS introduction</a> <span class="muted">bevy.org</span></li>
+<li><a href="https://gameprogrammingpatterns.com/state.html">Game Programming Patterns: State</a> <span class="muted">gameprogrammingpatterns.com</span></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection">MDN: 2D collision detection</a> <span class="muted">developer.mozilla.org</span></li>
+<li><a href="https://rapier.rs/docs/user_guides/javascript/rigid_body_ccd/">Rapier docs: CCD</a> <span class="muted">rapier.rs</span></li>
+<li><a href="https://www.mapeditor.org/">Tiled</a> <span class="muted">mapeditor.org</span></li>
+<li><a href="https://ldtk.io/">LDtk</a> <span class="muted">ldtk.io</span></li>
+<li><a href="https://www.youtube.com/watch?v=pdvCO97jOQk">&quot;How Cameras in Side-Scrollers Work&quot;</a> <span class="muted">youtube.com</span></li>
+<li><a href="https://www.redblobgames.com/pathfinding/a-star/introduction.html">Red Blob Games: Introduction to A*</a> <span class="muted">redblobgames.com</span></li>
+<li><a href="https://www.youtube.com/watch?v=dBmIkEvEBtA">Game Maker&#x27;s Toolkit on Super Mario 3D World</a> <span class="muted">youtube.com</span></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Autoplay">MDN autoplay guide</a> <span class="muted">developer.mozilla.org</span></li>
+<li><a href="https://www.youtube.com/watch?v=Fy0aCDmgnxg">&quot;Juice it or lose it&quot;</a> <span class="muted">youtube.com</span></li>
+<li><a href="https://maddythorson.medium.com/celeste-forgiveness-31e4a40399f1">&quot;Celeste &amp; Forgiveness&quot;</a> <span class="muted">maddythorson.medium.com</span></li>
+<li><a href="https://www.youtube.com/watch?v=hG9SzQxaCm8">&quot;Building a Better Jump&quot;</a> <span class="muted">youtube.com</span></li>
+</ul></div></details>
+<details><summary>8 · Worked example: 2D platformer (2)</summary><div class="body"><ul class="small">
+<li><a href="https://www.pixellab.ai/pixellab-api">PixelLab</a> <span class="muted">pixellab.ai</span></li>
+<li><a href="https://ai.google.dev/gemini-api/docs/pricing">Gemini pricing</a> <span class="muted">ai.google.dev</span></li>
+</ul></div></details>
+<details><summary>9 · Worked example: 3D car racing (5)</summary><div class="body"><ul class="small">
+<li><a href="https://github.com/pmndrs/cannon-es">cannon-es</a> <span class="muted">github.com</span></li>
+<li><a href="https://rapier.rs">Rapier</a> <span class="muted">rapier.rs</span></li>
+<li><a href="https://docs.godotengine.org/en/stable/classes/class_vehiclebody3d.html">VehicleBody3D</a> <span class="muted">docs.godotengine.org</span></li>
+<li><a href="https://kenney.nl/assets/racing-kit">Kenney Racing Kit</a> <span class="muted">kenney.nl</span></li>
+<li><a href="https://kenney.nl/assets/car-kit">Kenney Car Kit</a> <span class="muted">kenney.nl</span></li>
+</ul></div></details>
+<details><summary>10 · How agents test &amp; improve games (18)</summary><div class="body"><ul class="small">
+<li><a href="https://github.com/bitwes/Gut">GUT</a> <span class="muted">github.com</span></li>
+<li><a href="https://github.com/godot-gdunit-labs/gdUnit4">GdUnit4</a> <span class="muted">github.com</span></li>
+<li><a href="https://github.com/microsoft/playwright">Playwright</a> <span class="muted">github.com</span></li>
+<li><a href="https://github.com/microsoft/playwright-mcp">Playwright MCP</a> <span class="muted">github.com</span></li>
+<li><a href="https://github.com/ChromeDevTools/chrome-devtools-mcp">Chrome DevTools MCP</a> <span class="muted">github.com</span></li>
+<li><a href="https://github.com/mrdoob/stats.js">stats.js</a> <span class="muted">github.com</span></li>
+<li><a href="https://docs.godotengine.org/en/stable/tutorials/editor/command_line_tutorial.html">Godot command line</a> <span class="muted">docs.godotengine.org</span></li>
+<li><a href="https://gut.readthedocs.io/en/latest/Command-Line.html">GUT</a> <span class="muted">gut.readthedocs.io</span></li>
+<li><a href="https://docs.unity.com/en-us/engine/6000.5/manual/scripting/test-framework-introduction/running-tests/run-tests-from-command-line">Unity Test Framework</a> <span class="muted">docs.unity.com</span></li>
+<li><a href="https://github.com/openai/skills/blob/82d2c5b4/skills/.curated/develop-web-game/SKILL.md">82d2c5b4</a> <span class="muted">github.com</span></li>
+<li><a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills">awesome-gamedev-agent-skills</a> <span class="muted">github.com</span></li>
+<li><a href="https://github.com/PlayableIntelligence/game-creator">game-creator</a> <span class="muted">github.com</span></li>
+<li><a href="https://github.com/Yakoub-ai/phaser4-gamedev">phaser4-gamedev</a> <span class="muted">github.com</span></li>
+<li><a href="https://arxiv.org/html/2602.11103v2">GameDevBench</a> <span class="muted">arxiv.org</span></li>
+<li><a href="https://arxiv.org/abs/2604.02648">GBQA</a> <span class="muted">arxiv.org</span></li>
+<li><a href="https://gamedev.net/news/6322-worldbench-evaluating-llms-on-threejs-voxel-world-generation/">WorldBench</a> <span class="muted">gamedev.net</span></li>
+<li><a href="https://arxiv.org/abs/2509.22170">TITAN</a> <span class="muted">arxiv.org</span></li>
+<li><a href="https://arxiv.org/abs/2505.15146">lmgame-Bench</a> <span class="muted">arxiv.org</span></li>
+</ul></div></details>
+<details><summary>11 · The truth behind one-prompt games (8)</summary><div class="body"><ul class="small">
+<li><a href="https://simonwillison.net/2026/Aug/5/raccoon-heist/">Raccoon Heist</a> <span class="muted">simonwillison.net</span></li>
+<li><a href="https://simonwillison.net/2026/Aug/7/moonlight-mayhem/">Moonlight &amp; Mayhem</a> <span class="muted">simonwillison.net</span></li>
+<li><a href="https://openai.com/index/introducing-the-codex-app/">Codex app racing game</a> <span class="muted">openai.com</span></li>
+<li><a href="https://blog.google/products-and-platforms/products/gemini/gemini-3/">Gemini 3 spaceship game</a> <span class="muted">blog.google</span></li>
+<li><a href="https://www.youtube.com/watch?v=qOL49DYWr7s">video description</a> <span class="muted">youtube.com</span></li>
+<li><a href="https://levels.io/fly-pieter-com-vibecoded-flight-simulator">fly.pieter.com</a> <span class="muted">levels.io</span></li>
+<li><a href="https://levels.io/vibe-jam-2026-winners-quality">Vibe Jam 2026</a> <span class="muted">levels.io</span></li>
+<li><a href="https://techcrunch.com/2026/06/09/anthropics-fable-5-can-make-weirdly-fun-video-games-with-the-click-of-a-button/">TechCrunch hands-on</a> <span class="muted">techcrunch.com</span></li>
+</ul></div></details>
+<details><summary>12 · Publishing, licences, legal (26)</summary><div class="body"><ul class="small">
+<li><a href="https://itch.io/docs/creators/html5">itch.io</a> <span class="muted">itch.io</span></li>
+<li><a href="https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits">GitHub Pages</a> <span class="muted">docs.github.com</span></li>
+<li><a href="https://developers.cloudflare.com/pages/platform/limits/">Cloudflare Pages</a> <span class="muted">developers.cloudflare.com</span></li>
+<li><a href="https://netlify.com/pricing">Netlify</a> <span class="muted">netlify.com</span></li>
+<li><a href="https://vercel.com/docs/plans/hobby">Vercel Hobby</a> <span class="muted">vercel.com</span></li>
+<li><a href="https://developers.poki.com/guide/sdk-overview">Poki</a> <span class="muted">developers.poki.com</span></li>
+<li><a href="https://docs.crazygames.com/requirements/intro/">CrazyGames</a> <span class="muted">docs.crazygames.com</span></li>
+<li><a href="https://www.newgrounds.com/wiki/help-information/terms-of-use/art-guidelines">Newgrounds</a> <span class="muted">newgrounds.com</span></li>
+<li><a href="https://partner.steamgames.com/steamdirect">Steam</a> <span class="muted">partner.steamgames.com</span></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/apps/publish/whats-new-individual-developer">Microsoft Store</a> <span class="muted">learn.microsoft.com</span></li>
+<li><a href="https://developer.apple.com/app-store/small-business-program/">Apple App Store</a> <span class="muted">developer.apple.com</span></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/smartscreen-reputation">Microsoft Learn</a> <span class="muted">learn.microsoft.com</span></li>
+<li><a href="https://creativecommons.org/share-your-work/cclicenses/">Creative Commons licence pages</a> <span class="muted">creativecommons.org</span></li>
+<li><a href="https://openfontlicense.org/open-font-license-official-text/">OFL</a> <span class="muted">openfontlicense.org</span></li>
+<li><a href="https://wiki.creativecommons.org/wiki/Best_practices_for_attribution">CC best practices</a> <span class="muted">wiki.creativecommons.org</span></li>
+<li><a href="https://copyright.gov/ai/Copyright-and-Artificial-Intelligence-Part-2-Copyrightability-Report.pdf">Copyright Office report of 2025-01-29</a> <span class="muted">copyright.gov</span></li>
+<li><a href="https://openai.com/policies/row-terms-of-use/">OpenAI</a> <span class="muted">openai.com</span></li>
+<li><a href="https://ai.google.dev/gemini-api/terms">Google Gemini API</a> <span class="muted">ai.google.dev</span></li>
+<li><a href="https://docs.midjourney.com/hc/en-us/articles/32083055291277-Terms-of-Service">Midjourney</a> <span class="muted">docs.midjourney.com</span></li>
+<li><a href="https://stability.ai/license">Stability AI</a> <span class="muted">stability.ai</span></li>
+<li><a href="https://help.meshy.ai/en/articles/16102098-can-i-use-meshy-assets-commercially">Meshy</a> <span class="muted">help.meshy.ai</span></li>
+<li><a href="https://en.help.roblox.com/hc/en-us/articles/115004647846-Roblox-Terms-of-Use">Roblox</a> <span class="muted">en.help.roblox.com</span></li>
+<li><a href="https://partner.steamgames.com/doc/gettingstarted/contentsurvey">Steam</a> <span class="muted">partner.steamgames.com</span></li>
+<li><a href="https://itch.io/t/4309690/generative-ai-disclosure-tagging">itch.io</a> <span class="muted">itch.io</span></li>
+<li><a href="https://artificialintelligenceact.eu/article/50/">EU AI Act, Article 50</a> <span class="muted">artificialintelligenceact.eu</span></li>
+<li><a href="https://www.euipn.org/en/tools/TMview">TMview</a> <span class="muted">euipn.org</span></li>
+</ul></div></details>
+<details><summary>13 · Decision framework &amp; learning path (11)</summary><div class="body"><ul class="small">
+<li><a href="https://gameprogrammingpatterns.com/">Game Programming Patterns</a> <span class="muted">gameprogrammingpatterns.com</span></li>
+<li><a href="https://gafferongames.com/post/fix_your_timestep/">Fix Your Timestep!</a> <span class="muted">gafferongames.com</span></li>
+<li><a href="https://www.mapeditor.org/">Tiled</a> <span class="muted">mapeditor.org</span></li>
+<li><a href="https://www.ldtk.io/">LDtk</a> <span class="muted">ldtk.io</span></li>
+<li><a href="https://www.redblobgames.com/">Red Blob Games</a> <span class="muted">redblobgames.com</span></li>
+<li><a href="https://kenney.nl/assets">Kenney assets</a> <span class="muted">kenney.nl</span></li>
+<li><a href="https://threejs.org/manual/">Three.js manual</a> <span class="muted">threejs.org</span></li>
+<li><a href="https://docs.godotengine.org/en/stable/getting_started/first_2d_game/index.html">Godot &quot;Your first 2D game&quot;</a> <span class="muted">docs.godotengine.org</span></li>
+<li><a href="https://itch.io/jams">itch.io jams</a> <span class="muted">itch.io</span></li>
+<li><a href="https://ldjam.com/">Ludum Dare</a> <span class="muted">ldjam.com</span></li>
+<li><a href="https://www.gmtk.net/">GMTK</a> <span class="muted">gmtk.net</span></li>
+</ul></div></details>
+<details><summary>14 · Hands-on starter projects (5)</summary><div class="body"><ul class="small">
+<li><a href="https://kenney.nl/assets/pixel-platformer">Kenney Pixel Platformer</a> <span class="muted">kenney.nl</span></li>
+<li><a href="https://kenney.nl/assets/car-kit">Kenney Car Kit</a> <span class="muted">kenney.nl</span></li>
+<li><a href="https://docs.godotengine.org/en/stable/getting_started/first_2d_game/index.html">&quot;Your first 2D game&quot;</a> <span class="muted">docs.godotengine.org</span></li>
+<li><a href="https://github.com/Coding-Solo/godot-mcp">Coding-Solo/godot-mcp</a> <span class="muted">github.com</span></li>
+<li><a href="https://github.com/bitwes/Gut">GUT</a> <span class="muted">github.com</span></li>
+</ul></div></details>
+<!--/SOURCES-->
+</div>
+
+<p class="page-meta">Page written 2026-10-17.</p>
+</div></main>
+<script src="assets/js/site.js"></script>
+<script>
+window.PAGE_INIT = function () {
+  var list = document.getElementById("src-list"), inp = document.getElementById("src-filter");
+  var items = list.querySelectorAll("li");
+  document.getElementById("src-count").textContent = items.length + " links across " + list.querySelectorAll("details").length + " pages.";
+  inp.addEventListener("input", function () {
+    var q = inp.value.toLowerCase();
+    Array.prototype.forEach.call(list.querySelectorAll("details"), function (d) {
+      var any = false;
+      Array.prototype.forEach.call(d.querySelectorAll("li"), function (li) {
+        var hit = li.textContent.toLowerCase().indexOf(q) >= 0;
+        li.style.display = hit ? "" : "none"; if (hit) any = true;
+      });
+      d.style.display = any ? "" : "none";
+      if (q) d.open = any;
+    });
+  });
+};
+</script>
+</body>
+</html>

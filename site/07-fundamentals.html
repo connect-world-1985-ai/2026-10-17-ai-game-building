@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Game fundamentals — AI Game Building</title>
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%231f5fbf%22/%3E%3Cpath d=%22M3 9h4M5 7v4M10 8.5h1M12 10h1%22 stroke=%22white%22 stroke-width=%221.6%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
+</head>
+<body>
+<main><div class="content">
+
+<div class="kicker">Page 7 · How games work</div>
+<h1>Game fundamentals, for an engineer who has never made a game</h1>
+<p class="lead">A game is a real-time simulation that reads input, updates a world many times per second, and redraws it. Everything else (sprites, physics, menus, saving) hangs off that loop. This page explains each building block with diagrams and four toys you can play with, and ends with why these are exactly the places where agent-made games tend to fall short.</p>
+
+<div class="callout analogy"><span class="title">Mental model for a backend engineer</span>
+<p>Think of a game as a <b>server with a 16-millisecond SLA and one very picky client</b>. Each "request" is a frame: read input, advance the simulation by a time step, render. Miss the deadline and the client sees stutter. Unlike a web request, frames are not independent: a bug that moves an object 1 pixel too far each frame becomes a visible problem within a second. <span class="ev i">Inference</span></p></div>
+
+<h2>The game loop and delta time</h2>
+<p>Every game, from a Canvas toy to Unreal, runs some version of this loop. In the browser, <code>requestAnimationFrame</code> calls your function once per display refresh (usually 60 Hz, but 120 or 144 Hz on many laptops and gaming monitors) and pauses in background tabs. <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame">MDN: requestAnimationFrame</a> <span class="ev v">Verified</span></p>
+
+<figure class="diagram">
+<svg viewBox="0 0 760 230" role="img" aria-label="Game loop: input, update with fixed time step accumulator, render, repeat">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker>
+<marker id="ahl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrowhead-loop"/></marker></defs>
+<rect x="20" y="70" width="140" height="70" rx="8" class="box-accent"/><text x="90" y="100" text-anchor="middle" class="t-title">Read input</text><text x="90" y="120" text-anchor="middle" class="t-muted">keys, mouse, touch, pad</text>
+<rect x="220" y="40" width="250" height="130" rx="8" class="box-b"/><text x="345" y="64" text-anchor="middle" class="t-title">Update (simulate)</text>
+<text x="345" y="88" text-anchor="middle" class="t-muted">acc += frameTime</text>
+<text x="345" y="106" text-anchor="middle" class="t-muted">while acc ≥ 1/60:</text>
+<text x="345" y="124" text-anchor="middle" class="t-muted">physics, AI, rules (fixed dt)</text>
+<text x="345" y="142" text-anchor="middle" class="t-muted">acc −= 1/60</text>
+<rect x="530" y="70" width="140" height="70" rx="8" class="box-ok"/><text x="600" y="100" text-anchor="middle" class="t-title">Render</text><text x="600" y="120" text-anchor="middle" class="t-muted">draw at interpolated α</text>
+<path d="M160 105H218" class="line" marker-end="url(#ah)"/><path d="M470 105H528" class="line" marker-end="url(#ah)"/>
+<path d="M600 140 V200 H90 V142" class="line-loop" marker-end="url(#ahl)"/>
+<text x="345" y="218" text-anchor="middle" class="t-muted">next requestAnimationFrame (≈ 8–33 ms later, varies)</text>
+<text x="700" y="60" class="t-muted" text-anchor="middle">α = acc·60</text>
+</svg>
+<figcaption>The common "fixed timestep" loop: the simulation always advances in equal steps; rendering happens as often as the display allows and blends between the last two simulation states.</figcaption>
+</figure>
+
+<p><b>Delta time (dt)</b> is the time since the last frame. If you move an object "3 pixels per frame", it moves twice as fast on a 120 Hz screen as on a 60 Hz screen. Multiplying by dt ("180 pixels per <i>second</i> × dt") fixes speed, but a variable dt makes physics slightly different on every machine and can explode after a long pause. The usual answer is a <b>fixed timestep with an accumulator</b>: simulate in constant steps (for example 1/60 s or 1/120 s), render whenever a frame is due, and interpolate. This pattern is described in Glenn Fiedler's classic article <a href="https://gafferongames.com/post/fix_your_timestep/">"Fix Your Timestep!"</a> and in Robert Nystrom's <a href="https://gameprogrammingpatterns.com/game-loop.html">Game Programming Patterns: Game Loop</a>. <span class="ev p">Practice</span></p>
+
+<div id="demo-loop"><p class="muted">Interactive demo needs JavaScript.</p></div>
+
+<p>Try it: drag the frame rate down to 20 fps. The orange "per frame" ball slows to a third of its speed; the blue and green balls keep 180 px/s. Turn on lag spikes and switch off "Clamp dt": the delta-time ball teleports after each hitch, while the fixed-step ball catches up in several small steps. Fixed steps also make the simulation <b>deterministic</b> (same inputs give the same result), which matters for replays, networking and automated tests (see <a href="10-testing.html">page 10</a>). <span class="ev i">Inference</span></p>
+
+<pre><code>// minimal fixed-timestep loop (browser)
+const STEP = 1 / 120; let acc = 0, last = performance.now();
+function frame(now) {
+  acc += Math.min((now - last) / 1000, 0.25);  // clamp: avoid the "spiral of death"
+  last = now;
+  while (acc >= STEP) { update(STEP); acc -= STEP; }
+  render(acc / STEP);                           // interpolation factor 0..1
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);</code></pre>
+
+<h2>Input handling</h2>
+<p>Games usually <b>poll</b> input state once per update ("is Left held right now?") rather than reacting to each event, because the simulation runs on its own clock. Browser key events update a small <code>keys</code> map; the update reads it. Three details matter for feel: <span class="ev p">Practice</span></p>
+<ul>
+<li><b>Edges, not just levels.</b> "Jump" should fire when the key goes down, not every frame while it is held. Track "pressed this frame" separately from "held".</li>
+<li><b>Focus and default actions.</b> Arrow keys and Space scroll the page unless the game canvas has focus and calls <code>preventDefault()</code>. That is why the demos on this site ask you to click them first.</li>
+<li><b>Many devices.</b> Keyboard, mouse, touch (on-screen buttons) and gamepads (<a href="https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API">Gamepad API</a>, which must be polled each frame) should map to the same abstract actions: <code>left</code>, <code>right</code>, <code>jump</code>. Engines such as Godot call this an "input map". <span class="ev v">Verified</span></li>
+</ul>
+
+<h2>Organising the world: objects, components, ECS</h2>
+<p>A game world contains many things: the player, enemies, coins, bullets, particles. There are three common ways to structure them. None is "correct"; it depends on scale. <span class="ev p">Practice</span></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Pattern</th><th>Idea</th><th>Where you meet it</th><th>Agent angle</th></tr></thead>
+<tbody>
+<tr><td><b>Classes / inheritance</b></td><td><code>Enemy extends Entity</code>, each with <code>update()</code> and <code>draw()</code></td><td>Small Canvas games, Phaser <code>GameObject</code> subclasses, Pygame sprites</td><td>Easiest for an agent to write and for you to read; gets tangled past a few dozen types</td></tr>
+<tr><td><b>Node / component composition</b></td><td>An object is a tree of nodes or a bag of components (sprite, collider, script)</td><td>Godot (scene tree of nodes), Unity (GameObject + MonoBehaviour components)</td><td>Godot's scenes are text files (<code>.tscn</code>) an agent can edit; Unity scenes are YAML but noisy</td></tr>
+<tr><td><b>ECS (entity-component-system)</b></td><td>Entities are IDs; components are plain data; systems loop over all entities with given components</td><td>Bevy (Rust), Unity DOTS, libraries such as bitecs</td><td>Scales to thousands of objects and is very testable; more concepts to learn first</td></tr>
+</tbody></table></div>
+<p>Further reading: <a href="https://gameprogrammingpatterns.com/component.html">Component pattern</a> (Nystrom), <a href="https://bevy.org/learn/quick-start/getting-started/ecs/">Bevy's ECS introduction</a>.</p>
+
+<h2>State machines</h2>
+<p>Most game logic is "what am I doing now, and what can I switch to?". A <b>finite state machine</b> makes that explicit: a player is <i>idle</i>, <i>running</i>, <i>jumping</i>, <i>falling</i> or <i>dead</i>, and each state handles input differently. The same idea runs the whole game: <i>title → playing → paused → game over</i>. Without it, code fills up with flags like <code>isJumping && !isDead && !isPaused</code>, a classic source of bugs in quickly generated games. <a href="https://gameprogrammingpatterns.com/state.html">Game Programming Patterns: State</a> <span class="ev p">Practice</span></p>
+<figure class="diagram">
+<svg viewBox="0 0 760 210" role="img" aria-label="Player state machine: idle, run, jump, fall, dead">
+<defs><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker></defs>
+<rect x="30" y="80" width="110" height="46" rx="23" class="box-accent"/><text x="85" y="108" text-anchor="middle" class="t-title">Idle</text>
+<rect x="230" y="20" width="110" height="46" rx="23" class="box-accent"/><text x="285" y="48" text-anchor="middle" class="t-title">Run</text>
+<rect x="230" y="140" width="110" height="46" rx="23" class="box-b"/><text x="285" y="168" text-anchor="middle" class="t-title">Jump</text>
+<rect x="450" y="80" width="110" height="46" rx="23" class="box-b"/><text x="505" y="108" text-anchor="middle" class="t-title">Fall</text>
+<rect x="630" y="80" width="110" height="46" rx="23" class="box-warn"/><text x="685" y="108" text-anchor="middle" class="t-title">Dead</text>
+<path d="M130 86 L228 52" class="line" marker-end="url(#ah2)"/><text x="160" y="56" class="t-muted">move key</text>
+<path d="M232 60 L138 96" class="line" marker-end="url(#ah2)"/><text x="170" y="92" class="t-muted">release</text>
+<path d="M120 124 L232 156" class="line" marker-end="url(#ah2)"/><text x="138" y="158" class="t-muted">jump (or buffered)</text>
+<path d="M285 66 L285 138" class="line" marker-end="url(#ah2)"/><text x="292" y="106" class="t-muted">jump</text>
+<path d="M340 160 L452 116" class="line" marker-end="url(#ah2)"/><text x="380" y="160" class="t-muted">vy &gt; 0</text>
+<path d="M340 40 L452 92" class="line" marker-end="url(#ah2)"/><text x="360" y="50" class="t-muted">walk off ledge (coyote time)</text>
+<path d="M450 112 Q300 120 142 110" class="line" marker-end="url(#ah2)"/><text x="300" y="128" class="t-muted">land</text>
+<path d="M560 103 L628 103" class="line" marker-end="url(#ah2)"/><text x="565" y="96" class="t-muted">pit / hit</text>
+</svg>
+<figcaption>A player state machine for a platformer. "Coyote time" and "buffered jump" (explained in Game feel below) are special transitions.</figcaption>
+</figure>
+
+<h2>Collision and physics</h2>
+<p>Collision has two halves: <b>detection</b> (do these shapes overlap?) and <b>response</b> (what happens: push apart, bounce, take damage, collect). Most 2D games use simple shapes: axis-aligned bounding boxes (AABB), circles, and tile grids. Rotated polygons use the separating axis theorem (SAT). Many objects also need a <b>broad phase</b>, such as a spatial grid, so you do not test every pair. <a href="https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection">MDN: 2D collision detection</a> <span class="ev v">Verified</span></p>
+<div id="demo-collision"><p class="muted">Interactive demo needs JavaScript.</p></div>
+<p>The tunneling tab shows a real, common bug: a fast object moves 30 pixels per frame and a wall is 10 pixels thick, so most frames simply never overlap the wall. Fixes are <b>sub-stepping</b> (split each move into small steps), <b>swept tests / ray casts</b>, or a physics engine's <b>continuous collision detection (CCD)</b>. Rapier, for example, documents CCD as an opt-in per body. <a href="https://rapier.rs/docs/user_guides/javascript/rigid_body_ccd/">Rapier docs: CCD</a> <span class="ev v">Verified</span></p>
+<h3>Physics engine or hand-written movement?</h3>
+<p>A physics engine (Rapier, Box2D, Matter.js, cannon-es) simulates forces, mass, friction and joints. That is great for stacking crates, ragdolls, pinball, or a car with suspension. But platformer heroes usually use a <b>kinematic controller</b>: hand-written velocity and collision rules, because players expect instant, unrealistic control (stop on a dime, change direction mid-air). Both Godot (<code>CharacterBody2D</code>) and Unity (<code>CharacterController</code>) ship kinematic controllers for exactly this reason. The platformer demos on this site use a hand-written controller. <span class="ev p">Practice</span></p>
+
+<h2>Tilemaps</h2>
+<p>Levels in 2D games are usually <b>grids of tile indices</b>: <code>0</code> = empty, <code>1</code> = grass top, <code>2</code> = dirt, and so on. Each index points into a tileset image. Collision can come straight from the grid ("is tile (x, y) solid?"), which is cheap and has none of the tunneling problems of free shapes at normal speeds. Editors such as <a href="https://www.mapeditor.org/">Tiled</a> and <a href="https://ldtk.io/">LDtk</a> save maps as JSON or XML that engines import (see <a href="05-engines.html#tile-and-level-editors">page 5</a>). <span class="ev v">Verified</span></p>
+<figure class="diagram">
+<svg viewBox="0 0 760 170" role="img" aria-label="A level as text, as tile indices, and as drawn tiles">
+<rect x="10" y="10" width="230" height="150" rx="8" class="box"/><text x="125" y="32" text-anchor="middle" class="t-title">1. Level as text (agent writes this)</text>
+<text x="28" y="62" style="font-family:var(--mono);font-size:13px">"      o o     "</text>
+<text x="28" y="82" style="font-family:var(--mono);font-size:13px">"     B?B?B    "</text>
+<text x="28" y="102" style="font-family:var(--mono);font-size:13px">"  P      e  F "</text>
+<text x="28" y="122" style="font-family:var(--mono);font-size:13px">"##############"</text>
+<rect x="265" y="10" width="230" height="150" rx="8" class="box"/><text x="380" y="32" text-anchor="middle" class="t-title">2. Parsed into a grid</text>
+<text x="282" y="62" style="font-family:var(--mono);font-size:13px">0 0 0 0 0 0 0 0 0 0</text>
+<text x="282" y="82" style="font-family:var(--mono);font-size:13px">0 0 0 5 6 5 6 5 0 0</text>
+<text x="282" y="102" style="font-family:var(--mono);font-size:13px">0 0 0 0 0 0 0 0 0 0</text>
+<text x="282" y="122" style="font-family:var(--mono);font-size:13px">1 1 1 1 1 1 1 1 1 1</text>
+<text x="282" y="146" class="t-muted">+ entity list: player, enemy, flag</text>
+<rect x="520" y="10" width="230" height="150" rx="8" class="box"/><text x="635" y="32" text-anchor="middle" class="t-title">3. Drawn with any art</text>
+<rect x="540" y="110" width="190" height="18" class="box-c"/><rect x="540" y="110" width="190" height="5" class="box-ok"/>
+<rect x="590" y="66" width="18" height="18" class="box-a"/><rect x="608" y="66" width="18" height="18" class="box-c"/><rect x="626" y="66" width="18" height="18" class="box-a"/><rect x="644" y="66" width="18" height="18" class="box-c"/><rect x="662" y="66" width="18" height="18" class="box-a"/>
+<rect x="556" y="90" width="12" height="18" class="box-warn"/><rect x="690" y="96" width="14" height="12" class="box-d"/><path d="M722 110V70" class="line"/>
+<text x="635" y="148" text-anchor="middle" class="t-muted">shapes, emoji or a sprite sheet</text>
+</svg>
+<figcaption>The platformer demos on this site store their level exactly like panel 1. Levels as plain text or JSON are easy for an agent to generate, diff and fix.</figcaption>
+</figure>
+
+<h2>Cameras</h2>
+<p>A camera decides which part of the world is on screen. Good cameras are subtle: <span class="ev p">Practice</span></p>
+<ul>
+<li><b>Smoothing:</b> move a fraction of the remaining distance each frame (<code>cam += (target − cam) × (1 − e<sup>−k·dt</sup>)</code>), so the view eases instead of snapping. Write it with <code>dt</code> or it behaves differently at 144 Hz.</li>
+<li><b>Look-ahead and dead zone:</b> show more space in the direction of travel; ignore small movements so the screen does not jitter.</li>
+<li><b>Bounds:</b> never show outside the level.</li>
+<li><b>3D chase camera:</b> follow behind and above the car, lag slightly in turns, look at a point ahead of the car. Try toggling smoothing in the <a href="09-racing.html#play-the-mini-racer">racer demo</a>.</li>
+</ul>
+<p>Itay Keren's GDC 2015 talk <a href="https://www.youtube.com/watch?v=pdvCO97jOQk">"How Cameras in Side-Scrollers Work"</a> (also known as "Scroll Back") is the standard reference for 2D cameras. <span class="ev p">Practice</span></p>
+
+<h2>Sprite animation</h2>
+<p>2D animation is usually a <b>flipbook</b>: a sprite sheet holds frames in a grid; the game shows frame <i>n</i> for some milliseconds, then frame <i>n+1</i>. The current animation is chosen by the state machine (idle, run, jump). Flipping the image horizontally gives a left-facing version for free. Many frames are packed into one <b>texture atlas</b> so the GPU can draw them in one batch. <span class="ev p">Practice</span></p>
+<p>This is the hardest asset type for AI image generation: a model must draw the <i>same</i> character in 6–12 poses with matching proportions, palette and pixel grid. <a href="02-ai-images.html">Page 2</a> covers the tools that try. In the platformer demo the CC0 sprite mode uses two Kenney frames for the walk cycle; the code-drawn mode fakes motion with a small bob. <span class="ev i">Inference</span></p>
+
+<h2>Enemy AI</h2>
+<p>"Game AI" has little to do with machine learning. It is mostly simple rules that create readable, fair behaviour: <span class="ev p">Practice</span></p>
+<ul>
+<li><b>Patrol:</b> walk until a wall or ledge, turn around (the demo's purple enemies do exactly this).</li>
+<li><b>State machines:</b> patrol → notice player → chase → attack → return.</li>
+<li><b>Behaviour trees:</b> composable decision trees used in larger games (Unreal has a built-in editor).</li>
+<li><b>Steering behaviours:</b> seek, flee, arrive, avoid, used for flocks and racing opponents following a racing line.</li>
+<li><b>Pathfinding:</b> A* on a grid or navigation mesh. <a href="https://www.redblobgames.com/pathfinding/a-star/introduction.html">Red Blob Games: Introduction to A*</a> is the best visual explanation.</li>
+</ul>
+<p>The design goal is "fun to play against", not "optimal". An enemy that always aims perfectly is frustrating. Agents happily generate clever AI, but tuning it to be fair requires playing. <span class="ev i">Inference</span></p>
+
+<h2>Level design</h2>
+<p>Good levels teach one idea at a time in a safe place, then test it with danger, then twist it. A common shorthand is "introduce, develop, twist, conclude", widely discussed in analyses of Nintendo's level design, for example <a href="https://www.youtube.com/watch?v=dBmIkEvEBtA">Game Maker's Toolkit on Super Mario 3D World</a>. <span class="ev p">Practice</span></p>
+<p>For agent-built games the practical advice is: keep levels as <b>data</b> (text grids, JSON, Tiled files), not as code; ask for a level <b>validator</b> (is every gap jumpable with the current jump height? is the goal reachable?), and design the first level yourself or with the agent in small steps. Procedural levels (random rooms, noise terrain) are easy to generate but hard to make interesting. <span class="ev i">Inference</span></p>
+
+<h2>UI, menus, saving and audio</h2>
+<div class="cards">
+<div class="card"><h4>UI and menus</h4><p>HUD (score, health), title screen, pause, settings, game over. On the web you can draw UI on the canvas or put HTML on top; HTML is easier for agents and screen readers. Plan for different screen sizes from the start.</p></div>
+<div class="card"><h4>Saving</h4><p>Serialize state to JSON with a version number. Browsers: <code>localStorage</code> or IndexedDB. Some browsers restrict storage for pages opened from <code>file://</code>, so test saves on the real host. Desktop engines write files to a user data folder.</p></div>
+<div class="card"><h4>Audio</h4><p>Browsers block sound until the user interacts (autoplay policy), so start the <code>AudioContext</code> on the first click or key. Keep separate volumes for music and effects, and limit how many copies of one effect play at once. <a href="https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Autoplay">MDN autoplay guide</a></p></div>
+</div>
+<p class="small muted">The card statements are standard practice; the autoplay policy is documented by MDN. <span class="ev v">Verified</span> <span class="ev p">Practice</span></p>
+
+<h2>Game feel ("juice")</h2>
+<p>Two games with identical rules can feel completely different. "Game feel" is the moment-to-moment sense of control: how quickly the hero responds, how forgiving jumps are, how impacts land. The vocabulary comes from Steve Swink's book <i>Game Feel</i> (2008) and the talk <a href="https://www.youtube.com/watch?v=Fy0aCDmgnxg">"Juice it or lose it"</a> (Martin Jonasson and Petri Purho, 2012). Platformer techniques are well documented by their designers, for example Maddy Thorson's <a href="https://maddythorson.medium.com/celeste-forgiveness-31e4a40399f1">"Celeste &amp; Forgiveness"</a>, and Kyle Pittman's GDC talk <a href="https://www.youtube.com/watch?v=hG9SzQxaCm8">"Building a Better Jump"</a>. <span class="ev p">Practice</span></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Technique</th><th>What it does</th><th>Typical value</th></tr></thead>
+<tbody>
+<tr><td><b>Acceleration / deceleration</b></td><td>Speed ramps up and down instead of switching instantly; extra "skid" deceleration when reversing</td><td>Reach top speed in ~0.1–0.2 s</td></tr>
+<tr><td><b>Coyote time</b></td><td>You can still jump for a short moment after running off a ledge</td><td>~0.05–0.15 s (demo: 0.10 s)</td></tr>
+<tr><td><b>Jump buffering</b></td><td>A jump pressed slightly before landing still happens on landing</td><td>~0.1–0.15 s (demo: 0.12 s)</td></tr>
+<tr><td><b>Variable jump height</b></td><td>Releasing jump early cuts upward speed: tap = small hop, hold = full jump</td><td>Multiply upward speed by ~0.4–0.5 on release</td></tr>
+<tr><td><b>Screen shake, hit-stop, particles</b></td><td>Small camera jolts, a few frozen frames, or bursts of particles sell impacts</td><td>2–6 px, 0.1–0.3 s</td></tr>
+<tr><td><b>Squash and stretch</b></td><td>Sprites deform on jump and land</td><td>10–20 %</td></tr>
+</tbody></table></div>
+<p class="small muted">Values are typical ranges from the talks and articles above and from the demo's own tuning, not standards. <span class="ev i">Inference</span></p>
+
+<div id="demo-feel"><p class="muted">Interactive demo needs JavaScript.</p></div>
+<p>How to test it: press <b>All off</b> and try to jump at the very edge of a ledge, or press jump just before landing. Many jumps are "eaten". Then press <b>All on</b>: the HUD tells you each time coyote time or the jump buffer saved you. Players rarely notice these features, but they notice when they are missing. <span class="ev i">Inference</span></p>
+
+<h2>Why agent-made games often fall short here</h2>
+<p>Coding agents are good at the parts of games that look like ordinary software: a loop, classes, a tile parser, a menu. The weak spots are where quality is <b>felt over time</b> rather than visible in one screenshot or one test. This is the author's synthesis from the fundamentals above and from the examples on <a href="11-one-prompt-truth.html">page 11</a>. <span class="ev i">Inference</span></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Area</th><th>Typical agent result</th><th>Why</th><th>What to ask the agent for</th></tr></thead>
+<tbody>
+<tr><td>Loop and timing</td><td>Movement per frame, no dt; runs 2× fast on 120 Hz screens</td><td>Developed and judged on one machine</td><td>"Fixed timestep 1/120 with accumulator; dt clamped"</td></tr>
+<tr><td>Feel</td><td>Instant velocity, no coyote time or buffer, floaty gravity</td><td>Screenshots cannot show feel; models default to the simplest physics</td><td>"Expose all movement constants in one config object; add coyote time, jump buffer, variable jump"</td></tr>
+<tr><td>Collision</td><td>Sticking to walls, falling through floors at high speed, corner snagging</td><td>Edge cases appear only with specific timing</td><td>"Axis-separated tile collision; unit tests for corner cases; debug hitbox overlay"</td></tr>
+<tr><td>State</td><td>Boolean flag soup; double jumps after death; music keeps playing on game over</td><td>Features are bolted on prompt by prompt</td><td>"Explicit state machines for player and game; a reset() that restores everything"</td></tr>
+<tr><td>Levels</td><td>Unreachable platforms, impossible gaps, boring layouts</td><td>The model cannot "play" its level</td><td>"Levels as data plus a reachability validator using the actual jump physics"</td></tr>
+<tr><td>Camera</td><td>Rigid snap, jitter, shows outside the map</td><td>Looks fine in a still frame</td><td>"Smoothed follow with look-ahead and bounds, frame-rate independent"</td></tr>
+<tr><td>Difficulty and fun</td><td>Too easy or impossible; enemies unfair</td><td>Needs a human player</td><td>You play 5 minutes after every change and describe what felt wrong</td></tr>
+</tbody></table></div>
+
+<p class="page-meta">Page written 2026-10-17. Links checked the same day.</p>
+</div></main>
+<script src="assets/js/site.js"></script>
+<script src="assets/js/demos.js"></script>
+<script>
+GameDemos.loopToy(document.getElementById("demo-loop"), { id: "loop" });
+GameDemos.collisionToy(document.getElementById("demo-collision"), { id: "collision", note: "Boxes and circles: drag the green shape. Tunneling: change speed and wall thickness, then turn on the swept test." });
+GameDemos.platformer(document.getElementById("demo-feel"), { id: "feel", mode: "feel", title: "Game feel toggles (same level, same art)", note: "Click the game, then play. Turn techniques off and on to feel the difference. Art: code-drawn (no files)." });
+</script>
+</body>
+</html>

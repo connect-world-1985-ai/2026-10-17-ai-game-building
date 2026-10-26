@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 3D models, rigging and animation — AI Game Building</title>
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%231f5fbf%22/%3E%3Cpath d=%22M3 9h4M5 7v4M10 8.5h1M12 10h1%22 stroke=%22white%22 stroke-width=%221.6%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
+</head>
+<body>
+<main><div class="content">
+
+<div class="kicker">Page 3 · Where assets come from</div>
+<h1>AI 3D: text or image to mesh, rigging, animation</h1>
+<p class="lead">Text-to-3D and image-to-3D services now return a textured model in under a minute for cents to tens of cents. The catch is what comes out: dense, triangulated meshes with lighting painted into the texture and no skeleton. This page covers the services, the open models, rigging, the quality gap for real-time games, and the procedural alternative that coding agents handle best.</p>
+
+<div class="callout key"><span class="title">Summary</span>
+<p>For a first 3D game: build with <b>code primitives</b> (boxes, cylinders, extrusions) and <b>CC0 kits</b> (Kenney, Quaternius), animate humanoids with <b>Mixamo</b>, and use AI 3D only for <b>static props</b> you are willing to clean up. A generated asset costs cents; the real cost is the cleanup time. <span class="ev i">Inference</span> based on the evidence below.</p></div>
+
+<h2>Start with code: procedural 3D</h2>
+<p>A language model writes three.js fluently. A car made of boxes and cylinders, trees made of cones, a track made from a spline: all of this is plain code, needs no files and carries no licence risk. The mini racer on <a href="09-racing.html">page 9</a> is built exactly this way, with zero model files. <span class="ev v">Verified</span> (our own demo)</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Technique</th><th>Tool</th><th>Good for</th></tr></thead>
+<tbody>
+<tr><td>Primitive scenes</td><td><a href="https://threejs.org">three.js</a> geometries (116,536 stars, MIT)</td><td>Low-poly vehicles, buildings, props</td></tr>
+<tr><td>Boolean modelling</td><td><a href="https://github.com/gkjohnson/three-bvh-csg">three-bvh-csg</a> (MIT), <a href="https://github.com/elalish/manifold">Manifold</a> (Apache-2.0)</td><td>Doors, windows, holes by subtraction</td></tr>
+<tr><td>Signed distance fields</td><td>Shader code, see <a href="https://iquilezles.org/articles/distfunctions/">Inigo Quilez's SDF reference</a></td><td>Whole scenes in ~100 lines of GLSL (harder for agents, see page 1)</td></tr>
+<tr><td>Blender scripting</td><td><code>blender -b -P script.py</code> or Blender MCP</td><td>Modifiers, bakes, exports driven by the agent</td></tr>
+</tbody></table></div>
+<p class="small muted">GitHub numbers from the API, 2026-10-17. <span class="ev v">Verified</span></p>
+
+<h2>Hosted text/image-to-3D services</h2>
+<div class="table-wrap"><table data-sortable>
+<thead><tr><th data-sort>Service</th><th data-sort>Price (2026-10-17)</th><th>Approx. per textured model</th><th>Free-tier licence</th><th>Agent access</th></tr></thead>
+<tbody>
+<tr><td><b>Meshy</b> (meshy-7.1)</td><td>Free 100 credits/month; Pro $20 (1,000 credits)</td><td>≈ $0.60 on Pro (30 credits)</td><td><b>CC BY 4.0</b>: commercial use OK with credit "Model created with Meshy – CC BY 4.0 License"</td><td>REST (paid plan), official MCP server</td></tr>
+<tr><td><b>Tripo</b> (H3.1, P1)</td><td>Free 200 credits/month; API $0.01 per credit</td><td>≈ $0.20–0.50</td><td><b>Non-commercial</b> (public models)</td><td>REST; MCP in alpha via Blender add-on</td></tr>
+<tr><td><b>Rodin / Hyper3D</b></td><td>Creator $24/month; API only on Business ($96–120/month)</td><td>≈ $0.50–0.75</td><td>Unclear</td><td>REST; reachable through Blender MCP</td></tr>
+<tr><td><b>Tencent HY 3D Global</b> (hosted Hunyuan3D 3.x)</td><td>$0.02 per credit pay-as-you-go</td><td>≈ $0.50</td><td>Hosted terms not read</td><td>Tencent Cloud API</td></tr>
+<tr><td><b>Stability SF3D / SPAR3D</b></td><td>10 / 4 credits at $0.01</td><td>$0.10 / $0.04</td><td>Community licence, under $1M revenue</td><td>REST</td></tr>
+<tr><td><b>Autodesk Wonder 3D</b></td><td>Free 300 credits/month, 20 per generation</td><td>≈ 15 free per month</td><td>Not read</td><td>Web UI only</td></tr>
+<tr><td><b>Kaedim</b></td><td>Indie $400/month</td><td>AI plus human artists</td><td>—</td><td>Enterprise API</td></tr>
+</tbody></table></div>
+<p class="small muted">Sources: <a href="https://www.meshy.ai/pricing">Meshy pricing</a>, <a href="https://help.meshy.ai/en/articles/16102098-can-i-use-meshy-assets-commercially">Meshy commercial-use article</a> (re-read by the author 2026-10-17), <a href="https://docs.tripo3d.ai/get-started/pricing.html">Tripo pricing</a>, <a href="https://www.tripo3d.ai/help/privacy-policy/how-to-use-tripo-models-commercially">Tripo commercial use</a>, <a href="https://docs.hyper3d.ai/en/api-specification/rodin-gen2">Rodin docs</a>, <a href="https://www.tencentcloud.com/document/product/1281/74121">Tencent HY 3D</a>, <a href="https://platform.stability.ai/pricing">Stability pricing</a>, <a href="https://blogs.autodesk.com/media-and-entertainment/2026/09/28/autodesk-flow-studio-pricing-and-subscription-guide/">Autodesk</a>. Dollar-per-model figures are derived from credit tables. <span class="ev v">Verified</span> (credits) / <span class="ev i">Inference</span> (dollars)</p>
+<div class="callout warn"><span class="title">The market is consolidating</span>
+<p>Luma Genie was sunset on 2026-01-01 and CSM Cube shut down on 2026-01-05, deleting user data. Download and back up everything you generate; do not rely on a vendor library as your asset store. <span class="ev v">Verified</span> (Luma App Store note) / <span class="ev p">Practice</span> (CSM, second-hand notice)</p></div>
+
+<h2>Open-weight models</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Model</th><th>Licence</th><th>Hardware</th><th>Note</th></tr></thead>
+<tbody>
+<tr><td><a href="https://github.com/microsoft/TRELLIS.2">Microsoft TRELLIS.2</a></td><td>MIT (code and model, per README)</td><td>NVIDIA GPU with 24 GB or more; "tested only on Linux"</td><td>Full PBR output. Not a laptop tool on Windows. <span class="ev v">Verified</span></td></tr>
+<tr><td><a href="https://github.com/VAST-AI-Research/TripoSR">TripoSR</a></td><td>MIT</td><td>Light</td><td>Fast single-image mesh, vertex colours. <span class="ev v">Verified</span></td></tr>
+<tr><td><a href="https://github.com/Tencent-Hunyuan/Hunyuan3D-2.1">Tencent Hunyuan3D 2.x</a></td><td>Tencent community licence</td><td>About 29 GB VRAM for shape + texture</td><td><b>The licence "does not apply in the European Union, United Kingdom and South Korea"</b>, and also forbids using the <i>Output</i> outside its territory. <span class="ev v">Verified</span> (licence text)</td></tr>
+<tr><td><a href="https://github.com/Stability-AI/stable-fast-3d">Stable Fast 3D</a></td><td>Stability Community licence (registration, under $1M revenue)</td><td>Gated weights</td><td><span class="ev v">Verified</span></td></tr>
+</tbody></table></div>
+<div class="callout warn"><span class="title">For readers in the EU</span>
+<p>Do not use the open Hunyuan3D weights for a game you plan to distribute in the EU, UK or South Korea: the licence explicitly excludes those territories, including for outputs. What that means legally in a dispute is a question for a lawyer; the text itself is clear. <span class="ev v">Verified</span> (text) / <span class="ev u">Unverified</span> (legal effect)</p></div>
+
+<h2>Rigging and animation</h2>
+<p>A static mesh is not a character. To walk, it needs a skeleton, skin weights and animation clips.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Tool</th><th>Terms</th><th>Limits</th></tr></thead>
+<tbody>
+<tr><td><a href="https://www.mixamo.com">Mixamo</a> (Adobe)</td><td>Free with an Adobe ID; characters and animations royalty-free in commercial games</td><td><b>Bipedal humanoids only</b>; do not redistribute raw files. <span class="ev v">Verified</span></td></tr>
+<tr><td>Meshy auto-rig</td><td>5 credits rig, 3 per animation (API)</td><td>Humanoid only; at most 300,000 faces. <span class="ev v">Verified</span></td></tr>
+<tr><td>Tripo auto-rig</td><td>25 credits rig, 10 per retarget</td><td>Skeleton coverage not documented. <span class="ev v">Verified</span> (prices)</td></tr>
+<tr><td>AccuRIG 2 (Reallusion)</td><td>Free desktop rigger</td><td>Commercial use confirmed only by a staff forum answer. <span class="ev p">Practice</span></td></tr>
+<tr><td>Text-to-motion (HY-Motion, MDM)</td><td>Research or restricted licences</td><td>HY-Motion has the same EU/UK/Korea exclusion. <span class="ev v">Verified</span></td></tr>
+</tbody></table></div>
+<p><b>Gap:</b> animals, creatures and vehicles have no good automatic rigging path; the mainstream tools are humanoid-only. Vehicles usually do not need a skeleton (wheels just rotate), which is one reason a racing game is easier in 3D than a creature game. <span class="ev v">Verified</span> (humanoid-only) / <span class="ev i">Inference</span> (racing remark)</p>
+
+<h2>The quality gap for real-time games</h2>
+<figure class="diagram">
+<svg viewBox="0 0 760 190" role="img" aria-label="Cleanup pipeline for generated 3D models">
+<defs><marker id="ah4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker></defs>
+<rect x="10" y="40" width="110" height="70" rx="8" class="box-accent"/><text x="65" y="70" text-anchor="middle" class="t-title">Generate</text><text x="65" y="90" text-anchor="middle" class="t-muted">GLB, ~1 min</text>
+<rect x="135" y="40" width="110" height="70" rx="8" class="box"/><text x="190" y="70" text-anchor="middle" class="t-title">Inspect</text><text x="190" y="90" text-anchor="middle" class="t-muted">tris, scale, holes</text>
+<rect x="260" y="40" width="110" height="70" rx="8" class="box-warn"/><text x="315" y="70" text-anchor="middle" class="t-title">Retopo</text><text x="315" y="90" text-anchor="middle" class="t-muted">or decimate</text>
+<rect x="385" y="40" width="110" height="70" rx="8" class="box-warn"/><text x="440" y="70" text-anchor="middle" class="t-title">Re-UV + bake</text><text x="440" y="90" text-anchor="middle" class="t-muted">normal, colour</text>
+<rect x="510" y="40" width="110" height="70" rx="8" class="box"/><text x="565" y="70" text-anchor="middle" class="t-title">Rig</text><text x="565" y="90" text-anchor="middle" class="t-muted">if animated</text>
+<rect x="635" y="40" width="115" height="70" rx="8" class="box-ok"/><text x="692" y="70" text-anchor="middle" class="t-title">Engine</text><text x="692" y="90" text-anchor="middle" class="t-muted">LOD, collision</text>
+<path d="M120 75H133" class="line" marker-end="url(#ah4)"/><path d="M245 75H258" class="line" marker-end="url(#ah4)"/><path d="M370 75H383" class="line" marker-end="url(#ah4)"/><path d="M495 75H508" class="line" marker-end="url(#ah4)"/><path d="M620 75H633" class="line" marker-end="url(#ah4)"/>
+<text x="380" y="150" text-anchor="middle" class="t-muted">Orange steps are skilled 3D work. Blender add-ons such as MeshPrep automate parts of it.</text>
+</svg>
+<figcaption>The usual path from a generated model to a game-ready asset, as described by the AIGAMEDEV wiki pipeline page.</figcaption>
+</figure>
+<div class="table-wrap"><table>
+<thead><tr><th>Finding</th><th>Evidence</th></tr></thead>
+<tbody>
+<tr><td>A practice-led study of a stylized tavern scene: AI-assisted pipeline (Meshy 6 + Hunyuan 3D) took <b>238 minutes</b> versus <b>716 minutes</b> by hand in Blender, but one AI scene had <b>32.8 million triangles for 103 objects</b> against 294 thousand for 123 hand-made objects (about 111.6× more), plus fragmented UVs and texture loss when decimated.</td><td><a href="https://doi.org/10.55677/ijhrsss/15-2026-vol03i06">IJHRSSS 2026</a>, one scene, not generalizable. <span class="ev v">Verified</span> (results read)</td></tr>
+<tr><td>Typical output: dense triangles, topology that follows appearance rather than deformation, lighting baked into the colour texture, internal faces and floating parts that differ between runs.</td><td><a href="https://www.aigamedevs.org/wiki/text-to-3d-pipeline/">AIGAMEDEV wiki</a>, <a href="https://wavect.io/blog/ai-3d-model-generators-game-development-2026/">Wavect</a>. <span class="ev p">Practice</span></td></tr>
+<tr><td>Benchmarks of 3D generators rarely measure topology, UVs, rigs or engine import, so they "overestimate readiness".</td><td><a href="https://arxiv.org/html/2604.23629v1">arXiv 2604.23629 survey</a>. <span class="ev v">Verified</span></td></tr>
+<tr><td>Vendors expose polycount controls: Tripo P1 face limit 50–20,000 "built for game assets"; Tripo quad mode; Meshy remesh.</td><td>Vendor docs. <span class="ev v">Verified</span></td></tr>
+</tbody></table></div>
+<p>A web or mobile game typically budgets thousands to low tens of thousands of triangles for an important prop. Default high-detail outputs are one to three orders of magnitude above that, so always set a face limit when the API offers one. <span class="ev p">Practice</span></p>
+
+<h2>How an agent drives 3D tools</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Project</th><th>Stars</th><th>What the agent gets</th></tr></thead>
+<tbody>
+<tr><td><a href="https://github.com/ahujasid/mcp-for-blender">MCP for Blender</a> (renamed from blender-mcp)</td><td class="n">31,344</td><td>Control Blender; one-call generate and import with Tripo, Hunyuan3D or Rodin; search and import from Poly Haven, Sketchfab, Poly Pizza. Third-party, not made by the Blender project.</td></tr>
+<tr><td><a href="https://github.com/CoplayDev/unity-mcp">MCP for Unity</a> (Coplay)</td><td class="n">15,046</td><td>Unity editor control plus a <code>generate_model</code> tool for Tripo, Meshy or fal</td></tr>
+<tr><td><a href="https://github.com/Coding-Solo/godot-mcp">Godot MCP</a> (Coding-Solo)</td><td class="n">6,130</td><td>Launch the editor, run the project, read debug output, edit scenes</td></tr>
+<tr><td><a href="https://github.com/meshy-dev/meshy-mcp-server">Meshy MCP server</a></td><td class="n">62</td><td>Generate, poll, download; on Windows wrap with <code>cmd /c npx</code></td></tr>
+</tbody></table></div>
+<p class="small muted">Stars re-checked by the author with the GitHub API on 2026-10-17. <span class="ev v">Verified</span></p>
+<p>A pattern that works: <b>generate through an API or MCP → GLB file on disk → Blender (headless or via MCP) for cleanup → export GLB → engine import</b>. glTF/GLB is the format every tool above reads. <span class="ev p">Practice</span></p>
+
+<p class="page-meta">Page written 2026-10-17.</p>
+</div></main>
+<script src="assets/js/site.js"></script>
+</body>
+</html>

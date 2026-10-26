@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where game art and audio come from — AI Game Building</title>
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%231f5fbf%22/%3E%3Cpath d=%22M3 9h4M5 7v4M10 8.5h1M12 10h1%22 stroke=%22white%22 stroke-width=%221.6%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
+</head>
+<body>
+<main><div class="content">
+
+<div class="kicker">Page 1 · Where assets come from</div>
+<h1>Where the art and audio come from</h1>
+<p class="lead">A coding agent writes text. A game also needs pictures, animation, 3D models, sound effects and music. This page sorts every realistic source into five families, says exactly what a language model can produce on its own, and shows how an agent reaches the tools that produce the rest. The demo lets you switch the same level between three art strategies.</p>
+
+<div class="callout key"><span class="title">The short answer</span>
+<p>A language model on its own outputs <b>text</b>: code, SVG, shader source, JSON, pixel grids written as numbers. With that it can draw simple shapes, icons, UI, procedural textures and synthesized sound, all from code. Anything that needs real pixels or audio samples (painted sprites, textured 3D models, recorded or generated music) comes from a <b>file you download</b> or from <b>another model the agent calls</b> through an API, an MCP server or a command-line tool. <span class="ev v">Verified</span> for the "text only" part (that is what these models emit); the rest is <span class="ev p">Practice</span>.</p></div>
+
+<h2>The five families of asset sources</h2>
+<figure class="diagram">
+<svg viewBox="0 0 760 300" role="img" aria-label="Five asset source families arranged from cheapest and most controllable to most expensive and least controllable">
+<defs><marker id="ah1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker></defs>
+<rect x="10" y="30" width="140" height="150" rx="8" class="box-ok"/>
+<text x="80" y="56" text-anchor="middle" class="t-title">1 · Drawn by code</text>
+<text x="80" y="80" text-anchor="middle" class="t-muted">Canvas shapes, SVG</text>
+<text x="80" y="96" text-anchor="middle" class="t-muted">emoji, procedural</text>
+<text x="80" y="112" text-anchor="middle" class="t-muted">shaders, WebAudio</text>
+<text x="80" y="140" text-anchor="middle" class="t-muted">LLM alone</text>
+<text x="80" y="156" text-anchor="middle" class="t-muted">$0, no licence risk</text>
+<rect x="160" y="30" width="140" height="150" rx="8" class="box-a"/>
+<text x="230" y="56" text-anchor="middle" class="t-title">2 · Free packs</text>
+<text x="230" y="80" text-anchor="middle" class="t-muted">Kenney, OpenGameArt</text>
+<text x="230" y="96" text-anchor="middle" class="t-muted">itch.io, Quaternius</text>
+<text x="230" y="112" text-anchor="middle" class="t-muted">Poly Haven, freesound</text>
+<text x="230" y="140" text-anchor="middle" class="t-muted">agent downloads files</text>
+<text x="230" y="156" text-anchor="middle" class="t-muted">check licence per item</text>
+<rect x="310" y="30" width="140" height="150" rx="8" class="box-b"/>
+<text x="380" y="56" text-anchor="middle" class="t-title">3 · AI images</text>
+<text x="380" y="80" text-anchor="middle" class="t-muted">GPT Image, Nano Banana</text>
+<text x="380" y="96" text-anchor="middle" class="t-muted">FLUX, Recraft, Ideogram</text>
+<text x="380" y="112" text-anchor="middle" class="t-muted">PixelLab, Retro Diffusion</text>
+<text x="380" y="140" text-anchor="middle" class="t-muted">API / MCP / CLI</text>
+<text x="380" y="156" text-anchor="middle" class="t-muted">≈ $0.01–0.25 per image</text>
+<rect x="460" y="30" width="140" height="150" rx="8" class="box-c"/>
+<text x="530" y="56" text-anchor="middle" class="t-title">4 · AI 3D</text>
+<text x="530" y="80" text-anchor="middle" class="t-muted">Meshy, Tripo, Hunyuan3D</text>
+<text x="530" y="96" text-anchor="middle" class="t-muted">TRELLIS, Blender MCP</text>
+<text x="530" y="112" text-anchor="middle" class="t-muted">Mixamo for rigging</text>
+<text x="530" y="140" text-anchor="middle" class="t-muted">API / MCP / GPU</text>
+<text x="530" y="156" text-anchor="middle" class="t-muted">heavy meshes, cleanup</text>
+<rect x="610" y="30" width="140" height="150" rx="8" class="box-d"/>
+<text x="680" y="56" text-anchor="middle" class="t-title">5 · Audio</text>
+<text x="680" y="80" text-anchor="middle" class="t-muted">jsfxr, ZzFX (code)</text>
+<text x="680" y="96" text-anchor="middle" class="t-muted">free libraries</text>
+<text x="680" y="112" text-anchor="middle" class="t-muted">ElevenLabs, Lyria</text>
+<text x="680" y="140" text-anchor="middle" class="t-muted">code or API</text>
+<text x="680" y="156" text-anchor="middle" class="t-muted">music is the hard part</text>
+<path d="M20 220H740" class="line" marker-end="url(#ah1)"/>
+<text x="20" y="245" class="t-muted">more control, deterministic, free</text>
+<text x="740" y="245" text-anchor="end" class="t-muted">richer look, but cost, drift, licence questions</text>
+<text x="380" y="280" text-anchor="middle" class="t-muted">Most real projects mix families: code for UI and effects, a free pack for the base look, AI for the gaps.</text>
+</svg>
+<figcaption>Five families of asset sources. Price ranges are from the vendor pages summarized on pages 2–4 (checked 2026-10-17).</figcaption>
+</figure>
+
+<h2>What a language model can output on its own</h2>
+<p>"On its own" means: no image model, no download, just the text the model writes into files. Everything in the first column is produced by the same model that writes your game code.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Output</th><th>Realistic quality (Oct 2026)</th><th>Good for</th><th>Evidence</th></tr></thead>
+<tbody>
+<tr><td><b>Canvas / WebGL drawing code</b></td><td>Reliable for geometric shapes, gradients, particles, parallax layers</td><td>Placeholder art, effects, clean minimalist games</td><td>Ordinary code. <span class="ev p">Practice</span></td></tr>
+<tr><td><b>SVG</b></td><td>Recognizable objects and animals from frontier models; good icons and UI</td><td>Icons, buttons, logos, flat props</td><td>Simon Willison's "pelican on a bicycle" test is now called <i>saturated</i> by Hugging Face's scored version: 136 of 139 frontier-model samples got full marks on structure. <a href="https://huggingface.co/docs/openenv/environments/pelican_svg">HF OpenEnv</a> <span class="ev v">Verified</span></td></tr>
+<tr><td><b>Emoji / font glyphs</b></td><td>Instantly readable, colourful, zero files; look depends on the operating system</td><td>Jam games, prototypes</td><td>The demo below. <span class="ev v">Verified</span></td></tr>
+<tr><td><b>Pixel art as number grids</b></td><td>Works for 16×16 to 32×32 icons and tiles; quality is limited</td><td>Tiny tiles, items</td><td>Pixel Art Bench results summarized in our <a href="02-ai-images.html#what-the-model-draws-without-an-image-model">image page</a>. <span class="ev p">Practice</span></td></tr>
+<tr><td><b>GLSL shaders</b></td><td>Harder than normal code: in the ShaderMatch benchmark, even top 2025 models produced non-working code in 31% of cases</td><td>Water, fire, glow, post-processing</td><td>ShaderMatch, ICSE LLM4Code 2025. <span class="ev v">Verified</span></td></tr>
+<tr><td><b>Procedural textures and levels</b></td><td>Strong: noise, tile rules, dungeon generators are plain algorithms</td><td>Terrain, caves, seamless tiles</td><td><span class="ev p">Practice</span></td></tr>
+<tr><td><b>Synthesized sound</b></td><td>Good retro effects (jump, coin, laser); music only as simple patterns</td><td>Sound effects, chiptune loops</td><td>See the sound toy on <a href="04-audio.html">page 4</a>. <span class="ev p">Practice</span></td></tr>
+<tr><td><b>Animated organic characters</b></td><td>Poor: anatomy, consistent frames and appealing style are out of reach without an image model</td><td>—</td><td>Consistent across practitioner reports on <a href="02-ai-images.html">page 2</a>. <span class="ev p">Practice</span></td></tr>
+</tbody></table></div>
+
+<h2>Try it: one level, three art strategies</h2>
+<p>The level, physics and code are identical in all three modes; only the drawing function changes. Switch between them while playing.</p>
+<div id="demo-art"><p class="muted">Interactive demo needs JavaScript.</p></div>
+<div class="cards">
+<div class="card a"><h4>Shapes (code-drawn)</h4><p>Rectangles, circles and a few lines. Zero files, zero licence questions, fully readable by an agent. Looks "programmer art", but it is consistent, and every gameplay object is clearly distinguishable.</p></div>
+<div class="card b"><h4>Emoji</h4><p>One character per object. Instantly charming, but sizes and styles vary across Windows, macOS and Android, and you cannot animate a single emoji's legs.</p></div>
+<div class="card c"><h4>Sprites (CC0 pack)</h4><p>Kenney's <i>Pixel Platformer</i> pack, public domain (CC0). A coherent look made by one artist. The agent only had to read the atlas layout and pick tile indices.</p></div>
+</div>
+<p class="small muted">Why is there no "AI-generated" mode? Bundling AI images would need an image-API key and would make the site depend on a paid service; it would also show only one lucky result. Page 2 explains, with sources, what happens when people generate sprites with AI: transparency problems, frame-to-frame drift and pixel-grid cleanup. <span class="ev i">Inference</span></p>
+
+<h2>How an agent gets access to tools</h2>
+<p>Claude Code, Codex and Cursor can all run shell commands and edit files. That is enough to reach almost any asset tool. There are four ways, from simplest to most packaged:</p>
+<figure class="diagram">
+<svg viewBox="0 0 760 250" role="img" aria-label="Agent connects to asset tools through scripts calling REST APIs, CLIs, MCP servers, or skills">
+<defs><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker></defs>
+<rect x="20" y="90" width="150" height="70" rx="8" class="box-accent"/><text x="95" y="120" text-anchor="middle" class="t-title">Coding agent</text><text x="95" y="140" text-anchor="middle" class="t-muted">shell + file edits</text>
+<rect x="250" y="10" width="200" height="48" rx="8" class="box"/><text x="350" y="30" text-anchor="middle" class="t-title">Script → REST / SDK</text><text x="350" y="47" text-anchor="middle" class="t-muted">gen_textures.py with an API key</text>
+<rect x="250" y="70" width="200" height="48" rx="8" class="box"/><text x="350" y="90" text-anchor="middle" class="t-title">Vendor CLI</text><text x="350" y="107" text-anchor="middle" class="t-muted">e.g. Ludo CLI, Unity CLI</text>
+<rect x="250" y="130" width="200" height="48" rx="8" class="box"/><text x="350" y="150" text-anchor="middle" class="t-title">MCP server</text><text x="350" y="167" text-anchor="middle" class="t-muted">fal, Replicate, PixelLab, Blender</text>
+<rect x="250" y="190" width="200" height="48" rx="8" class="box"/><text x="350" y="210" text-anchor="middle" class="t-title">Skill (SKILL.md)</text><text x="350" y="227" text-anchor="middle" class="t-muted">packaged recipe + scripts</text>
+<path d="M170 115 L248 34" class="line" marker-end="url(#ah2)"/><path d="M170 120 L248 94" class="line" marker-end="url(#ah2)"/><path d="M170 130 L248 154" class="line" marker-end="url(#ah2)"/><path d="M170 140 L248 214" class="line" marker-end="url(#ah2)"/>
+<rect x="530" y="60" width="210" height="130" rx="8" class="box-b"/><text x="635" y="88" text-anchor="middle" class="t-title">Asset services</text>
+<text x="635" y="112" text-anchor="middle" class="t-muted">image models · 3D models</text><text x="635" y="130" text-anchor="middle" class="t-muted">audio models · Blender</text><text x="635" y="148" text-anchor="middle" class="t-muted">background removal</text><text x="635" y="166" text-anchor="middle" class="t-muted">files land in /assets</text>
+<path d="M450 34 L528 100" class="line" marker-end="url(#ah2)"/><path d="M450 94 L528 115" class="line" marker-end="url(#ah2)"/><path d="M450 154 L528 135" class="line" marker-end="url(#ah2)"/><path d="M450 214 L528 155" class="line" marker-end="url(#ah2)"/>
+</svg>
+<figcaption>Four access routes. All of them end with files in your project folder that the game loads.</figcaption>
+</figure>
+<div class="table-wrap"><table>
+<thead><tr><th>Route</th><th>How it works</th><th>When to use</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td><b>Script calling a REST API</b></td><td>The agent writes a small Python or Node script, you put the API key in an environment variable, the script saves PNG/GLB/WAV files</td><td>Default. Works in every agent, no setup, easy to rerun</td><td>In Simon Willison's Raccoon Heist run, Claude wrote <code>gen_textures.py</code> and generated 7 textures with OpenAI's image API. <a href="https://simonwillison.net/2026/Aug/5/raccoon-heist/">Post, 2026-08-05</a> <span class="ev v">Verified</span></td></tr>
+<tr><td><b>Vendor CLI</b></td><td>A command-line tool that handles login, upload and download</td><td>When the vendor offers one</td><td>Ludo.ai recommends its CLI over its MCP server for shell-capable agents because it uses "far fewer tokens" and passes files by path. <a href="https://ludo.ai/developers">ludo.ai/developers</a> <span class="ev v">Verified</span></td></tr>
+<tr><td><b>MCP server</b></td><td>A Model Context Protocol server exposes tools (generate, check price, download) that the agent can call directly</td><td>When the agent should browse models, prices or a live editor (Blender, Unity, Godot)</td><td>fal's hosted MCP has <code>search_models</code>, <code>get_pricing</code>, <code>run_model</code>; PixelLab, Retro Diffusion, Scenario and Replicate have their own. <a href="https://fal.ai/docs/documentation/setting-up/mcp">fal docs</a> <span class="ev v">Verified</span></td></tr>
+<tr><td><b>Skill</b></td><td>A folder with a <code>SKILL.md</code> and scripts that teach the agent a whole recipe, for example "generate, remove background, snap to pixel grid, pack into an atlas"</td><td>Repeated pipelines</td><td><code>aldegad/sprite-gen</code> (2,860 stars), <code>0x0funky/agent-sprite-forge</code> (4,485 stars). GitHub API, 2026-10-17 <span class="ev v">Verified</span></td></tr>
+</tbody></table></div>
+<div class="callout warn"><span class="title">Cost guard</span>
+<p>Several APIs offer a free price check before generating: Ideogram <code>dry_run</code>, Retro Diffusion <code>check_cost</code>, Scenario <code>dryRun</code>, fal <code>get_pricing</code>. Tell the agent to price a batch before running it, and set a spending limit on every API key. <span class="ev v">Verified</span> (features in vendor docs)</p></div>
+
+<h2>Free libraries and their licences</h2>
+<p>"Free" means several different licences. CC0 is the simplest: public domain, no credit needed. Other licences need credit, forbid commercial use or force you to share changes. Always check each item, because many sites mix licences.</p>
+<div class="table-wrap"><table data-sortable>
+<thead><tr><th data-sort>Library</th><th data-sort>Offers</th><th data-sort>Licence</th><th>Credit needed?</th><th>Checked</th></tr></thead>
+<tbody>
+<tr><td><a href="https://kenney.nl">Kenney</a></td><td>2D, UI, 3D kits, audio</td><td><b>CC0</b> for all asset-page downloads</td><td>No (do not use Kenney's logo)</td><td><a href="https://kenney.nl/support">kenney.nl/support</a> <span class="ev v">Verified</span></td></tr>
+<tr><td><a href="https://polyhaven.com">Poly Haven</a></td><td>HDRIs, PBR textures, models</td><td><b>CC0</b></td><td>No</td><td><a href="https://polyhaven.com/license">licence page</a> <span class="ev v">Verified</span></td></tr>
+<tr><td><a href="https://ambientcg.com">ambientCG</a></td><td>PBR materials, HDRIs</td><td><b>CC0</b></td><td>No</td><td><a href="https://docs.ambientcg.com/license/">licence page</a> <span class="ev v">Verified</span></td></tr>
+<tr><td><a href="https://quaternius.com">Quaternius</a></td><td>Low-poly 3D, animated characters</td><td>CC0 on the packs checked</td><td>No</td><td>Pack pages <span class="ev v">Verified</span>; "all packs" <span class="ev p">Practice</span></td></tr>
+<tr><td><a href="https://opengameart.org">OpenGameArt</a></td><td>Community 2D, 3D, audio</td><td>Per item: CC0, CC-BY, CC-BY-SA, OGA-BY, GPL</td><td>Yes, except CC0</td><td><a href="https://opengameart.org/content/faq">FAQ</a> <span class="ev v">Verified</span></td></tr>
+<tr><td><a href="https://itch.io/game-assets">itch.io assets</a></td><td>Huge free and paid marketplace</td><td>Per pack ("Asset license" field)</td><td>Depends</td><td>Sample pages <span class="ev v">Verified</span></td></tr>
+<tr><td><a href="https://poly.pizza">Poly Pizza</a></td><td>10k+ low-poly models</td><td>Per model: CC0 or CC-BY</td><td>For CC-BY</td><td>ToS <span class="ev v">Verified</span></td></tr>
+<tr><td><a href="https://www.mixamo.com">Mixamo</a> (Adobe)</td><td>Auto-rigging + humanoid animations</td><td>Adobe terms: free, royalty-free in games; no redistribution of raw files</td><td>No</td><td><a href="https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html">Adobe FAQ</a> <span class="ev v">Verified</span></td></tr>
+<tr><td><a href="https://freesound.org">Freesound</a></td><td>Sound effects, samples</td><td>Per sound: CC0, CC-BY, CC-BY-NC</td><td>For CC-BY and CC-BY-NC</td><td><a href="https://freesound.org/help/faq/">FAQ</a> <span class="ev v">Verified</span></td></tr>
+</tbody></table></div>
+<p class="small muted">All checked 2026-10-17. Licence rules for games (what "NonCommercial" and "ShareAlike" mean in practice) are on <a href="12-publishing-legal.html">page 12</a>. The full sortable list is in the <a href="explorer.html">explorer</a>.</p>
+
+<div class="callout think"><span class="title">Practical rule for agents</span>
+<p>Put this in the project's agent rules: "Every time you add an asset or dependency, append a row to <code>CREDITS.md</code> with name, author, source URL, licence and date. Never add CC-BY-NC, CC-BY-ND or GPL items without asking." Agents can download from the libraries above, but licence fields differ per item, and agents do not report licences unless told to. <span class="ev i">Inference</span></p></div>
+
+<h2>Choosing a strategy</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Situation</th><th>Recommended mix</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td>First game, learning</td><td>Code-drawn shapes + one CC0 pack (Kenney)</td><td>No money, no API keys, no licence risk; you learn the game, not the pipeline</td></tr>
+<tr><td>Game jam, 48 hours</td><td>CC0 pack for the base, AI images only for a title screen or a few props</td><td>Pack art is consistent; AI fills one-off gaps where drift does not matter</td></tr>
+<tr><td>Unique look, small team</td><td>Pixel-art-native AI tool (PixelLab or Retro Diffusion) + manual cleanup, or a hired artist for a style guide</td><td>General image models drift between frames; game-specific tools have animation features</td></tr>
+<tr><td>3D game</td><td>CC0 kits (Kenney, Quaternius, Poly Haven) + Mixamo animations; AI 3D for static props</td><td>AI meshes are heavy and need cleanup; see page 3</td></tr>
+<tr><td>Sound</td><td>Code-synthesized effects (jsfxr, ZzFX) + CC0 or CC-BY music</td><td>Effects from code are good; AI music has licence and API gaps (page 4)</td></tr>
+</tbody></table></div>
+<p class="small muted">Recommendations are the author's judgment based on pages 2–4. <span class="ev i">Inference</span></p>
+
+<p class="page-meta">Page written 2026-10-17. Sources checked the same day.</p>
+</div></main>
+<script src="assets/js/site.js"></script>
+<script src="assets/js/demos.js"></script>
+<script>
+GameDemos.platformer(document.getElementById("demo-art"), { id: "art", mode: "art", art: "sprites", title: "Same level, three art strategies", note: "Click the game, then use arrow keys or A/D to move and Space or W to jump. Sprites: Kenney Pixel Platformer (CC0)." });
+</script>
+</body>
+</html>

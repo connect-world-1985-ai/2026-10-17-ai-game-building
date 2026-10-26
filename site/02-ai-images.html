@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI image generation for game art — AI Game Building</title>
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%231f5fbf%22/%3E%3Cpath d=%22M3 9h4M5 7v4M10 8.5h1M12 10h1%22 stroke=%22white%22 stroke-width=%221.6%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
+</head>
+<body>
+<main><div class="content">
+
+<div class="kicker">Page 2 · Where assets come from</div>
+<h1>AI images for sprites, tiles and textures</h1>
+<p class="lead">Generating one nice picture is easy. Generating forty frames of the same character, on a transparent background, aligned to a pixel grid, in a consistent style, is not. This page lists the services an agent can call in October 2026, then goes through the four problems everyone who ships AI sprites runs into, and the fixes that work.</p>
+
+<div class="callout warn"><span class="title">Model names change fast</span>
+<p>Names and prices below are what vendor pages said on <b>2026-10-17</b> (for example <code>gpt-image-2.5-sunburst</code>, <code>gemini-nano-banana-2.1</code>, FLUX 3 Image). Your agent's training data may know older names. Point the agent at the vendor docs page instead of trusting its memory.</p></div>
+
+<h2>Services an agent can call</h2>
+<div class="table-wrap"><table data-sortable>
+<thead><tr><th data-sort>Service</th><th data-sort>Strength</th><th data-sort>Price (2026-10-17)</th><th data-sort>Transparent output</th><th>Access</th></tr></thead>
+<tbody>
+<tr><td><b>OpenAI GPT Image 2.5</b> (Sunburst, Flare)</td><td>Strong general model, good at following instructions and editing</td><td>$30 per 1M image-output tokens (no per-image table; calculator only)</td><td>Yes: <code>background: "transparent"</code> with PNG or WebP</td><td>REST, SDKs <span class="ev v">Verified</span></td></tr>
+<tr><td><b>Google Nano Banana 2.1</b></td><td>Cheap, multi-turn editing, multi-reference</td><td>$0.0336 / $0.0504 / $0.113 per 1K / 2K / 4K image; batch half price</td><td>No alpha channel; use chroma key</td><td>Gemini API <span class="ev v">Verified</span></td></tr>
+<tr><td><b>Google Nano Banana Pro</b></td><td>Premium Gemini image model</td><td>$0.134 (1K/2K), $0.24 (4K)</td><td>No</td><td>Gemini API <span class="ev v">Verified</span></td></tr>
+<tr><td><b>FLUX 3 Image</b> (Black Forest Labs, released 2026-10-01)</td><td>Up to 10 reference images, local edits, 4K</td><td>About $0.048 per image or per megapixel (sources disagree)</td><td>Not documented</td><td>BFL API, fal, Replicate <span class="ev v">Verified</span> / price <span class="ev u">Unverified</span></td></tr>
+<tr><td><b>Recraft V4.1</b></td><td>The only major API with <b>native SVG</b> output</td><td>$0.035 raster, $0.08 vector; background removal $0.01</td><td>Vector is transparent; raster via tool</td><td>REST <span class="ev v">Verified</span></td></tr>
+<tr><td><b>Ideogram 4.5</b></td><td>Text and typography in images</td><td>$0.03 / $0.06 / $0.10 by quality</td><td>Yes, plus dedicated transparent endpoints</td><td>REST with <code>dry_run</code> price check <span class="ev v">Verified</span></td></tr>
+<tr><td><b>PixelLab</b></td><td>Pixel-art native: 4/8-direction characters, skeleton animation, tilesets, normal maps</td><td>≈ $0.007–0.06 per API call (vendor marks them "provisional")</td><td>Yes</td><td>REST, remote MCP (needs subscription) <span class="ev v">Verified</span></td></tr>
+<tr><td><b>Retro Diffusion</b></td><td>Pixel-art models, animations, tilesets</td><td>$0.03 / $0.06 / $0.18 (Fast / Plus / Pro); animations $0.07–0.25</td><td>Not stated</td><td>REST, hosted MCP <span class="ev v">Verified</span></td></tr>
+<tr><td><b>Scenario</b></td><td>Train your own style or character model (LoRA); hundreds of models</td><td>$15 / $45 / $75 per month</td><td>Has a background-removal model</td><td>REST, MCP with 97 tools <span class="ev v">Verified</span></td></tr>
+<tr><td><b>Ludo.ai</b></td><td>Game-asset suite including sprite-sheet animation</td><td>API only on Pro, $50/month (1,000 credits); sprite 0.5 credit</td><td>Aims at transparent sheets</td><td>REST, MCP, CLI <span class="ev v">Verified</span></td></tr>
+<tr><td><b>fal.ai / Replicate</b></td><td>Aggregators: hundreds of models behind one key</td><td>Per model</td><td>Per model</td><td>Official MCP servers <span class="ev v">Verified</span></td></tr>
+<tr><td><b>Midjourney</b></td><td>High aesthetics</td><td>Subscription</td><td>No</td><td><b>No public API</b>; unofficial wrappers risk bans <span class="ev v">Verified</span></td></tr>
+</tbody></table></div>
+<p class="small muted">Sources: <a href="https://developers.openai.com/api/docs/guides/image-generation">OpenAI image guide</a>, <a href="https://ai.google.dev/gemini-api/docs/pricing">Gemini pricing</a> (both re-read by the author on 2026-10-17), <a href="https://docs.bfl.ml/release-notes">BFL release notes</a>, <a href="https://www.recraft.ai/docs/api-reference/pricing">Recraft pricing</a>, <a href="https://ideogram.ai/api-pricing">Ideogram pricing</a>, <a href="https://www.pixellab.ai/pixellab-api">PixelLab API</a>, <a href="https://github.com/Retro-Diffusion/api-examples">Retro Diffusion examples</a>, <a href="https://www.scenario.com/pricing">Scenario</a>, <a href="https://ludo.ai/pricing">Ludo</a>, <a href="https://www.midjourney.com/updates/enterprise-api-survey">Midjourney API note</a>. Google shut down Imagen 4 on 2026-08-17. <span class="ev v">Verified</span></p>
+
+<h2>The four hard problems</h2>
+<figure class="diagram">
+<svg viewBox="0 0 760 170" role="img" aria-label="Pipeline from generation through transparency, consistency, pixel grid and packing">
+<defs><marker id="ah3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker></defs>
+<rect x="10" y="40" width="120" height="80" rx="8" class="box-accent"/><text x="70" y="72" text-anchor="middle" class="t-title">Generate</text><text x="70" y="92" text-anchor="middle" class="t-muted">prompt + references</text>
+<rect x="160" y="40" width="130" height="80" rx="8" class="box-warn"/><text x="225" y="66" text-anchor="middle" class="t-title">1 Transparency</text><text x="225" y="86" text-anchor="middle" class="t-muted">alpha or key out</text><text x="225" y="102" text-anchor="middle" class="t-muted">halos on edges</text>
+<rect x="310" y="40" width="130" height="80" rx="8" class="box-warn"/><text x="375" y="66" text-anchor="middle" class="t-title">2 Consistency</text><text x="375" y="86" text-anchor="middle" class="t-muted">same character</text><text x="375" y="102" text-anchor="middle" class="t-muted">every frame</text>
+<rect x="460" y="40" width="130" height="80" rx="8" class="box-warn"/><text x="525" y="66" text-anchor="middle" class="t-title">3 Pixel grid</text><text x="525" y="86" text-anchor="middle" class="t-muted">snap + palette</text><text x="525" y="102" text-anchor="middle" class="t-muted">"fake pixel art"</text>
+<rect x="610" y="40" width="140" height="80" rx="8" class="box-ok"/><text x="680" y="66" text-anchor="middle" class="t-title">4 Slice + pack</text><text x="680" y="86" text-anchor="middle" class="t-muted">anchor, trim</text><text x="680" y="102" text-anchor="middle" class="t-muted">atlas + JSON</text>
+<path d="M130 80H158" class="line" marker-end="url(#ah3)"/><path d="M290 80H308" class="line" marker-end="url(#ah3)"/><path d="M440 80H458" class="line" marker-end="url(#ah3)"/><path d="M590 80H608" class="line" marker-end="url(#ah3)"/>
+<text x="380" y="150" text-anchor="middle" class="t-muted">Steps 1–3 are where practitioners report most of their time goes; step 4 is ordinary scripting.</text>
+</svg>
+<figcaption>A sprite pipeline. Generation is the easy step.</figcaption>
+</figure>
+
+<h3>1. Transparent backgrounds</h3>
+<p>Game sprites need an alpha channel so the background shows through. Ask a model without alpha support for a "transparent background" and it paints a checkerboard or a flat colour <i>as pixels</i>. Robotic Ape's write-up on Nano Banana Pro sums up the trap: "You cannot cleanly remove a background that shares color space with your sprite content (black bg + black outlines = unsolvable). And anti-aliasing permanently bakes background color into edges." <a href="https://roboticape.com/2026/03/07/generating-game-sprites-with-gemini-image-generation-nano-banana-pro-lessons-learned/">Robotic Ape, 2026-03-07</a> <span class="ev p">Practice</span></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Approach</th><th>How</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td><b>Native alpha</b></td><td>OpenAI <code>background:"transparent"</code>; Ideogram transparent mode; PixelLab; Recraft vector</td><td>Best when available. Still check the file: alpha channel present and minimum alpha below 255. <span class="ev v">Verified</span></td></tr>
+<tr><td><b>Chroma key</b></td><td>Prompt for an exact flat colour (#00FF00 or magenta) plus a thin white outline, then remove that colour in HSV space</td><td>Green fails on green or fur-coloured subjects; one dog-game author switched to magenta. <a href="https://varund.com/blog/a-game-starring-my-dog/">varund.com</a> <span class="ev p">Practice</span></td></tr>
+<tr><td><b>Difference matte</b></td><td>Generate on white, <i>edit</i> the same image to black, compute alpha from the difference</td><td>Keeps soft edges and glass; must be an edit, not a new generation. <span class="ev p">Practice</span></td></tr>
+<tr><td><b>Background-removal model</b></td><td><a href="https://github.com/danielgatis/rembg">rembg</a> (25,103 stars, MIT), <a href="https://github.com/ZhengPeng7/BiRefNet">BiRefNet</a> (4,294 stars, MIT weights)</td><td>Can eat thin parts like swords and hair. BRIA RMBG-2.0 weights are non-commercial. <span class="ev v">Verified</span></td></tr>
+</tbody></table></div>
+<p>Always look at sprites over several backgrounds. As the dog-game author put it, "Those moody, dim backdrops look gorgeous, and they lie to you." <span class="ev p">Practice</span></p>
+
+<h3>2. Consistency and animation frames</h3>
+<p>This is the biggest problem. OpenAI's own documentation lists it as a limitation: the model "may occasionally struggle to maintain visual consistency for recurring characters or brand elements across multiple generations." <a href="https://developers.openai.com/api/docs/guides/image-generation">OpenAI image guide</a> <span class="ev v">Verified</span></p>
+<p>Generating each animation frame separately makes hair colour, clothing, proportions and foot placement change from frame to frame. Reports agree across independent sources: <a href="https://changeinmotion.tech/blog/2026/animating-pixel-art-game-character-ai-when-generation-isnt-answer/">changeinmotion.tech</a>, <a href="https://www.layrkits.com/guides/sprite-sheet">Layr Kits</a>, and a dev.to author who "gave up on AI characters" and switched to CC0 hand-drawn sprites while keeping AI for code. <a href="https://dev.to/junhee916/what-i-learned-trying-to-make-a-game-with-ai-only-half-the-truth-about-claude-for-game-dev-3j2p">dev.to</a> <span class="ev p">Practice</span></p>
+<div class="cards">
+<div class="card a"><h4>Game-specific animation tools</h4><p>PixelLab's skeleton animation "moves the character instead of redrawing it each frame". Retro Diffusion and Ludo.ai offer animation from one image. Best first stop. <span class="ev v">Verified</span></p></div>
+<div class="card b"><h4>Video, then frames</h4><p>Generate a short clip of the character on a green background with an image-to-video model, extract frames with ffmpeg, then key and pack. "Consistency beats resolution." <span class="ev p">Practice</span></p></div>
+<div class="card c"><h4>Row-per-state skills</h4><p>One base image, one row per animation state, deterministic extraction into an atlas. Open-source agent skills: <a href="https://github.com/aldegad/sprite-gen">sprite-gen</a>, <a href="https://github.com/0x0funky/agent-sprite-forge">agent-sprite-forge</a>. <span class="ev v">Verified</span></p></div>
+<div class="card d"><h4>Train a style</h4><p>Scenario trains a character model from 5–15 images or a style model from 10–30, usually in 30–60 minutes. Useful for hundreds of assets in one style. <span class="ev v">Verified</span></p></div>
+</div>
+<p>Even with these, a human still curates frames. Agents cannot reliably see subtle jitter in screenshots, so give them numeric checks (palette count, bounding-box drift per frame) instead of asking "does it look right?" <span class="ev i">Inference</span></p>
+
+<h3>3. Pixel grid and palette</h3>
+<p>General models produce "fake pixel art": blocks of uneven size and thousands of colours. Two fixes: use a pixel-native generator (PixelLab, Retro Diffusion) that outputs at true low resolution, or run a snapping tool, then scale up with <b>nearest-neighbour only</b>.</p>
+<div class="table-wrap"><table class="compact">
+<thead><tr><th>Tool</th><th>Stars</th><th>Licence</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td><a href="https://github.com/Hugo-Dz/spritefusion-pixel-snapper">spritefusion-pixel-snapper</a></td><td class="n">3,286</td><td>MIT</td><td>Snap to grid, reduce to K colours or a given palette, batch</td></tr>
+<tr><td><a href="https://github.com/jenissimo/unfake.js">unfake.js</a></td><td class="n">932</td><td>MIT</td><td>Detect true pixel scale, downscale, quantize (WASM + CLI)</td></tr>
+<tr><td><a href="https://github.com/KennethJAllen/proper-pixel-art">proper-pixel-art</a></td><td class="n">580</td><td>MIT</td><td>Edge detection to find the grid, majority colour per cell</td></tr>
+</tbody></table></div>
+<p class="small muted">Stars from the GitHub API, 2026-10-17. <span class="ev v">Verified</span></p>
+
+<h3>4. Slicing, packing and textures</h3>
+<p>Once frames are clean, packing them into an atlas is ordinary scripting (Pillow, ImageMagick) or a packer such as Free Texture Packer (MIT, last updated 2024) or TexturePacker ($49.99). Keep the same cell size and order the engine expects. <span class="ev v">Verified</span></p>
+<p>Tileable textures: none of the general image models documents a guaranteed seamless mode. Generate, then make the image seamless in post (offset and blend edges), or use CC0 PBR textures from Poly Haven or ambientCG. <span class="ev u">Unverified</span> that any hosted general model guarantees tiling.</p>
+
+<h2>What the model draws without an image model</h2>
+<p>Recap of page 1 with the evidence: frontier models write good SVG icons; the informal "pelican riding a bicycle" test is now saturated, and its creator, Simon Willison, says the correlation with model quality is "mostly severed". <a href="https://simonwillison.net/tags/pelican-riding-a-bicycle/">Willison's tag page</a>, <a href="https://huggingface.co/docs/openenv/environments/pelican_svg">HF OpenEnv</a> <span class="ev v">Verified</span>. Academic benchmarks such as <a href="https://arxiv.org/abs/2506.03139">SVGenius</a> find all models degrade as drawings get more complex. <span class="ev v">Verified</span>. Pixel Art Bench (24×24 grids written as text) shows the task works but that fine-tuning "fails to produce meaningful improvements in pixel art quality". <span class="ev p">Practice</span></p>
+<p><b>Takeaway:</b> code-drawn SVG and Canvas art is genuinely usable for UI, icons and minimalist games. It is not evidence that a language model can draw consistent animated characters. <span class="ev i">Inference</span></p>
+
+<h2>A pipeline that works today</h2>
+<ol class="stepper">
+<li><b>Decide the style first.</b> Write a one-paragraph style guide (palette, outline, perspective, resolution). Generate a reference sheet and pick one.</li>
+<li><b>Pick the right tool per asset type.</b> Pixel characters: PixelLab or Retro Diffusion. Icons and UI: Recraft SVG or code. Backgrounds and title art: GPT Image or Nano Banana.</li>
+<li><b>Script it.</b> Ask the agent for <code>tools/gen_assets.py</code> that reads a JSON list of assets with prompts and seeds, prices the batch first, and writes files plus a manifest.</li>
+<li><b>Post-process deterministically.</b> Background removal, grid snap, palette lock, trim, anchor at the feet, pack.</li>
+<li><b>Verify with numbers and with your eyes.</b> Alpha present, palette size, frame bounding boxes. Then look at a contact sheet on light and dark backgrounds.</li>
+<li><b>Record provenance.</b> Tool, plan, date, prompt and licence terms in <code>CREDITS.md</code> (see <a href="12-publishing-legal.html">page 12</a>).</li>
+</ol>
+<p class="small muted">Synthesis of the vendor docs and practitioner reports above. <span class="ev i">Inference</span></p>
+
+<h2>Practitioner reports</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Source</th><th>What they did</th><th>What went wrong</th></tr></thead>
+<tbody>
+<tr><td><a href="https://roboticape.com/2026/03/07/generating-game-sprites-with-gemini-image-generation-nano-banana-pro-lessons-learned/">Robotic Ape</a> (2026-03)</td><td>Clothing and pose sprites with Nano Banana Pro + Python</td><td>No alpha; proportions changed across generations; green leaked onto subjects</td></tr>
+<tr><td><a href="https://varund.com/blog/a-game-starring-my-dog/">varund.com</a></td><td>Claude wrote the game and drove Gemini through a skill to make sprites of the author's dog</td><td>Background cutting was the headache; misaligned frames; flat sprites ignore lighting</td></tr>
+<tr><td><a href="https://changeinmotion.tech/blog/2026/animating-pixel-art-game-character-ai-when-generation-isnt-answer/">changeinmotion.tech</a></td><td>Per-frame generation, ControlNet poses, then video extraction for Godot</td><td>Drift per frame; pose skeletons too coarse at 128 px; video extraction worked best</td></tr>
+<tr><td><a href="https://dev.to/junhee916/what-i-learned-trying-to-make-a-game-with-ai-only-half-the-truth-about-claude-for-game-dev-3j2p">dev.to/junhee916</a></td><td>MapleStory-like game with Claude</td><td>Gave up AI characters, switched to CC0 sprites, changed genre to avoid hard physics</td></tr>
+</tbody></table></div>
+<p class="small muted">Individual reports, consistent with each other. <span class="ev p">Practice</span></p>
+
+<p class="page-meta">Page written 2026-10-17. OpenAI and Gemini pricing pages re-read by the author the same day.</p>
+</div></main>
+<script src="assets/js/site.js"></script>
+</body>
+</html>

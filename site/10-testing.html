@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How agents test games — AI Game Building</title>
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%231f5fbf%22/%3E%3Cpath d=%22M3 9h4M5 7v4M10 8.5h1M12 10h1%22 stroke=%22white%22 stroke-width=%221.6%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
+</head>
+<body>
+<main><div class="content">
+
+<div class="kicker">Page 10 · Agents in practice</div>
+<h1>How agents test games</h1>
+<p class="lead">An agent that cannot see the game will happily report "fixed" for bugs that are still there. A game is a picture that changes 60 times a second, so ordinary web testing does not reach it. This page shows the testing ladder that works today, the hook pattern that makes a game readable to an agent, and what the benchmarks say agents still miss.</p>
+
+<div class="callout key"><span class="title">The core problem</span>
+<p>A canvas or WebGL game is one opaque element. Accessibility snapshots, which browser agents rely on, see nothing inside it. Timing also makes runs flaky: the same keypress at a slightly different frame gives a different result. The fixes are to <b>expose game state as text</b> and to <b>control time</b>. <span class="ev v">Verified</span> (Playwright MCP docs; OpenAI <code>develop-web-game</code> skill)</p></div>
+
+<h2>The testing ladder</h2>
+<figure class="diagram">
+<svg viewBox="0 0 760 330" role="img" aria-label="Testing ladder from cheap logic tests at the bottom to human playtesting at the top">
+<rect x="20" y="280" width="720" height="38" rx="6" class="box-a"/><text x="36" y="304" class="t-title">1 · Logic unit tests</text><text x="724" y="304" text-anchor="end" class="t-muted">collision, scoring, state machines · milliseconds</text>
+<rect x="40" y="236" width="680" height="38" rx="6" class="box-a"/><text x="56" y="260" class="t-title">2 · Deterministic replay</text><text x="704" y="260" text-anchor="end" class="t-muted">recorded inputs + fixed step → same end state</text>
+<rect x="60" y="192" width="640" height="38" rx="6" class="box-b"/><text x="76" y="216" class="t-title">3 · Headless engine runs</text><text x="684" y="216" text-anchor="end" class="t-muted">Godot --headless, GUT, GdUnit4, Unity -batchmode</text>
+<rect x="80" y="148" width="600" height="38" rx="6" class="box-b"/><text x="96" y="172" class="t-title">4 · State hooks + virtual time</text><text x="664" y="172" text-anchor="end" class="t-muted">render_game_to_text, advanceTime(ms)</text>
+<rect x="100" y="104" width="560" height="38" rx="6" class="box-c"/><text x="116" y="128" class="t-title">5 · Screenshots + vision</text><text x="644" y="128" text-anchor="end" class="t-muted">Playwright, headed for WebGL</text>
+<rect x="120" y="60" width="520" height="38" rx="6" class="box-c"/><text x="136" y="84" class="t-title">6 · Scripted playthroughs</text><text x="624" y="84" text-anchor="end" class="t-muted">bot plays a level, perf trace</text>
+<rect x="140" y="16" width="480" height="38" rx="6" class="box-warn"/><text x="156" y="40" class="t-title">7 · Human playtest</text><text x="604" y="40" text-anchor="end" class="t-muted">fun, feel, fairness</text>
+</svg>
+<figcaption>Lower rungs are cheap, fast and reliable; push as much as possible down the ladder. Only a human can judge the top rung.</figcaption>
+</figure>
+
+<div class="table-wrap"><table>
+<thead><tr><th>Rung</th><th>Tools and commands</th><th>What it catches</th><th>Evidence</th></tr></thead>
+<tbody>
+<tr><td>1 · Logic unit tests</td><td>Any test runner (Vitest, Jest, pytest); keep game logic in plain functions</td><td>Collision corner cases, scoring, level validation</td><td><span class="ev p">Practice</span></td></tr>
+<tr><td>2 · Deterministic replay</td><td>Fixed timestep, seeded random numbers, recorded input lists</td><td>Regressions in movement and physics</td><td><span class="ev p">Practice</span></td></tr>
+<tr><td>3 · Headless engine</td><td>Godot <code>--headless</code> ("required on platforms that do not have GPU access (such as CI)"), <code>--write-movie</code> forces a fixed frame rate; <a href="https://github.com/bitwes/Gut">GUT</a> (2,760 ★); <a href="https://github.com/godot-gdunit-labs/gdUnit4">GdUnit4</a> (1,267 ★, has <code>runtest.cmd</code> for Windows); Unity <code>Unity.exe -runTests -batchmode -testPlatform PlayMode</code></td><td>Scene and script errors, engine-level behaviour, in CI</td><td><span class="ev v">Verified</span> (official docs)</td></tr>
+<tr><td>4 · State hooks</td><td><code>window.render_game_to_text()</code> returns concise JSON; <code>window.advanceTime(ms)</code> steps frames deterministically</td><td>Lets an agent read positions, score, state without guessing from pixels</td><td><span class="ev v">Verified</span></td></tr>
+<tr><td>5 · Screenshots</td><td><a href="https://github.com/microsoft/playwright">Playwright</a> (97,912 ★), <a href="https://github.com/microsoft/playwright-mcp">Playwright MCP</a> (38,276 ★) with <code>--caps=vision</code>; Puppeteer (95,713 ★)</td><td>Rendering bugs, wrong sprites, layout on phones</td><td><span class="ev v">Verified</span></td></tr>
+<tr><td>6 · Scripted playthroughs and performance</td><td>A bot that plays using the state hook; <a href="https://github.com/ChromeDevTools/chrome-devtools-mcp">Chrome DevTools MCP</a> <code>performance_start_trace</code>; <a href="https://github.com/mrdoob/stats.js">stats.js</a> (9,151 ★) FPS overlay; Roblox Studio MCP <code>playtest</code> subagent</td><td>Soft-locks, unwinnable levels, frame drops</td><td><span class="ev v">Verified</span> (tool docs) / <span class="ev p">Practice</span> (suitability for frame timing)</td></tr>
+<tr><td>7 · Human playtest</td><td>You, friends, a jam audience</td><td>Fun, difficulty, feel, confusion</td><td><span class="ev v">Verified</span> (benchmarks below)</td></tr>
+</tbody></table></div>
+<p class="small muted">Stars from the GitHub API on 2026-10-17. Command sources: <a href="https://docs.godotengine.org/en/stable/tutorials/editor/command_line_tutorial.html">Godot command line</a>, <a href="https://gut.readthedocs.io/en/latest/Command-Line.html">GUT</a>, <a href="https://docs.unity.com/en-us/engine/6000.5/manual/scripting/test-framework-introduction/running-tests/run-tests-from-command-line">Unity Test Framework</a>.</p>
+
+<h2>The hook pattern: make the game readable</h2>
+<p>OpenAI's <code>develop-web-game</code> skill turned a common practice into a contract: the game exposes two functions, and a bundled Playwright client uses them with screenshots and a console-error buffer. The skill was published at a pinned commit (<a href="https://github.com/openai/skills/blob/82d2c5b4/skills/.curated/develop-web-game/SKILL.md">82d2c5b4</a>) and used for the Codex racer; on 2026-10-17 it was <b>not on the <code>main</code> branch</b> of <code>openai/skills</code> (the path returns 404), so check before you install it. <span class="ev v">Verified</span></p>
+<pre><code>// in the game: two hooks, no effect on normal play
+window.render_game_to_text = () =&gt; JSON.stringify({
+  mode: game.mode,                       // "title" | "play" | "dead" | "win"
+  player: { x: Math.round(p.x), y: Math.round(p.y), onGround: p.onGround },
+  coins: game.coins, enemiesAlive: game.enemies.filter(e =&gt; e.alive).length
+});
+window.advanceTime = (ms) =&gt; {           // step the fixed-timestep loop manually
+  for (let t = 0; t &lt; ms; t += STEP_MS) update(STEP_MS / 1000);
+  render();
+};</code></pre>
+<pre><code>// in a Playwright test: deterministic, no sleeps
+await page.keyboard.down("ArrowRight");
+await page.evaluate(() =&gt; window.advanceTime(2000));
+const s = JSON.parse(await page.evaluate(() =&gt; window.render_game_to_text()));
+expect(s.player.x).toBeGreaterThan(200);
+await page.screenshot({ path: "after-run.png" });</code></pre>
+<p class="small muted">Illustrative code by the author; the function names follow the skill. The demos on this site expose a similar hook, <code>window.__demoState[id].get()</code>, which the site's own QA used to check that every demo moves, scores and finishes. <span class="ev v">Verified</span> (our QA)</p>
+
+<h2>Agent testing in practice</h2>
+<ul>
+<li><b>Prefer the state hook over vision.</b> Playwright MCP works from accessibility snapshots by default; a canvas has none. Vision mode (<code>--caps=vision</code>) adds coordinate clicks and screenshots, but models misread game images (lmgame-Bench lists "brittle vision perception" as a core failure). <span class="ev v">Verified</span></li>
+<li><b>Run WebGL headed when captures look wrong.</b> OpenAI's skill says: "If you suspect a headless/WebGL capture issue, rerun the Playwright script in headed mode." <span class="ev v">Verified</span>. That headless Chromium has no WebGPU adapter comes from one project's notes. <span class="ev u">Unverified</span> as a general rule.</li>
+<li><b>Watch the idle timeout.</b> A headless browser started by Playwright MCP closes after one hour idle by default (<code>--idle-timeout</code>, 0 disables), because animated pages burn CPU. <span class="ev v">Verified</span></li>
+<li><b>Test on several viewports.</b> Simon Willison's agent-built game passed smoke tests on three viewports, but he still found two phone bugs by hand: the canvas rendered at 2× size, and win-screen CSS swallowed taps. <span class="ev v">Verified</span></li>
+<li><b>Ready-made skill kits</b> bundle the stack, the test contract and guard-rails: <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills">awesome-gamedev-agent-skills</a> (1,572 ★, 74 skills), <a href="https://github.com/PlayableIntelligence/game-creator">game-creator</a> (345 ★, includes a <code>game-qa</code> skill for Playwright gameplay, visual regression and accessibility), <a href="https://github.com/Yakoub-ai/phaser4-gamedev">phaser4-gamedev</a> (29 ★, a hook blocks deprecated Phaser 3 APIs). <span class="ev v">Verified</span> (contents) / unvetted quality</li>
+</ul>
+
+<h2>What benchmarks say agents still miss</h2>
+<div class="table-wrap"><table data-sortable class="compact">
+<thead><tr><th>Benchmark</th><th>What it measures</th><th>Headline result</th><th>Date</th><th>Evidence</th></tr></thead>
+<tbody>
+<tr><td><a href="https://arxiv.org/html/2602.11103v2">GameDevBench</a></td><td>333 Godot 4 tasks taken from tutorials</td><td>Best agent 53.8% pass@1. Visual feedback raised GPT-5.4 from 41.1% to 52.0%. 2D-graphics tasks 33.0% vs gameplay 51.4%.</td><td data-v="2026-02">2026</td><td><span class="ev v">Verified</span></td></tr>
+<tr><td><a href="https://arxiv.org/abs/2604.02648">GBQA</a></td><td>LLMs as QA testers: 30 games, 124 human-verified bugs</td><td>Best model found 48.39% of the bugs</td><td data-v="2026-04">2026-04</td><td><span class="ev v">Verified</span></td></tr>
+<tr><td><a href="https://gamedev.net/news/6322-worldbench-evaluating-llms-on-threejs-voxel-world-generation/">WorldBench</a></td><td>Judging LLM-written Three.js worlds</td><td>Visual and code-reading judges disagree on 32% of items; a code-only judge gave full credit for 4 of 5 deleted features</td><td data-v="2026-10">2026-10</td><td><span class="ev p">Practice</span> (secondary report)</td></tr>
+<tr><td><a href="https://arxiv.org/abs/2509.22170">TITAN</a></td><td>LLM agent testing an MMORPG</td><td>95% task completion vs 82% for the best baseline; 4 previously unknown bugs; used in 8 real QA pipelines</td><td data-v="2025-09">2025-09</td><td><span class="ev v">Verified</span></td></tr>
+<tr><td><a href="https://arxiv.org/abs/2505.15146">lmgame-Bench</a></td><td>LLMs playing 6 games</td><td>Brittle vision perception is a core failure</td><td data-v="2025-05">2025-05</td><td><span class="ev v">Verified</span></td></tr>
+</tbody></table></div>
+<div class="callout think"><span class="title">What this means for you</span>
+<p>Agents solve about half of realistic game-dev tasks and find about half of real bugs. Seeing the game helps but does not close the gap, and reading the code alone over-credits missing features. Plan to playtest every build yourself; let the agent own rungs 1 to 6 and you own rung 7. Note that the models in these papers are from the first half of 2026 and newer models may score higher. <span class="ev i">Inference</span></p></div>
+
+<h2>A minimal test plan for your first game</h2>
+<ol class="stepper">
+<li>Keep logic out of the renderer; ask the agent for unit tests of collision and scoring from day one.</li>
+<li>Add the two hooks and a seeded random generator.</li>
+<li>One Playwright smoke test per level: load, play a scripted input list with <code>advanceTime</code>, assert the state, screenshot at 375 px and 1280 px wide, fail on any console error.</li>
+<li>Add the stats.js overlay during development; check frame time on your weakest device.</li>
+<li>Every evening: play it yourself for ten minutes and write down what felt wrong. Feed that list to the agent.</li>
+</ol>
+
+<p class="page-meta">Page written 2026-10-17. Sources: research note R4 and the linked papers and docs.</p>
+</div></main>
+<script src="assets/js/site.js"></script>
+</body>
+</html>

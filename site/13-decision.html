@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Decision framework and learning path — AI Game Building</title>
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%231f5fbf%22/%3E%3Cpath d=%22M3 9h4M5 7v4M10 8.5h1M12 10h1%22 stroke=%22white%22 stroke-width=%221.6%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
+</head>
+<body>
+<main><div class="content">
+
+<div class="kicker">Page 13 · Your path</div>
+<h1>Decision framework and learning path</h1>
+<p class="lead">You now know the parts. This page turns them into decisions: which stack, which asset strategy, how much to hand to the agent, and an eight-week path from "never made a game" to a published small game.</p>
+<p class="small muted">Everything on this page is the author's judgment built on the evidence in pages 1–12. <span class="ev i">Inference</span></p>
+
+<h2>Pick a stack in three questions</h2>
+<div class="card" id="chooser">
+<div class="toolbar">
+<label class="small">Where will people play?
+<select id="q-target"><option value="web">In a browser (itch.io, a link)</option><option value="desktop">Windows desktop or Steam</option><option value="mobile">Phone app stores</option><option value="roblox">Inside Roblox</option></select></label>
+<label class="small">2D or 3D?
+<select id="q-dim"><option value="2d">2D</option><option value="3d">3D</option></select></label>
+<label class="small">How do you like to work?
+<select id="q-style"><option value="code">All in code, agent edits files</option><option value="editor">With a visual editor</option></select></label>
+</div>
+<div id="q-out" aria-live="polite"><p class="muted">The recommendation needs JavaScript.</p></div>
+</div>
+
+<h2>The decisions, in order</h2>
+<figure class="diagram">
+<svg viewBox="0 0 760 250" role="img" aria-label="Five decisions in order: goal, target, stack, asset strategy, agent autonomy">
+<defs><marker id="ah13" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker></defs>
+<rect x="10" y="30" width="135" height="110" rx="8" class="box-a"/><text x="77" y="60" text-anchor="middle" class="t-title">1 · Goal</text><text x="77" y="84" text-anchor="middle" class="t-muted">learn, ship,</text><text x="77" y="102" text-anchor="middle" class="t-muted">earn, prototype</text>
+<rect x="160" y="30" width="135" height="110" rx="8" class="box-a"/><text x="227" y="60" text-anchor="middle" class="t-title">2 · Target</text><text x="227" y="84" text-anchor="middle" class="t-muted">web, desktop,</text><text x="227" y="102" text-anchor="middle" class="t-muted">mobile, Roblox</text>
+<rect x="310" y="30" width="135" height="110" rx="8" class="box-b"/><text x="377" y="60" text-anchor="middle" class="t-title">3 · Stack</text><text x="377" y="84" text-anchor="middle" class="t-muted">library or</text><text x="377" y="102" text-anchor="middle" class="t-muted">engine</text>
+<rect x="460" y="30" width="135" height="110" rx="8" class="box-c"/><text x="527" y="60" text-anchor="middle" class="t-title">4 · Assets</text><text x="527" y="84" text-anchor="middle" class="t-muted">code → CC0</text><text x="527" y="102" text-anchor="middle" class="t-muted">→ AI → artist</text>
+<rect x="610" y="30" width="140" height="110" rx="8" class="box-d"/><text x="680" y="60" text-anchor="middle" class="t-title">5 · Autonomy</text><text x="680" y="84" text-anchor="middle" class="t-muted">pair, delegate,</text><text x="680" y="102" text-anchor="middle" class="t-muted">or let it run</text>
+<path d="M145 85H158" class="line" marker-end="url(#ah13)"/><path d="M295 85H308" class="line" marker-end="url(#ah13)"/><path d="M445 85H458" class="line" marker-end="url(#ah13)"/><path d="M595 85H608" class="line" marker-end="url(#ah13)"/>
+<text x="380" y="185" text-anchor="middle" class="t-muted">Each decision narrows the next. Revisit only when the game proves it needs more:</text>
+<text x="380" y="207" text-anchor="middle" class="t-muted">"we need jumps and ramps" → physics engine; "the shapes look dull" → CC0 pack; "we want a unique look" → AI art pipeline.</text>
+</svg>
+</figure>
+
+<div class="table-wrap"><table>
+<thead><tr><th>Decision</th><th>Default for a first game</th><th>Change it when…</th></tr></thead>
+<tbody>
+<tr><td>Goal</td><td>Learn and finish one tiny game</td><td>You have shipped one; then pick "ship something people play"</td></tr>
+<tr><td>Target</td><td>Browser, published on itch.io</td><td>You need Steam (desktop build) or a phone store</td></tr>
+<tr><td>Stack</td><td>Plain Canvas or Phaser 4 for 2D; Three.js for 3D</td><td>You want an editor for levels and scenes (Godot), or you target Roblox</td></tr>
+<tr><td>Physics</td><td>None: kinematic movement and simple collision</td><td>Stacking, ragdolls, ramps, vehicles with suspension</td></tr>
+<tr><td>Assets</td><td>Code-drawn shapes, then a CC0 pack</td><td>The game is fun and you want a unique look</td></tr>
+<tr><td>Audio</td><td>jsfxr / ZzFX effects, CC0 music</td><td>You want a specific musical identity</td></tr>
+<tr><td>Agent autonomy</td><td>Pair mode: one feature per prompt, you play after each</td><td>You have tests and hooks in place; then let it run longer tasks</td></tr>
+</tbody></table></div>
+
+<h2>How much to hand to the agent</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Task</th><th>Agent alone</th><th>Agent + your review</th><th>You lead</th></tr></thead>
+<tbody>
+<tr><td>Boilerplate: loop, input, scenes, loaders, build scripts</td><td class="n">●</td><td></td><td></td></tr>
+<tr><td>Collision, cameras, state machines</td><td></td><td class="n">●</td><td></td></tr>
+<tr><td>Tests, hooks, Playwright scripts, CI</td><td class="n">●</td><td></td><td></td></tr>
+<tr><td>Asset pipeline scripts (slicing, packing, background removal)</td><td></td><td class="n">●</td><td></td></tr>
+<tr><td>Movement feel and difficulty tuning</td><td></td><td></td><td class="n">●</td></tr>
+<tr><td>Level design</td><td></td><td></td><td class="n">●</td></tr>
+<tr><td>Choosing art and sound; "is this fun?"</td><td></td><td></td><td class="n">●</td></tr>
+<tr><td>Licences, disclosure, store pages</td><td></td><td class="n">●</td><td></td></tr>
+</tbody></table></div>
+<p class="small muted">Based on GameDevBench (agents do better on gameplay code than on 2D graphics tasks), GBQA (agents find about half of bugs) and the authors of the documented one-prompt games (page 11).</p>
+
+<h2>An eight-week learning path</h2>
+<p>For an experienced engineer, a few evenings per week. Each week ends with something you can play.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Week</th><th>Goal</th><th>Do</th><th>Read or watch</th></tr></thead>
+<tbody>
+<tr><td class="n">1</td><td>The loop</td><td>Starter project 1 (page 14): a dodge game in one HTML file with an agent. Add the debug overlay.</td><td><a href="https://gameprogrammingpatterns.com/">Game Programming Patterns</a>: Game Loop, Update Method; <a href="https://gafferongames.com/post/fix_your_timestep/">Fix Your Timestep!</a></td></tr>
+<tr><td class="n">2</td><td>Feel</td><td>Starter project 2: tune a platformer character until it feels good. Write down every number you changed.</td><td>The "game feel" talks linked on <a href="07-fundamentals.html">page 7</a>; Celeste's forgiveness article</td></tr>
+<tr><td class="n">3</td><td>Levels and data</td><td>Draw three levels in <a href="https://www.mapeditor.org/">Tiled</a> or <a href="https://www.ldtk.io/">LDtk</a>; have the agent write the loader and a validator.</td><td><a href="https://www.redblobgames.com/">Red Blob Games</a> (grids, pathfinding)</td></tr>
+<tr><td class="n">4</td><td>Testing</td><td>Add the two test hooks and a Playwright smoke test per level (page 10).</td><td>Playwright docs; OpenAI <code>develop-web-game</code> skill at its pinned commit</td></tr>
+<tr><td class="n">5</td><td>Assets and sound</td><td>Swap in a Kenney CC0 pack; generate effects with jsfxr; keep CREDITS.md.</td><td><a href="https://kenney.nl/assets">Kenney assets</a>; page 1 and page 4</td></tr>
+<tr><td class="n">6</td><td>Ship</td><td>Title screen, touch controls, itch.io upload, AI disclosure. Show five people.</td><td>Page 12</td></tr>
+<tr><td class="n">7</td><td>Try the other dimension</td><td>Starter project 4: the mini racer, or a small 3D scene in Three.js.</td><td><a href="https://threejs.org/manual/">Three.js manual</a></td></tr>
+<tr><td class="n">8</td><td>Try an editor</td><td>Do Godot's official first-game tutorial, then rebuild your week-6 game in Godot with an agent through an MCP server.</td><td><a href="https://docs.godotengine.org/en/stable/getting_started/first_2d_game/index.html">Godot "Your first 2D game"</a></td></tr>
+</tbody></table></div>
+<p>After week 8: join a game jam (<a href="https://itch.io/jams">itch.io jams</a>, <a href="https://ldjam.com/">Ludum Dare</a>, <a href="https://www.gmtk.net/">GMTK</a>). A jam's fixed theme and deadline force scope discipline, which is the skill agents do not supply.</p>
+
+<h2>Red flags that you are off track</h2>
+<ul>
+<li>You have spent more time generating art than playing your game.</li>
+<li>The agent has rewritten the movement code three times and it still "feels off": stop, tune the numbers yourself.</li>
+<li>You cannot explain what a file does. Ask the agent to explain it, or throw it away and rebuild that part smaller.</li>
+<li>Your scope list grows every week. Cut it in half; ship the half.</li>
+<li>An autonomous run has used far more tokens than planned. Stop it, read what it did, set a limit.</li>
+</ul>
+
+<p class="page-meta">Page written 2026-10-17.</p>
+</div></main>
+<script src="assets/js/site.js"></script>
+<script>
+(function () {
+  var R = {
+    "web|2d|code": ["Phaser 4 (or plain Canvas for very small games)", "Point the agent at Phaser 4's own agent skill files; models default to Phaser 3. Plain Canvas is fine for a first game under ~1,000 lines.", "05-engines.html"],
+    "web|2d|editor": ["Godot 4 with web export, or GDevelop", "Godot exports to HTML5; GDevelop is no-code with a built-in AI assistant and an export test you should run first (page 6).", "06-ai-platforms.html"],
+    "web|3d|code": ["Three.js (+ Rapier only if you need real physics)", "The default 3D library for agents. Pin one version: the API changes between monthly releases.", "09-racing.html"],
+    "web|3d|editor": ["PlayCanvas or Babylon.js", "PlayCanvas has a cloud editor with an official MCP server; Babylon.js is a full engine with editor-side MCP servers.", "05-engines.html"],
+    "desktop|2d|code": ["Phaser or Canvas, wrapped with Electron or Tauri", "Keep the web build as the main target and wrap it; Electron is common for Steam, Tauri is smaller.", "12-publishing-legal.html"],
+    "desktop|2d|editor": ["Godot 4", "Free, MIT, an 86 MB download, plain-text scene files, several MCP servers for agents, Windows export.", "05-engines.html"],
+    "desktop|3d|code": ["Godot 4 (code-heavy) or Three.js wrapped in Electron", "Godot's scenes are text, so an agent can edit them; a Three.js game wrapped in Electron also works for small projects.", "05-engines.html"],
+    "desktop|3d|editor": ["Godot 4, or Unity if you need its asset store", "Unity has an official MCP through its CLI, but binary assets make agent edits fragile; Personal is free up to $200K.", "05-engines.html"],
+    "mobile|2d|code": ["Phaser web build first, then a wrapper", "Prove the game on phone browsers before paying store fees; Apple guideline 4.7 now covers HTML5 mini-games.", "12-publishing-legal.html"],
+    "mobile|2d|editor": ["Godot 4 or Unity", "Both export to Android and iOS; expect store setup to take longer than the game.", "05-engines.html"],
+    "mobile|3d|code": ["Three.js web build first", "Test performance on a mid-range phone early; cap pixel ratio and avoid shadows.", "09-racing.html"],
+    "mobile|3d|editor": ["Unity or Godot 4", "Unity has the most mobile 3D tutorials; Godot is free with no revenue limits.", "05-engines.html"],
+    "roblox|2d|code": ["Roblox Studio (Luau) with the built-in MCP", "Roblox is 3D-first; 2D games are possible with GUI objects. Note Roblox's perpetual licence to your content.", "06-ai-platforms.html"],
+    "roblox|2d|editor": ["Roblox Studio with Assistant", "Assistant plans, builds and playtests inside Studio; third-party agents connect through Studio's MCP server.", "06-ai-platforms.html"],
+    "roblox|3d|code": ["Roblox Studio (Luau) with the built-in MCP", "Connect Claude, Cursor or Codex to Studio's MCP; it includes a playtest subagent.", "06-ai-platforms.html"],
+    "roblox|3d|editor": ["Roblox Studio with Assistant", "The most integrated agent experience of any platform, at the price of platform lock-in.", "06-ai-platforms.html"]
+  };
+  var t = document.getElementById("q-target"), d = document.getElementById("q-dim"), s = document.getElementById("q-style"), out = document.getElementById("q-out");
+  function show() {
+    var r = R[t.value + "|" + d.value + "|" + s.value];
+    out.innerHTML = '<p><b>Recommended:</b> ' + r[0] + '</p><p class="small">' + r[1] + ' <a href="' + r[2] + '">More detail</a></p>';
+  }
+  [t, d, s].forEach(function (x) { x.addEventListener("change", show); });
+  show();
+})();
+</script>
+</body>
+</html>

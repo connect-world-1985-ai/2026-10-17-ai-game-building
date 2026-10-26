@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glossary — AI Game Building</title>
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%231f5fbf%22/%3E%3Cpath d=%22M3 9h4M5 7v4M10 8.5h1M12 10h1%22 stroke=%22white%22 stroke-width=%221.6%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
+</head>
+<body>
+<main><div class="content">
+
+<div class="kicker">Reference</div>
+<h1>Glossary</h1>
+<p class="lead">Game-development and AI-tool terms used on this site, explained for an engineer who knows software but not games.</p>
+
+<div class="toolbar"><input type="search" data-filter-for="gloss" placeholder="Filter terms…" aria-label="Filter glossary"></div>
+<div class="table-wrap"><table id="gloss" data-sortable class="compact">
+<thead><tr><th>Term</th><th>Area</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><b>AABB</b></td><td>Collision</td><td>Axis-aligned bounding box: a rectangle (or box) that is not rotated. Two AABBs overlap when they overlap on every axis. The cheapest and most common collision test.</td></tr>
+<tr><td><b>Agent (coding agent)</b></td><td>AI tools</td><td>A language model that can act in a loop: read and write files, run commands, call tools, look at results and continue. Cursor, Claude Code and Codex are examples.</td></tr>
+<tr><td><b>Arcade physics</b></td><td>Physics</td><td>Hand-written movement formulas tuned for fun rather than realism, as opposed to a physics engine.</td></tr>
+<tr><td><b>Atlas (texture atlas)</b></td><td>Art</td><td>One image that packs many sprites or tiles, plus data describing where each one is. Fewer files and faster drawing.</td></tr>
+<tr><td><b>Background removal</b></td><td>Art</td><td>Cutting a character out of a generated image so it has a transparent background. Needed because many image models cannot output true transparency.</td></tr>
+<tr><td><b>CC0</b></td><td>Licences</td><td>Creative Commons "no rights reserved": use for anything, no credit required. Kenney's assets are CC0.</td></tr>
+<tr><td><b>CC BY / BY-SA / BY-NC / BY-ND</b></td><td>Licences</td><td>Creative Commons licences requiring credit (BY), plus share-alike (SA), non-commercial (NC) or no modifications (ND). NC and ND are poor fits for games.</td></tr>
+<tr><td><b>CCD</b></td><td>Physics</td><td>Continuous collision detection: checks the path between frames, not just the end position, to stop fast objects passing through walls.</td></tr>
+<tr><td><b>CLI</b></td><td>AI tools</td><td>Command-line interface. Many asset tools and engines can be driven from the command line, which is the easiest way for an agent to use them.</td></tr>
+<tr><td><b>Code signing</b></td><td>Publishing</td><td>Signing a Windows program with a certificate so Windows can identify the publisher. Reduces, but no longer immediately removes, SmartScreen warnings.</td></tr>
+<tr><td><b>Coyote time</b></td><td>Game feel</td><td>A short grace period (about 0.1 s) after walking off a ledge during which a jump still works. Makes platformers feel fair.</td></tr>
+<tr><td><b>Delta time</b></td><td>Game loop</td><td>Time elapsed since the last frame. Movement multiplied by delta time runs at the same speed on any frame rate.</td></tr>
+<tr><td><b>Deterministic</b></td><td>Testing</td><td>Same inputs always give the same result. Needs a fixed timestep and seeded random numbers; makes replays and automated tests reliable.</td></tr>
+<tr><td><b>DMCA takedown</b></td><td>Legal</td><td>A US copyright notice asking a host to remove infringing material. Nintendo uses them against fan games.</td></tr>
+<tr><td><b>ECS</b></td><td>Architecture</td><td>Entity-component-system: entities are IDs, components are plain data, systems are functions over all entities with certain components. Used by Bevy and large games; optional for small ones.</td></tr>
+<tr><td><b>Fixed timestep</b></td><td>Game loop</td><td>Updating the simulation in equal steps (for example 1/120 s) regardless of the screen's frame rate, using an accumulator. Gives stable physics and determinism.</td></tr>
+<tr><td><b>Game feel / juice</b></td><td>Game feel</td><td>The moment-to-moment sensation of control: responsiveness, acceleration curves, screen shake, particles, sound. Mostly tuned by playing.</td></tr>
+<tr><td><b>Game loop</b></td><td>Game loop</td><td>The repeating cycle of read input → update the world → draw. In browsers it runs on <code>requestAnimationFrame</code>.</td></tr>
+<tr><td><b>glTF / GLB</b></td><td>3D</td><td>The standard file format for 3D models on the web ("the JPEG of 3D"); GLB is the single-file binary form.</td></tr>
+<tr><td><b>Headless</b></td><td>Testing</td><td>Running a browser or engine without a visible window, typically in tests or CI. WebGL may render differently headless.</td></tr>
+<tr><td><b>Hitbox</b></td><td>Collision</td><td>The invisible shape used for collision, usually smaller than the sprite so near misses feel fair.</td></tr>
+<tr><td><b>HTML5 game</b></td><td>Publishing</td><td>A game that runs in a browser (HTML, JavaScript, Canvas or WebGL), uploaded as a ZIP with <code>index.html</code>.</td></tr>
+<tr><td><b>Image-to-3D / text-to-3D</b></td><td>AI tools</td><td>Services and models that produce a 3D mesh from a picture or a description (Meshy, Tripo, Hunyuan3D, TRELLIS). Output usually needs cleanup.</td></tr>
+<tr><td><b>Impressum</b></td><td>Legal</td><td>The legally required provider identification on German websites, including non-commercial ones that are not purely private.</td></tr>
+<tr><td><b>Jump buffer</b></td><td>Game feel</td><td>Remembering a jump press for a short time (about 0.1 s) before landing, so the jump happens on landing instead of being lost.</td></tr>
+<tr><td><b>Kinematic body</b></td><td>Physics</td><td>An object you move directly in code, which still collides, but is not pushed around by forces. Typical for player characters.</td></tr>
+<tr><td><b>Live-generated content</b></td><td>Legal</td><td>Steam's term for AI content created while the game runs (for example an LLM-driven character). Requires described guardrails. Opposite: pre-generated.</td></tr>
+<tr><td><b>LOD</b></td><td>3D</td><td>Level of detail: simpler versions of a model used when it is far away, to save rendering time.</td></tr>
+<tr><td><b>MCP</b></td><td>AI tools</td><td>Model Context Protocol: a standard for exposing tools (an engine editor, Blender, a browser) to an agent. The agent's host starts or connects to an MCP server and the model calls its tools.</td></tr>
+<tr><td><b>Mesh</b></td><td>3D</td><td>A 3D shape made of vertices and triangles.</td></tr>
+<tr><td><b>Nearest-neighbour scaling</b></td><td>Art</td><td>Enlarging an image by repeating pixels without blurring. Keeps pixel art crisp.</td></tr>
+<tr><td><b>Normal map</b></td><td>3D</td><td>A texture that fakes small surface detail by changing how light hits each pixel.</td></tr>
+<tr><td><b>Parallax</b></td><td>2D</td><td>Background layers that scroll slower than the foreground to suggest depth.</td></tr>
+<tr><td><b>PBR</b></td><td>3D</td><td>Physically based rendering: materials described by colour, roughness and metalness so they look right under any light.</td></tr>
+<tr><td><b>Physics engine</b></td><td>Physics</td><td>A library that simulates rigid bodies, forces and collisions (Box2D, Matter.js, Rapier, Jolt). Not needed for most platformers.</td></tr>
+<tr><td><b>Pixel-native model</b></td><td>AI tools</td><td>An image model or service trained to output real pixel art on a grid with a limited palette (for example PixelLab, Retro Diffusion), unlike general models that imitate the look.</td></tr>
+<tr><td><b>Pre-generated content</b></td><td>Legal</td><td>Steam's term for AI content made during development and shipped as files. Judged like any other content, and must be disclosed.</td></tr>
+<tr><td><b>Procedural generation</b></td><td>Art</td><td>Creating content (levels, textures, sounds, meshes) with code and rules rather than by hand.</td></tr>
+<tr><td><b>Raycast</b></td><td>Physics</td><td>Shooting an invisible line to see what it hits. Used for ground checks, line of sight and vehicle wheels.</td></tr>
+<tr><td><b>Raycast vehicle</b></td><td>Physics</td><td>A car model where the chassis is a rigid body and each wheel is a ray with a spring and friction.</td></tr>
+<tr><td><b>Retopology</b></td><td>3D</td><td>Rebuilding a messy mesh (for example from AI generation or scanning) with clean, efficient triangles that animate well.</td></tr>
+<tr><td><b>Rig / rigging</b></td><td>3D</td><td>A skeleton inside a mesh so it can be animated. Auto-rigging tools (Mixamo, AccuRIG) work for humanoids only.</td></tr>
+<tr><td><b>Scene graph</b></td><td>Architecture</td><td>A tree of objects where children move with their parents (a wheel inside a car). Used by Three.js, Godot, Unity.</td></tr>
+<tr><td><b>Shader</b></td><td>Rendering</td><td>A small program that runs on the GPU to compute vertex positions or pixel colours.</td></tr>
+<tr><td><b>Skill (agent skill)</b></td><td>AI tools</td><td>A folder of instructions (usually SKILL.md) and scripts an agent loads to follow a specific workflow, such as "build and test a web game".</td></tr>
+<tr><td><b>SmartScreen</b></td><td>Publishing</td><td>The Windows feature that warns before running unknown downloaded programs.</td></tr>
+<tr><td><b>Sprite / sprite sheet</b></td><td>Art</td><td>A 2D image of a game object; a sprite sheet holds several frames (for animation) in one image on a grid.</td></tr>
+<tr><td><b>State machine</b></td><td>Architecture</td><td>An object that is in exactly one state (idle, run, jump, fall) with explicit rules for switching. Prevents contradictory behaviour.</td></tr>
+<tr><td><b>TASL</b></td><td>Licences</td><td>The Creative Commons attribution checklist: Title, Author, Source, Licence.</td></tr>
+<tr><td><b>Tile / tilemap</b></td><td>2D</td><td>A level built from a grid of small square images (tiles); the tilemap is the grid data. Edited in Tiled or LDtk.</td></tr>
+<tr><td><b>Topology</b></td><td>3D</td><td>How a mesh's triangles connect. Bad topology deforms badly when animated and wastes triangles.</td></tr>
+<tr><td><b>Tunneling</b></td><td>Collision</td><td>A fast object skipping through a thin wall because no frame caught it overlapping. Fixed with smaller steps, speed caps or CCD.</td></tr>
+<tr><td><b>UV mapping</b></td><td>3D</td><td>How a 2D texture is wrapped onto a 3D mesh.</td></tr>
+<tr><td><b>Vibe coding</b></td><td>AI tools</td><td>Andrej Karpathy's 2025 term for building software by prompting an AI and accepting its changes without reading the code; he scoped it to "throwaway weekend projects".</td></tr>
+<tr><td><b>WebGL / WebGPU</b></td><td>Rendering</td><td>Browser APIs for GPU graphics. WebGL is supported everywhere; WebGPU is newer and faster but less universal.</td></tr>
+<tr><td><b>World model</b></td><td>AI tools</td><td>An AI model that generates an interactive video-like world frame by frame from user input (for example Genie, Matrix-Game). Not game code; hard to ship today.</td></tr>
+</tbody></table></div>
+
+<p class="page-meta">Page written 2026-10-17.</p>
+</div></main>
+<script src="assets/js/site.js"></script>
+</body>
+</html>

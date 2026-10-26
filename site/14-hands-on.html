@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hands-on starter projects — AI Game Building</title>
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%231f5fbf%22/%3E%3Cpath d=%22M3 9h4M5 7v4M10 8.5h1M12 10h1%22 stroke=%22white%22 stroke-width=%221.6%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
+</head>
+<body>
+<main><div class="content">
+
+<div class="kicker">Page 14 · Your path</div>
+<h1>Hands-on: five starter projects</h1>
+<p class="lead">Five small projects in learning order, each with a ready-to-copy prompt for a coding agent (Cursor, Claude Code, Codex or similar), a "done when" list, and a stretch goal. Each teaches one idea from this site, and none needs paid services.</p>
+
+<div class="callout key"><span class="title">How to use these prompts</span>
+<p>Start each project in an empty folder with git initialised. Paste the prompt, let the agent build the first version, then <b>play it yourself</b> before asking for anything else. Send specific follow-ups ("the jump feels floaty") rather than "make it better". Time estimates are the author's guesses for an experienced engineer. <span class="ev i">Inference</span></p></div>
+
+<div class="table-wrap"><table class="compact">
+<thead><tr><th>#</th><th>Project</th><th>Teaches</th><th>Stack</th><th>Time</th></tr></thead>
+<tbody>
+<tr><td class="n">1</td><td><a href="#1-dodge-the-blocks-one-html-file">Dodge the blocks</a></td><td>Game loop, input, collision, state machine</td><td>Plain Canvas</td><td>1–2 h</td></tr>
+<tr><td class="n">2</td><td><a href="#2-platformer-feel-lab">Platformer feel lab</a></td><td>Movement feel, tuning, tile collision</td><td>Plain Canvas</td><td>3–5 h</td></tr>
+<tr><td class="n">3</td><td><a href="#3-skin-and-sound-it-assets-licences-tests">Skin and sound it</a></td><td>CC0 assets, procedural audio, credits, testing</td><td>Project 2 + Playwright</td><td>3–4 h</td></tr>
+<tr><td class="n">4</td><td><a href="#4-mini-3d-racer">Mini 3D racer</a></td><td>3D scene, camera, arcade physics, laps</td><td>Three.js</td><td>4–6 h</td></tr>
+<tr><td class="n">5</td><td><a href="#5-rebuild-in-godot-through-an-mcp-server">Rebuild in Godot via MCP</a></td><td>Engine editor, agent tools, headless tests, export</td><td>Godot 4 + MCP</td><td>4–8 h</td></tr>
+</tbody></table></div>
+
+<h2>1 · Dodge the blocks (one HTML file)</h2>
+<p><b>Teaches:</b> the loop, delta time, keyboard input, rectangle collision and game states (<a href="07-fundamentals.html">page 7</a>).</p>
+<div class="prompt-box"><pre>Build a small browser game in a single index.html file (inline JS and CSS, no libraries, no build step; it must work when opened from file://).
+
+Game: the player is a square at the bottom of a 480x270 canvas, moving left/right with arrow keys or A/D. Blocks fall from the top at increasing speed. Touching a block ends the run. Score = seconds survived; keep the best score in localStorage.
+
+Technical requirements:
+- Fixed timestep update (1/120 s) with an accumulator; rendering once per requestAnimationFrame.
+- A state machine with states: title, play, gameover. Space or Enter starts/restarts.
+- Axis-aligned rectangle collision in a separate pure function.
+- All tuning numbers (player speed, spawn rate, fall speed, speed-up per second) in one CONFIG object at the top.
+- Canvas scales to fit the window with crisp pixels (image-rendering: pixelated).
+- An F1 debug overlay showing FPS, entity count and hitboxes.
+- Expose window.render_game_to_text() returning JSON with state, player x, score and block count.
+
+Work independently; when done, list the CONFIG values and explain what each one changes.</pre></div>
+<p><b>Done when:</b> it runs from a double-click; the speed is the same on a 60 Hz and a 120 Hz screen; you changed three CONFIG numbers and understood the effect.</p>
+<p><b>Stretch:</b> add a dash on Shift with a cooldown; add screen shake on game over.</p>
+
+<h2>2 · Platformer feel lab</h2>
+<p><b>Teaches:</b> what makes a jump feel good, axis-separated tile collision, cameras (<a href="07-fundamentals.html">page 7</a>, <a href="08-platformer.html">page 8</a>).</p>
+<div class="prompt-box"><pre>Build a platformer "feel lab" as index.html + game.js (plain Canvas, no libraries, works from file://).
+
+- 480x270 canvas scaled up with nearest-neighbour. Fixed timestep 1/120 s.
+- A level defined as an array of strings ('#' solid, '.' empty, 'P' player start, 'C' coin, 'F' flag), about 3 screens wide.
+- Player is a 12x16 rectangle. Kinematic movement (no physics engine): acceleration, friction on ground and in air, gravity, a higher gravity when falling, variable jump height (releasing jump early cuts upward speed), coyote time, jump buffering, max fall speed.
+- Tile collision resolved on X first, then Y. Unit tests (plain JS, run with node) for: landing on a tile edge, hitting a ceiling, walking into a wall, falling at max speed onto a 1-tile floor.
+- Camera follows the player with smoothing and a small look-ahead, clamped to level bounds.
+- A side panel of HTML sliders bound live to every movement constant, plus a "copy settings as JSON" button and three presets: "floaty", "tight", "heavy".
+- Debug overlay (F1): hitboxes, velocity, on-ground flag, coyote and buffer timers.
+- Expose window.render_game_to_text() and window.advanceTime(ms) for automated tests.
+
+Do not add enemies, art or sound yet.</pre></div>
+<p><b>Done when:</b> you made your own preset that feels better than all three; you can explain coyote time and jump buffering; the unit tests pass.</p>
+<p><b>Stretch:</b> one-way platforms with tests; a walking enemy you can stomp.</p>
+
+<h2>3 · Skin and sound it (assets, licences, tests)</h2>
+<p><b>Teaches:</b> swapping art without touching logic, procedural sound effects, credits, and agent-run tests (<a href="01-assets.html">page 1</a>, <a href="04-audio.html">page 4</a>, <a href="10-testing.html">page 10</a>, <a href="12-publishing-legal.html">page 12</a>).</p>
+<p>First download <a href="https://kenney.nl/assets/pixel-platformer">Kenney Pixel Platformer</a> (CC0) into <code>assets/</code> yourself.</p>
+<div class="prompt-box"><pre>Extend the platformer in this folder:
+
+1. Art: the Kenney Pixel Platformer pack is in assets/ (CC0). Read its tilemap image layout and draw tiles, player, coins and flag from it. Keep the old rectangle renderer and add a key (T) to toggle between "shapes" and "sprites" so game logic is untouched.
+2. Sound: generate jump, coin, land and win sound effects in code with the Web Audio API (jsfxr-style parameters stored as data). Audio must start only after the first user input (browser autoplay rules). Add a mute key (M).
+3. Credits: create CREDITS.md with a table (asset, author, source URL, licence, changes) and show the credits on a title-screen panel. Copy Kenney's License.txt next to the assets.
+4. Tests: add Playwright tests that open the game, use window.advanceTime and window.render_game_to_text to (a) walk right for 2 seconds and assert x increased, (b) jump and assert the player left the ground and landed again, (c) fail on any console error, (d) take screenshots at 375x667 and 1280x720.
+5. Add touch controls (left, right, jump buttons) shown only on touch devices.
+
+From now on, record every asset or dependency you add in CREDITS.md and ask me before adding anything licensed GPL, AGPL, NC or ND.</pre></div>
+<p><b>Done when:</b> both art modes work; sound plays after the first key press; the Playwright tests pass locally; the 375 px screenshot shows usable touch buttons.</p>
+<p><b>Stretch:</b> upload it to itch.io as an HTML5 game, fill in the AI disclosure honestly, and send the link to five people.</p>
+
+<h2>4 · Mini 3D racer</h2>
+<p><b>Teaches:</b> a 3D scene, chase camera, arcade vehicle physics, checkpoints (<a href="09-racing.html">page 9</a>).</p>
+<div class="prompt-box"><pre>Build a small 3D racing game with Three.js. Use a pinned version of Three.js (vendor the file into lib/ so the game works offline); no other libraries; no model or texture files - everything procedural.
+
+- Track: a closed Catmull-Rom spline from about 10 control points, turned into a flat road ribbon mesh 14 units wide with edge markers and a start line. Green ground plane, fog, hemisphere and directional light.
+- Car: built from boxes and cylinders. Arcade controller (no physics engine): throttle, brake/reverse, drag, speed-dependent steering, and a "grip" factor that blends velocity toward the car's heading. Off-road (distance to spline > half width) caps speed lower.
+- Chase camera with exponential smoothing in the fixed-step update; slight look-ahead; FOV widens a little with speed.
+- Race logic: ordered checkpoints sampled along the spline (to stop corner cutting), lap counter, current and best lap time, R to reset to the last checkpoint.
+- HUD: speed, lap, times. Touch buttons on phones. Pixel ratio capped at 2.
+- Fixed timestep 1/120 s. Expose window.render_game_to_text() (position, speed, lap, checkpoint index, off-road flag) and window.advanceTime(ms).
+- One AI car that steers toward a point 8 units ahead on the spline, with its own speed limit, using the same controller interface as the player.
+
+Work independently. Afterwards, list every handling constant with a one-line description.</pre></div>
+<p><b>Done when:</b> a lap takes 30–60 seconds; cutting a corner does not count a lap; the AI car finishes laps on its own; the camera does not jitter.</p>
+<p><b>Stretch:</b> replace the car with a model from the <a href="https://kenney.nl/assets/car-kit">Kenney Car Kit</a> (CC0, glTF), keeping its wheels as separate meshes that spin and steer.</p>
+
+<h2>5 · Rebuild in Godot through an MCP server</h2>
+<p><b>Teaches:</b> how an agent works with an engine editor, plain-text scenes, headless tests and exports (<a href="05-engines.html">page 5</a>, <a href="10-testing.html">page 10</a>).</p>
+<ol class="stepper">
+<li>Install Godot 4 (a single 86 MB zip for Windows) and do the first steps of the official <a href="https://docs.godotengine.org/en/stable/getting_started/first_2d_game/index.html">"Your first 2D game"</a> tutorial yourself, so you know the editor.</li>
+<li>Add a Godot MCP server to your agent, for example <a href="https://github.com/Coding-Solo/godot-mcp">Coding-Solo/godot-mcp</a> (6,130 ★, MIT): <code>claude mcp add godot -- npx @coding-solo/godot-mcp</code>, or the equivalent MCP entry in Cursor. Community servers are unvetted; read what tools a server exposes before you enable it.</li>
+<li>Install the <a href="https://github.com/bitwes/Gut">GUT</a> test addon.</li>
+</ol>
+<div class="prompt-box"><pre>Recreate the "Dodge the blocks" game (spec below) as a Godot 4 project in this folder, using GDScript (Godot 4 syntax only - no Godot 3 APIs such as KinematicBody2D or yield).
+
+Spec: player square moves left/right at the bottom; blocks fall at increasing speed; touching one ends the run; score = seconds survived; best score saved to user://; states title / play / gameover.
+
+- Use scenes: Main.tscn, Player.tscn (CharacterBody2D), Block.tscn (Area2D), HUD.tscn (CanvasLayer).
+- Put all tuning values in an exported Resource (config.tres) so I can edit them in the inspector.
+- Use the Godot MCP tools to create scenes, run the project and read debug output after each step; fix every error you see.
+- Add GUT tests in res://test for the collision and scoring logic, runnable headless:
+  godot --headless -s addons/gut/gut_cmdln.gd -gdir=res://test -gexit
+- Add a Web export preset and a Windows Desktop export preset, and a README section explaining how to export from the command line.</pre></div>
+<p><b>Done when:</b> the game runs from the editor; the GUT tests pass headless; you opened a <code>.tscn</code> file in a text editor and understood it; you produced a Windows build.</p>
+<p><b>Stretch:</b> port the platformer from project 2 using Godot's TileMap and an LDtk or Tiled importer; compare how much the agent could do without the MCP server.</p>
+
+<div class="callout think"><span class="title">After the five projects</span>
+<p>You will have met every idea on this site at small scale. Pick one of them and grow it into a game with three levels and a title screen, or enter a game jam. The <a href="15-next.html">next page</a> suggests directions to discuss.</p></div>
+
+<p class="page-meta">Page written 2026-10-17.</p>
+</div></main>
+<script src="assets/js/site.js"></script>
+</body>
+</html>

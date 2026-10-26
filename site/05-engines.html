@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Engines and libraries — AI Game Building</title>
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%231f5fbf%22/%3E%3Cpath d=%22M3 9h4M5 7v4M10 8.5h1M12 10h1%22 stroke=%22white%22 stroke-width=%221.6%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
+</head>
+<body>
+<main><div class="content">
+
+<div class="kicker">Page 5 · Engines &amp; platforms</div>
+<h1>Engines and libraries, judged for agent use</h1>
+<p class="lead">Which engine an agent can work with well depends on things that rarely appear in engine comparisons: whether the project is plain text, whether it builds from the command line, whether the model knows the current API, and whether there is an MCP server. This page compares the main options on those terms, with dated popularity numbers. The sortable <a href="explorer.html">explorer</a> has every entry with more columns.</p>
+
+<h2>What makes an engine agent-friendly</h2>
+<div class="cards">
+<div class="card a"><h4>Text files</h4><p>The agent edits code and scene files directly and you review diffs. Web libraries and Godot (<code>.tscn</code>, <code>.gd</code>) are text; Unreal's <code>.uasset</code> files are binary.</p></div>
+<div class="card b"><h4>Headless run and build</h4><p>The agent can start the game, run tests and export without clicking: <code>npm run build</code>, <code>godot --headless --export-release</code>, Unity <code>-batchmode</code>.</p></div>
+<div class="card c"><h4>Model knowledge</h4><p>Lots of public code helps, but fast-moving APIs hurt: models still write Phaser 3 code for Phaser 4, Godot 3 code for Godot 4, and outdated Bevy.</p></div>
+<div class="card d"><h4>Editor bridge (MCP)</h4><p>For editor-centric engines, an MCP server lets the agent inspect scenes, run play mode and read logs instead of guessing.</p></div>
+</div>
+<p class="small muted">Criteria are the author's framework. <span class="ev i">Inference</span></p>
+
+<h2>Agent-friendliness at a glance</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Engine</th><th>Text project</th><th>Headless build</th><th>Official MCP</th><th>Biggest community MCP</th><th>llms.txt</th></tr></thead>
+<tbody>
+<tr><td><b>three.js</b></td><td>Yes</td><td>npm</td><td>No</td><td>threejs-devtools-mcp (121★)</td><td>Yes</td></tr>
+<tr><td><b>Phaser</b></td><td>Yes</td><td>npm</td><td>Editor only (experimental)</td><td>—</td><td>Yes</td></tr>
+<tr><td><b>PixiJS</b></td><td>Yes</td><td>npm</td><td>No</td><td>—</td><td>Yes</td></tr>
+<tr><td><b>Babylon.js</b></td><td>Yes</td><td>npm</td><td>Authoring editors only</td><td>—</td><td>Yes</td></tr>
+<tr><td><b>Godot</b></td><td>Yes</td><td>Yes</td><td>No</td><td>Coding-Solo/godot-mcp (6,130★)</td><td>No</td></tr>
+<tr><td><b>Unity</b></td><td>Partly (YAML + GUIDs)</td><td>Yes</td><td><b>Yes</b> (Unity CLI, free)</td><td>CoplayDev/unity-mcp (15,046★)</td><td>No</td></tr>
+<tr><td><b>Unreal 5.8</b></td><td>No (binary)</td><td>Yes</td><td><b>Experimental</b>, no auth by default</td><td>ChiR24/Unreal_mcp (957★)</td><td>—</td></tr>
+<tr><td><b>Bevy</b></td><td>Yes (Rust)</td><td>cargo</td><td>No</td><td>bevy_brp_mcp (77★)</td><td>No</td></tr>
+<tr><td><b>Roblox Studio</b></td><td>No (cloud)</td><td>Limited</td><td><b>Built in</b>, with a playtest tool</td><td>—</td><td>—</td></tr>
+<tr><td><b>GDevelop</b></td><td>JSON</td><td>No</td><td>No, but built-in AI agent</td><td>—</td><td>No</td></tr>
+</tbody></table></div>
+<p class="small muted">GitHub API and vendor docs, 2026-10-17 (Godot MCP and Unity MCP star counts re-checked by the author). "llms.txt" means the docs site serves a machine-readable summary for language models. <span class="ev v">Verified</span></p>
+
+<h2>Web 2D</h2>
+<div class="table-wrap"><table data-sortable>
+<thead><tr><th data-sort>Library</th><th data-sort>Stars</th><th data-sort>npm / week</th><th data-sort>Version</th><th>Licence</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td><a href="https://phaser.io">Phaser</a></td><td class="n">40,495</td><td class="n">579,660</td><td>4.2.1</td><td>MIT</td><td>Full 2D engine. v4 stable since 2026-04-10 and ships 28 "AI agent skill" files; models trained earlier mostly write v3 code</td></tr>
+<tr><td><a href="https://pixijs.com">PixiJS</a></td><td class="n">48,407</td><td class="n">1,452,916</td><td>8.22</td><td>MIT</td><td>A fast renderer, not a full engine: you add loop, physics, input, audio</td></tr>
+<tr><td><a href="https://kaplayjs.com">KAPLAY</a></td><td class="n">1,814</td><td class="n">12,966</td><td>3001 (4000 alpha)</td><td>MIT</td><td>Tiny friendly API (successor of Kaboom); one team reported frequent AI syntax errors</td></tr>
+<tr><td><a href="https://excaliburjs.com">Excalibur</a></td><td class="n">2,353</td><td class="n">12,871</td><td>0.32</td><td>BSD-2</td><td>TypeScript-first, good type feedback for agents</td></tr>
+<tr><td><a href="https://github.com/KilledByAPixel/LittleJS">LittleJS</a></td><td class="n">4,294</td><td class="n">1,912</td><td>1.27</td><td>MIT</td><td>Tiny engine, fits in an agent's context</td></tr>
+<tr><td>Plain Canvas</td><td>—</td><td>—</td><td>—</td><td>—</td><td>No dependency at all; what the demos on this site use</td></tr>
+</tbody></table></div>
+
+<h2>Web 3D</h2>
+<div class="table-wrap"><table data-sortable>
+<thead><tr><th data-sort>Library</th><th data-sort>Stars</th><th data-sort>npm / week</th><th data-sort>Version</th><th>Licence</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td><a href="https://threejs.org">three.js</a></td><td class="n">116,536</td><td class="n">21,426,650</td><td>r186</td><td>MIT</td><td>Default choice for agents; huge training data; API changes monthly; has llms.txt</td></tr>
+<tr><td><a href="https://r3f.docs.pmnd.rs">React Three Fiber</a></td><td class="n">33,031</td><td class="n">6,241,878</td><td>9.8</td><td>MIT</td><td>three.js as React components; good if you know React</td></tr>
+<tr><td><a href="https://www.babylonjs.com">Babylon.js</a></td><td class="n">26,175</td><td class="n">403,145</td><td>9.31</td><td>Apache-2.0</td><td>Batteries included: physics, GUI, audio, WebGPU, XR</td></tr>
+<tr><td><a href="https://playcanvas.com">PlayCanvas</a></td><td class="n">17,076</td><td class="n">133,434</td><td>2.23</td><td>MIT engine</td><td>Light web 3D; cloud editor with an MCP server</td></tr>
+</tbody></table></div>
+<p class="small muted">npm counts for 2026-10-06 to 2026-10-12 from the npm API; they include CI runs and transitive installs, so treat them as orders of magnitude. <span class="ev v">Verified</span> (numbers) / <span class="ev i">Inference</span> (interpretation)</p>
+
+<h2>Physics</h2>
+<div class="table-wrap"><table class="compact">
+<thead><tr><th>Library</th><th>Dim</th><th>Stars</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td><a href="https://rapier.rs">Rapier</a></td><td>2D + 3D</td><td class="n">5,878</td><td>Active. <b>The old <code>rapier.js</code> repo is archived</b>; JS bindings moved into the main repo. npm packages still published.</td></tr>
+<tr><td><a href="https://brm.io/matter-js">Matter.js</a></td><td>2D</td><td class="n">18,478</td><td>Mature, well known to models, used by Phaser</td></tr>
+<tr><td><a href="https://piqnt.com/planck.js">Planck.js</a></td><td>2D</td><td class="n">5,296</td><td>Box2D port, active</td></tr>
+<tr><td><a href="https://github.com/pmndrs/cannon-es">cannon-es</a></td><td>3D</td><td class="n">2,065</td><td>No commits since January 2024</td></tr>
+<tr><td><a href="https://github.com/jrouwe/JoltPhysics">Jolt</a></td><td>3D</td><td class="n">11,751</td><td>High performance; also used in Godot</td></tr>
+</tbody></table></div>
+<p>Many games do not need a physics engine at all. Platformers and arcade racers usually use hand-written "kinematic" movement, as the demos on this site do, because it is easier to tune for feel. <span class="ev p">Practice</span></p>
+
+<h2>Native engines</h2>
+<div class="table-wrap"><table data-sortable>
+<thead><tr><th data-sort>Engine</th><th data-sort>Stars</th><th>Version (2026-10-17)</th><th>Cost and licence</th><th>Windows 11</th><th>Agent notes</th></tr></thead>
+<tbody>
+<tr><td><a href="https://godotengine.org">Godot</a></td><td class="n">118,548</td><td>4.7.2 (4.8 beta)</td><td>MIT, free, no royalties</td><td>One 86 MB exe in a zip, no installer</td><td>Text scenes, headless export, many community MCPs. Watch for Godot 3 vs 4 mix-ups</td></tr>
+<tr><td><a href="https://unity.com">Unity</a></td><td>—</td><td>6000.6</td><td>Personal free up to $200K revenue; Pro $2,310/year; runtime fee cancelled 2024-09-12</td><td>Unity Hub, large install</td><td>Official MCP via Unity CLI; binary assets and GUIDs make edits fragile</td></tr>
+<tr><td><a href="https://www.unrealengine.com">Unreal 5.8</a></td><td>—</td><td>5.8</td><td>5% royalty above $1M per product</td><td>Tens of GB, 32 GB RAM recommended</td><td>Binary assets; experimental built-in MCP without authentication by default</td></tr>
+<tr><td><a href="https://bevy.org">Bevy</a></td><td class="n">49,086</td><td>0.20</td><td>MIT / Apache-2.0</td><td>Rust + MSVC build tools</td><td>Code-only, good for agents, but breaking changes every 3–4 months</td></tr>
+<tr><td><a href="https://love2d.org">LÖVE</a></td><td class="n">8,832</td><td>11.5</td><td>zlib</td><td>Zip with love.exe</td><td>Pure Lua, small API</td></tr>
+<tr><td><a href="https://pyga.me">pygame-ce</a></td><td class="n">1,694</td><td>2.5.8</td><td>LGPL</td><td><code>pip install pygame-ce</code></td><td>Very high model knowledge; good for learning</td></tr>
+<tr><td><a href="https://monogame.net">MonoGame</a></td><td class="n">14,539</td><td>3.8.6</td><td>MS-PL</td><td>dotnet templates</td><td>Code-first C#</td></tr>
+<tr><td><a href="https://www.raylib.com">raylib</a></td><td class="n">35,259</td><td>6.2</td><td>zlib</td><td>Prebuilt zips</td><td>Small C API with bindings in many languages</td></tr>
+<tr><td><a href="https://defold.com">Defold</a></td><td class="n">6,394</td><td>1.14</td><td>Defold licence (source-available), free</td><td>Native app</td><td>Text project files; has llms.txt</td></tr>
+<tr><td><a href="https://gamemaker.io">GameMaker</a></td><td>—</td><td>2026.0</td><td>Free non-commercial; $99.99 one-time commercial</td><td>Windows IDE</td><td>GML is niche for models; no MCP found</td></tr>
+<tr><td><a href="https://gdevelop.io">GDevelop</a></td><td class="n">27,644</td><td>5.6</td><td>MIT core; AI credits by plan</td><td>Desktop and web app</td><td>Built-in AI agent edits the open project</td></tr>
+</tbody></table></div>
+<p class="small muted">Versions, licences and costs from official sites and the GitHub API, 2026-10-17. Godot zip size from the release assets. <span class="ev v">Verified</span></p>
+
+<h2>Tile and level editors</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Editor</th><th>Format</th><th>Licence</th><th>Agent notes</th></tr></thead>
+<tbody>
+<tr><td><a href="https://www.mapeditor.org">Tiled</a> 1.12.2</td><td>TMX (XML) or JSON</td><td>Editor GPL, libraries BSD; free</td><td>Text formats: the agent can generate and validate maps directly. Phaser loads Tiled JSON.</td></tr>
+<tr><td><a href="https://ldtk.io">LDtk</a> 1.5.3</td><td>JSON with an official schema</td><td>MIT</td><td>Typed entities and auto-layers; importers for Unity and Godot</td></tr>
+</tbody></table></div>
+<p>A good split of work: you draw levels in Tiled or LDtk (level design needs a human eye), the agent writes the loader, collision and entity spawning, and a validator that checks every level is reachable with the actual jump physics. <span class="ev i">Inference</span></p>
+
+<h2>Popularity: different numbers measure different people</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Source</th><th>Population</th><th>Result</th></tr></thead>
+<tbody>
+<tr><td>GMTK Game Jam 2026 (organiser's post, reported 2026-07-29)</td><td>Hobbyist jam entries (about 10,000)</td><td><b>Godot 47%</b>, Unity 34%, GameMaker 5%, Unreal 3%. First Godot lead after nine years of Unity. 2025: Unity 41%, Godot 39%.</td></tr>
+<tr><td>GameDiscoverCo, Steam 2025 releases</td><td>Released commercial games</td><td><b>Unity 49.4%</b>, Unreal about 20%, Godot 7.1%</td></tr>
+<tr><td>GameDiscoverCo, Steam games over $500K gross</td><td>Commercially successful games</td><td>Unity 53.7%, Unreal 22.5%, Godot 4.1%</td></tr>
+<tr><td>GDC State of the Industry 2026</td><td>Survey of mostly larger studios</td><td>Unreal 42%, Unity 30%, Godot 5%</td></tr>
+</tbody></table></div>
+<p class="small muted">Jam figures: <a href="https://gameworldobserver.com/2026/07/29/unity-is-no-longer-the-leader-godot-has-become-the-most-popular-engine-at-gmtk-game-jam-2026">Game World Observer</a> and the <a href="https://bsky.app/profile/gamemakerstoolkit.com/post/3mrmx5mi3mk24">organiser's Bluesky post</a> <span class="ev v">Verified</span>; press reports differ on totals. Steam figures from <a href="https://newsletter.gamediscover.co/p/hows-pc-game-engine-usage-changing">GameDiscoverCo's newsletter</a> <span class="ev v">Verified</span> (secondary analyst). GDC figure relayed second-hand <span class="ev p">Practice</span>.</p>
+<p>So "which engine is most popular" has no single answer: Godot leads among hobbyists and jams, Unity among shipped Steam games, Unreal among large studios. For an engineer making a first game with an agent, the more relevant facts are text projects, headless builds and price. <span class="ev i">Inference</span></p>
+
+<h2>Recommendation by goal</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Goal</th><th>Pick</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td>First game, learn fast, share a link</td><td>Plain Canvas or <b>Phaser</b> (2D), <b>three.js</b> (3D)</td><td>Everything is text, runs in a browser, instant feedback, huge model knowledge</td></tr>
+<tr><td>Bigger 2D or light 3D game, desktop export</td><td><b>Godot</b></td><td>Free, MIT, small on Windows, text scenes, headless export, active MCP community</td></tr>
+<tr><td>Mobile commercial or large asset store</td><td><b>Unity</b></td><td>Official MCP, largest share of shipped games; heavier for agents</td></tr>
+<tr><td>High-end 3D visuals</td><td><b>Unreal</b></td><td>Best rendering, but binary assets limit what an agent can do</td></tr>
+<tr><td>You already write Rust or Python</td><td><b>Bevy</b> or <b>pygame-ce</b></td><td>Code-only workflows suit agents</td></tr>
+</tbody></table></div>
+<p class="small muted">Author's judgment. The decision framework on <a href="13-decision.html">page 13</a> goes further. <span class="ev i">Inference</span></p>
+
+<p class="page-meta">Page written 2026-10-17. Star counts for three.js, Godot, Phaser, PixiJS, Bevy, Babylon.js, KAPLAY and the MCP servers re-checked by the author that day.</p>
+</div></main>
+<script src="assets/js/site.js"></script>
+</body>
+</html>

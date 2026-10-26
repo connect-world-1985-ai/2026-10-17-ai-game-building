@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Worked example: a Mario-like platformer — AI Game Building</title>
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%231f5fbf%22/%3E%3Cpath d=%22M3 9h4M5 7v4M10 8.5h1M12 10h1%22 stroke=%22white%22 stroke-width=%221.6%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">
+</head>
+<body>
+<main><div class="content">
+
+<div class="kicker">Page 8 · Worked examples</div>
+<h1>Worked example: a side-scrolling platformer</h1>
+<p class="lead">"Make me a Mario game" is the most common first request. This page plans one properly: what to build (and what not to copy), which engine, where the art comes from under three strategies, the order to build it in with an agent, the parts that are hard, and honest time and cost ranges.</p>
+
+<div class="callout warn"><span class="title">IP first: "Mario-like", not Mario</span>
+<p>Game mechanics (run, jump, stomp, collect) are free to reuse; Nintendo's characters, names, sprites, sounds and level layouts are not. Courts protected Tetris's audiovisual expression while saying its rules are free (<i>Tetris Holding v. Xio</i>, 2012), and Nintendo regularly removes fan games with its characters. Do not prompt an agent or an image model with "Mario", and do not recreate World 1-1. Details on <a href="12-publishing-legal.html#clone-trademark-and-fan-game-risk">page 12</a>. <span class="ev v">Verified</span></p></div>
+
+<h2>Scope: the smallest version worth making</h2>
+<div class="cards">
+<div class="card a"><h4>Must have</h4><p>One hero that runs and jumps with good feel; solid tiles; one enemy that walks and can be stomped; coins; pits; a goal flag; restart on death; a camera that follows.</p></div>
+<div class="card b"><h4>Next</h4><p>Three short levels from a level editor; a title screen and a win screen; sound effects; a timer or score; touch controls.</p></div>
+<div class="card c"><h4>Later</h4><p>Power-ups, moving platforms, a second enemy type, checkpoints, saving the best time, music.</p></div>
+</div>
+<p>The tiny demo below is roughly the "must have" column: one level in about 370 lines of plain Canvas JavaScript, with no engine. <span class="ev v">Verified</span> (our demo)</p>
+<div id="demo-plat"><p class="muted">Interactive demo needs JavaScript.</p></div>
+
+<h2>Architecture</h2>
+<figure class="diagram">
+<svg viewBox="0 0 760 290" role="img" aria-label="Platformer architecture: level data, game state machine, entities, systems, renderer and audio">
+<defs><marker id="ah8" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker></defs>
+<rect x="10" y="20" width="170" height="70" rx="8" class="box-a"/><text x="95" y="48" text-anchor="middle" class="t-title">Level data</text><text x="95" y="68" text-anchor="middle" class="t-muted">Tiled / LDtk JSON</text>
+<rect x="10" y="110" width="170" height="70" rx="8" class="box-a"/><text x="95" y="138" text-anchor="middle" class="t-title">Config</text><text x="95" y="158" text-anchor="middle" class="t-muted">all movement constants</text>
+<rect x="10" y="200" width="170" height="70" rx="8" class="box-a"/><text x="95" y="228" text-anchor="middle" class="t-title">Input</text><text x="95" y="248" text-anchor="middle" class="t-muted">keys, pad, touch → actions</text>
+<rect x="230" y="20" width="290" height="250" rx="8" class="box-b"/>
+<text x="375" y="46" text-anchor="middle" class="t-title">Simulation (fixed 1/120 s step)</text>
+<rect x="250" y="62" width="250" height="40" rx="6" class="box"/><text x="375" y="87" text-anchor="middle">Game state machine: title → play → dead → win</text>
+<rect x="250" y="112" width="120" height="70" rx="6" class="box"/><text x="310" y="138" text-anchor="middle" class="t-title">Player</text><text x="310" y="158" text-anchor="middle" class="t-muted">state machine</text>
+<rect x="380" y="112" width="120" height="70" rx="6" class="box"/><text x="440" y="138" text-anchor="middle" class="t-title">Enemies, coins</text><text x="440" y="158" text-anchor="middle" class="t-muted">simple behaviours</text>
+<rect x="250" y="192" width="250" height="60" rx="6" class="box"/><text x="375" y="217" text-anchor="middle">Tile collision (x then y) · triggers</text><text x="375" y="237" text-anchor="middle" class="t-muted">entity overlaps · camera</text>
+<rect x="570" y="40" width="180" height="90" rx="8" class="box-ok"/><text x="660" y="72" text-anchor="middle" class="t-title">Renderer</text><text x="660" y="92" text-anchor="middle" class="t-muted">draw(state, alpha)</text><text x="660" y="110" text-anchor="middle" class="t-muted">art strategy swappable</text>
+<rect x="570" y="160" width="180" height="90" rx="8" class="box-ok"/><text x="660" y="192" text-anchor="middle" class="t-title">Audio + HUD</text><text x="660" y="212" text-anchor="middle" class="t-muted">events → sounds</text><text x="660" y="230" text-anchor="middle" class="t-muted">score, time, overlays</text>
+<path d="M180 55H228" class="line" marker-end="url(#ah8)"/><path d="M180 145H228" class="line" marker-end="url(#ah8)"/><path d="M180 235H228" class="line" marker-end="url(#ah8)"/>
+<path d="M520 85H568" class="line" marker-end="url(#ah8)"/><path d="M520 205H568" class="line" marker-end="url(#ah8)"/>
+</svg>
+<figcaption>Keep simulation and rendering separate. That one rule makes art swappable (as in the demo), and makes the game testable by an agent (page 10).</figcaption>
+</figure>
+<p>Key design choices, each explained on <a href="07-fundamentals.html">page 7</a>: fixed timestep; kinematic movement instead of a physics engine; axis-separated tile collision; explicit state machines; every tuning number in one config object; levels as data. <span class="ev p">Practice</span></p>
+
+<h2>Engine choice</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>For</th><th>Against</th></tr></thead>
+<tbody>
+<tr><td><b>Plain Canvas</b> (like the demo)</td><td>No dependency; the agent sees every line; trivially testable</td><td>You write loading, sprites, audio, scenes yourself</td></tr>
+<tr><td><b>Phaser 4</b> (recommended for web)</td><td>Tilemaps (Tiled JSON loader), arcade physics, animation, audio, scenes; ships agent skill files</td><td>Models trained before 2026 write Phaser 3 code: point the agent at the v4 skills and migration guide</td></tr>
+<tr><td><b>Godot 4</b> (recommended for desktop)</td><td>TileMap editor, CharacterBody2D, animation tools, exports to Windows and web</td><td>The agent needs an MCP or careful scene-file edits; Godot 3 vs 4 confusion</td></tr>
+</tbody></table></div>
+<p class="small muted">Author's judgment from page 5. <span class="ev i">Inference</span></p>
+
+<h2>Where the art comes from: three strategies compared</h2>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>A · Code-drawn</th><th>B · Free CC0 pack</th><th>C · AI-generated</th></tr></thead>
+<tbody>
+<tr><td><b>How</b></td><td>Rectangles, circles, simple faces in Canvas or SVG; emoji as an option</td><td>Kenney Pixel Platformer (used in the demo) or a similar pack from itch.io</td><td>Pixel-native tool (PixelLab, Retro Diffusion) for the hero and enemies; general model for backgrounds</td></tr>
+<tr><td><b>Cost</b></td><td>$0</td><td>$0</td><td>Derived from vendor prices: an 8-direction PixelLab character ≈ $0.03, each animation ≈ $0.04–0.06; 40 background images on Nano Banana 2.1 at 1K ≈ $1.35. The real cost is iteration and cleanup time.</td></tr>
+<tr><td><b>Consistency</b></td><td>Perfect (it is code)</td><td>High (one artist)</td><td>The main risk: frame drift, palette drift, mismatched sizes</td></tr>
+<tr><td><b>Licence</b></td><td>None needed</td><td>CC0, no credit required</td><td>Depends on plan; weak copyright in raw output (page 12)</td></tr>
+<tr><td><b>Agent effort</b></td><td>Low; the agent does it all</td><td>Low; read the atlas layout, map tile indices</td><td>Medium to high: pipeline script, background removal, grid snap, packing, human curation</td></tr>
+<tr><td><b>Uniqueness</b></td><td>Low ("programmer art")</td><td>Low (many games use the same packs)</td><td>High, if the cleanup is done well</td></tr>
+</tbody></table></div>
+<p class="small muted">Prices from <a href="https://www.pixellab.ai/pixellab-api">PixelLab</a> and <a href="https://ai.google.dev/gemini-api/docs/pricing">Gemini pricing</a> (2026-10-17); dollar totals are derived. Judgments are the author's. <span class="ev v">Verified</span> (unit prices) / <span class="ev i">Inference</span> (comparison)</p>
+<p><b>Recommendation:</b> build the whole game with strategy A, switch to B once it is fun, and only consider C when you want a unique look and are ready to spend time on the pipeline. The demo's art switch shows why this order works: the game logic does not change. <span class="ev i">Inference</span></p>
+
+<h2>Build order with an agent</h2>
+<ol class="stepper">
+<li><b>Skeleton.</b> "Single <code>index.html</code> + <code>game.js</code>, Canvas 480×270 scaled with nearest-neighbour, fixed timestep 1/120 s, keyboard input map, a state machine with title/play/win, and a debug overlay toggled with F1." Run it.</li>
+<li><b>Movement feel.</b> "Rectangle hero on a flat floor. Config object with acceleration, friction, gravity, jump speed, coyote time 0.1 s, jump buffer 0.12 s, variable jump height." Play it for ten minutes and tune the numbers yourself.</li>
+<li><b>Tiles and collision.</b> "Level as a 2D array, axis-separated collision, debug hitboxes, unit tests for corner cases (landing on an edge, hitting a ceiling, walking into a wall)."</li>
+<li><b>Camera.</b> Smoothed follow with look-ahead, clamped to the level bounds.</li>
+<li><b>Enemies, coins, pits, flag.</b> One at a time, each with a test that uses a test hook such as <code>window.__game.get()</code>.</li>
+<li><b>Levels from an editor.</b> You draw levels in Tiled or LDtk; the agent writes the loader and a <b>reachability validator</b> that simulates the jump arc.</li>
+<li><b>Art pass.</b> Swap the renderer to a CC0 pack. Then sound effects (page 4).</li>
+<li><b>Polish and ship.</b> Title screen, touch controls, screen shake on stomp, a credits screen, an itch.io build (page 12).</li>
+</ol>
+<p class="small muted">Order follows the fundamentals on page 7 and the testing practice on page 10. <span class="ev i">Inference</span></p>
+
+<h2>The hard parts</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Problem</th><th>Typical symptom</th><th>Fix</th></tr></thead>
+<tbody>
+<tr><td>Jump feel</td><td>Floaty or stiff; "eaten" jumps at ledges</td><td>Coyote time, jump buffer, higher gravity when falling, variable jump height. You must play and tune; the agent cannot feel it.</td></tr>
+<tr><td>Tile collision edge cases</td><td>Sticking to walls, catching on tile seams, falling through at high speed</td><td>Resolve x then y; small step-up tolerance; cap fall speed below one tile per step</td></tr>
+<tr><td>One-way platforms and slopes</td><td>Popping through or jittering</td><td>Skip them in the first version; add with dedicated tests</td></tr>
+<tr><td>Level design</td><td>Impossible gaps or boring layouts</td><td>Human-drawn levels; validator for reachability; one new idea per level</td></tr>
+<tr><td>Enemy stomp vs hurt</td><td>Unfair deaths when landing on an enemy</td><td>Count a stomp if the hero is moving down and its feet were above the enemy's centre last step</td></tr>
+<tr><td>Frame-rate dependence</td><td>Game runs twice as fast on a 120 Hz screen</td><td>Fixed timestep; test with the loop toy on page 7</td></tr>
+</tbody></table></div>
+<p class="small muted">Common platformer engineering practice, consistent with the sources on page 7. <span class="ev p">Practice</span></p>
+
+<h2>Time and cost, honestly</h2>
+<p>No study measures how long agent-assisted platformers take. The ranges below are the author's estimates for an experienced engineer who has never made a game, working with a current coding agent. Treat them as a planning guess, not data. <span class="ev i">Inference</span></p>
+<div class="table-wrap"><table>
+<thead><tr><th>Milestone</th><th>Estimate</th><th>What eats the time</th></tr></thead>
+<tbody>
+<tr><td>First playable (moving, jumping, one level, shapes)</td><td>1–3 hours</td><td>Setting up the loop and tuning movement</td></tr>
+<tr><td>"Must have" scope with good feel</td><td>1–2 days</td><td>Feel tuning, collision edge cases, playtesting</td></tr>
+<tr><td>Three designed levels, CC0 art, sound, shipped on itch.io</td><td>1–2 weeks of evenings</td><td>Level design and polish, not code</td></tr>
+<tr><td>Unique AI-generated art set</td><td>Add several days</td><td>Pipeline, cleanup, curation, consistency</td></tr>
+</tbody></table></div>
+<p>Money: a coding-agent subscription you probably already have, plus $0 for strategies A and B, or a few dollars of API calls for strategy C (see the derived prices above). The documented one-prompt examples on <a href="11-one-prompt-truth.html">page 11</a> show that agents produce a first playable quickly, while the shallow-gameplay problem remains. <span class="ev i">Inference</span></p>
+
+<p class="page-meta">Page written 2026-10-17.</p>
+</div></main>
+<script src="assets/js/site.js"></script>
+<script src="assets/js/demos.js"></script>
+<script>
+GameDemos.platformer(document.getElementById("demo-plat"), { id: "plat", mode: "art", art: "shapes", title: "The 'must have' scope in about one screen of design", note: "Click the game, then play: arrows or A/D, Space or W to jump. Try switching art strategies; nothing else changes." });
+</script>
+</body>
+</html>
