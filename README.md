@@ -38,8 +38,8 @@ Then open <http://127.0.0.1:8766/>. The lesson is <http://127.0.0.1:8766/watch.h
 
 ## GitHub Pages
 
-[`.github/workflows/pages.yml`](.github/workflows/pages.yml) publishes the `site/` folder on every push to `main`. The public site root is that folder, so `site/index.html` is the address above and `site/watch.html` is the `/watch.html` address.
+[`.github/workflows/pages.yml`](.github/workflows/pages.yml) publishes the `site/` folder on every push to `main`. The public site root is that folder, so `site/index.html` is the home address above and `site/watch.html` is the lesson address.
 
 The video is one file of about 44 MB. Playback starts when you press play. The player can seek.
 
-If a push does not update the site, the Pages source for this repository is **GitHub Actions**. The other working choice is **Deploy from a branch**, branch `main`, folder `/` (root). Do not choose the `/docs` folder: that directory holds the research notes, not the site. A `.nojekyll` file is present so GitHub serves the HTML as files.
+The workflow also tries to turn Pages on the first time it runs. If the addresses above say the site was not found, that switch still needs a person: open **Settings → Pages**, choose **GitHub Actions** as the source, and re-run **Publish the guide**. Do not choose the `/docs` folder. That directory holds the research notes, not the site. A `.nojekyll` file is present so a branch deploy serves the HTML as files. The other working branch choice is `main` and the `/` (root) folder.
